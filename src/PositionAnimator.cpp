@@ -57,7 +57,7 @@ void PositionAnimator::previousCurve()
 //--------------------------------------------------------------
 void PositionAnimator::setup()
 {
-	ofxSurfingHelpers::setTheme_ofxGui();
+	ofxSurfingHelpers::setThemeDark_ofxGui;
 
 	ENABLE_valueAnim.set("Enable Animator", true);
 
@@ -252,7 +252,6 @@ void PositionAnimator::draw()
 		float h;//display delay wait progress
 		if (animatorPosition.isWaitingForAnimationToStart()) h = animatorPosition.waitTimeLeftPercent() * size;
 		else h = size;
-
 		px = ofMap(animatorPosition.getPercentDone(), 0, 1, x, x + size, true);
 		ofSetColor(ofColor::red, 200);
 		ofSetLineWidth(2.0);

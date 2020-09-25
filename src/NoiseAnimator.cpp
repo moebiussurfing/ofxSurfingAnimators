@@ -40,7 +40,7 @@ NoiseAnimator::NoiseAnimator()
 //--------------------------------------------------------------
 void NoiseAnimator::setup()
 {
-	ofxSurfingHelpers::setTheme_ofxGui();
+	ofxSurfingHelpers::setThemeDark_ofxGui();
 
 	//fc = 0.05;
 

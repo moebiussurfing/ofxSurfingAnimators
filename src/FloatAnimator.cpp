@@ -59,7 +59,7 @@ void FloatAnimator::previousCurve()
 //--------------------------------------------------------------
 void FloatAnimator::setup()
 {
-	ofxSurfingHelpers::setTheme_ofxGui();
+	ofxSurfingHelpers::setThemeDark_ofxGui;
 	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
 
 	ENABLE_valueAnim.set("Enable Animator", true);
@@ -254,10 +254,13 @@ void FloatAnimator::draw()
 		valueAnim.drawCurve(x, y, size, true, ofColor(255));
 
 		//vertical line time
+		float h;//display delay wait progress
+		if (valueAnim.isWaitingForAnimationToStart()) h = valueAnim.waitTimeLeftPercent() * size;
+		else h = size;
 		px = ofMap(valueAnim.getPercentDone(), 0, 1, x, x + size, true);
 		ofSetColor(ofColor::red, 200);
 		ofSetLineWidth(2.0);
-		ofDrawLine(px, y, px, y + size);
+		ofDrawLine(px, y + size, px, y + size - h);
 
 		//vertical red bar value
 		ofRectangle r;
