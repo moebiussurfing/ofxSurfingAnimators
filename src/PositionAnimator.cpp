@@ -217,6 +217,79 @@ void PositionAnimator::update()
 }
 
 //--------------------------------------------------------------
+void PositionAnimator::drawCurve(glm::vec2 &p)
+{
+	//float sizeCurvePlot = 100;
+	//animatorPosition.drawCurve(p.x, p.y, sizeCurvePlot, true, ofColor(255));
+
+	if (SHOW_Plot)
+	{
+		ofPushStyle();
+		ofFill();
+
+		float x, y, px, w;
+		bool stateColor;
+		string str;
+
+		x = p.x;
+		y = p.y;
+
+		//curve type plot
+
+		//bCustomPositionPlot = !SHOW_Gui;
+		//if (bCustomPositionPlot) {
+		//	x = positionPlot.x;
+		//	y = positionPlot.y;
+		//}
+		//else {
+		//	x = gui.getPosition().x + 45;
+		//	y = gui.getPosition().y + gui.getHeight() + 15;
+		//}
+
+		animatorPosition.drawCurve(x, y, sizeCurvePlot, true, ofColor(255));
+
+		//vertical line time
+		float h;//display delay wait progress
+		if (animatorPosition.isWaitingForAnimationToStart()) h = animatorPosition.waitTimeLeftPercent() * sizeCurvePlot;
+		else h = sizeCurvePlot;
+		px = ofMap(animatorPosition.getPercentDone(), 0, 1, x, x + sizeCurvePlot, true);
+		ofSetColor(ofColor::red, 255);
+		ofSetLineWidth(2.0);
+		ofDrawLine(px, y + sizeCurvePlot, px, y + sizeCurvePlot - h);
+
+		////vertical bar value
+		//ofRectangle r;
+		//w = 12;
+		//x += sizeCurvePlot + 7;
+		//ofFill();
+		////bg
+		//ofSetColor(0, 200);
+		//r = ofRectangle(x, y + sizeCurvePlot, w, -sizeCurvePlot);
+		//float pad = 2;//make black outpsace
+		////r = ofRectangle(x - pad * 0.5f, y + sizeCurvePlot + pad * 0.5f, w + pad, -sizeCurvePlot - pad);
+		//ofDrawRectangle(r);
+		////bar
+		//ofSetColor(ofColor::red, 200);
+		//float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
+		//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(vb*sizeCurvePlot, 1));
+		////r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(value.get()*sizeCurvePlot, 1));
+		////r = ofRectangle(x, y + sizeCurvePlot, w, -MAX(value.get()*sizeCurvePlot, 1));
+		//ofDrawRectangle(r);
+
+		//-
+
+		//stateColor = animatorPosition.isAnimating();
+		//str = label;
+		////str = "4 COLOR";
+		//ofDrawBitmapStringHighlight(str, x + 5, y - 10,
+		//	stateColor ? ofColor::white : ofColor::black,
+		//	!stateColor ? ofColor::white : ofColor::black);
+
+		ofPopStyle();
+	}
+
+}
+//--------------------------------------------------------------
 void PositionAnimator::draw()
 {
 	if (SHOW_Gui)
@@ -243,7 +316,7 @@ void PositionAnimator::draw()
 		}
 		else {
 			x = gui.getPosition().x + 45;
-			y = gui.getPosition().y + gui.getHeight() + 15;
+			y = gui.getPosition().y + gui.getHeight() + pad;
 		}
 
 		animatorPosition.drawCurve(x, y, size, true, ofColor(255));
@@ -253,27 +326,27 @@ void PositionAnimator::draw()
 		if (animatorPosition.isWaitingForAnimationToStart()) h = animatorPosition.waitTimeLeftPercent() * size;
 		else h = size;
 		px = ofMap(animatorPosition.getPercentDone(), 0, 1, x, x + size, true);
-		ofSetColor(ofColor::red, 200);
+		ofSetColor(ofColor::red, 255);
 		ofSetLineWidth(2.0);
 		ofDrawLine(px, y + size, px, y + size - h);
 
 		////vertical bar value
 		//ofRectangle r;
 		//w = 12;
-		//x += size + 7;
+		//x += sizeCurvePlot + 7;
 		//ofFill();
 		////bg
 		//ofSetColor(0, 200);
-		//r = ofRectangle(x, y + size, w, -size);
+		//r = ofRectangle(x, y + sizeCurvePlot, w, -sizeCurvePlot);
 		//float pad = 2;//make black outpsace
-		////r = ofRectangle(x - pad * 0.5f, y + size + pad * 0.5f, w + pad, -size - pad);
+		////r = ofRectangle(x - pad * 0.5f, y + sizeCurvePlot + pad * 0.5f, w + pad, -sizeCurvePlot - pad);
 		//ofDrawRectangle(r);
 		////bar
 		//ofSetColor(ofColor::red, 200);
 		//float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
-		//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(vb*size, 1));
-		////r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(value.get()*size, 1));
-		////r = ofRectangle(x, y + size, w, -MAX(value.get()*size, 1));
+		//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(vb*sizeCurvePlot, 1));
+		////r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(value.get()*sizeCurvePlot, 1));
+		////r = ofRectangle(x, y + sizeCurvePlot, w, -MAX(value.get()*sizeCurvePlot, 1));
 		//ofDrawRectangle(r);
 
 		//-

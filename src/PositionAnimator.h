@@ -29,6 +29,7 @@ public:
 public:
 	bool bCustomPositionPlot = false;
 	glm::vec2 positionPlot{ 50, 50 };
+	float pad = 15;
 
 	PositionAnimator();
 	~PositionAnimator();
@@ -41,6 +42,7 @@ public:
 		update();
 	}
 	void draw();
+	void drawCurve(glm::vec2 &p);
 	void exit();
 
 	void start();
@@ -224,6 +226,14 @@ public:
 		return guiPos;
 	}
 
+	//--------------------------------------------------------------
+	glm::vec2 getGuiShape()
+	{
+		ofRectangle r = gui.getShape();
+		glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + sizeCurvePlot + pad + 15);// lastone is text line height 
+		return _shape;
+	}
+
 private:
 	string label = "Position Animator";
 
@@ -390,6 +400,7 @@ public:
 	//int repeatMode_anim_loop_PRE = 2;
 	
 	bool bDone = false;
+	float sizeCurvePlot = 100;
 
 public:
 	bool isDone() {
