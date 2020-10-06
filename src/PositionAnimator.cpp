@@ -123,8 +123,12 @@ void PositionAnimator::setup()
 	//params.add(pos);
 	//params.add(posStart);
 	//params.add(posEnd);
-	params.add(duration);
-	params.add(animDelay);
+
+	params_Time.setName("Time Engine");
+	params_Time.add(duration);
+	params_Time.add(animDelay);
+	params.add(params_Time);
+
 	params.add(params_Bpm);
 	params.add(curveType);
 	params.add(curveName);
@@ -414,6 +418,12 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 			duration = (_bar / 8.f) * (float)bpmBeatDuration;
 			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
 		}
+
+		// gui workflow
+		gui.getGroup(params.getName()).getGroup(params_Time.getName()).minimize();
+		gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).minimize();
+		if (!bpmMode) gui.getGroup(params.getName()).getGroup(params_Time.getName()).maximize();
+		else gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).maximize();
 	}
 
 	else if (name == bpmBeatDuration.getName() || name == bpmSpeed.getName() || name == bpmBeatDelay.getName())
@@ -492,16 +502,18 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 void PositionAnimator::doReset()
 {
 	repeatMode = 0;
-	curveType = 3;
+	curveType = 3;// linear
 	repeatTimes = 1;
 
 	animDelay = 0.f;
 	duration = 1.f;
+
 	bpmMode = true;
 	bpmBeatDuration = 16;
 	bpmBeatDelay = 8;
+	bpmSpeed = 120;
 
-	posStart = glm::vec2(700, 400);
-	posEnd = glm::vec2(900, 600);
+	//posStart = glm::vec2(700, 400);
+	//posEnd = glm::vec2(900, 600);
 	pos = posStart;
 }

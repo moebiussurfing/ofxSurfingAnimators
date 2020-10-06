@@ -373,6 +373,7 @@ public:
 	}
 	ofParameter<float> bpmSpeed;
 private:
+	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
 	ofParameter<int> bpmBeatDuration;
