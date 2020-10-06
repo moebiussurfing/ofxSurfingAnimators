@@ -92,8 +92,8 @@ void PositionAnimator::setup()
 	//bpm engine
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
-	bpmBeatDuration.set("Beat", 4, 1, 8);
-	bpmBeatDelay.set("Beat Delay", 2, 0, 8);
+	bpmBeatDuration.set("Duration Beats", 4, 1, 8);
+	bpmBeatDelay.set("PreDelay Beats", 2, 0, 8);
 	params_Bpm.setName("BPM Engine");
 
 	params_Bpm.add(bpmSpeed);
@@ -434,6 +434,7 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
 		}
 	}
+
 	else if (name == "Curve Type")
 	{
 		animatorPosition.setCurve(AnimCurve(curveType.get()));
