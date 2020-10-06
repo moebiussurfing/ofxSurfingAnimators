@@ -93,8 +93,9 @@ void PositionAnimator::setup()
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
 	bpmBeatDuration.set("Beat", 4, 1, 8);
-	bpmBeatDelay.set("Beat Delay", 0, 0, 8);
+	bpmBeatDelay.set("Beat Delay", 2, 0, 8);
 	params_Bpm.setName("BPM Engine");
+
 	params_Bpm.add(bpmSpeed);
 	params_Bpm.add(bpmMode);
 	params_Bpm.add(bpmBeatDuration);
@@ -398,7 +399,24 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 		animatorPosition.setDuration(duration.get());
 	}
 	//bpm engine
-	else if (name == bpmBeatDuration.getName() || name == bpmSpeed.getName() || name == bpmMode.getName() || name == bpmBeatDelay.getName())
+	else if (name == bpmMode.getName())
+	{
+		// exclude bpm or time info depends of time mode
+
+		duration.setSerializable(!bpmMode);
+		animDelay.setSerializable(!bpmMode);
+		bpmSpeed.setSerializable(bpmMode);
+		bpmBeatDuration.setSerializable(bpmMode);
+		bpmBeatDelay.setSerializable(bpmMode);
+
+		if (bpmMode) {
+			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
+			duration = (_bar / 8.f) * (float)bpmBeatDuration;
+			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
+		}
+	}
+
+	else if (name == bpmBeatDuration.getName() || name == bpmSpeed.getName() || name == bpmBeatDelay.getName())
 	{
 		if (bpmMode) {
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
@@ -480,8 +498,8 @@ void PositionAnimator::doReset()
 	animDelay = 0.f;
 	duration = 1.f;
 	bpmMode = true;
-	bpmBeatDuration = 8;
-	bpmBeatDelay = 0;
+	bpmBeatDuration = 16;
+	bpmBeatDelay = 8;
 
 	posStart = glm::vec2(700, 400);
 	posEnd = glm::vec2(900, 600);
