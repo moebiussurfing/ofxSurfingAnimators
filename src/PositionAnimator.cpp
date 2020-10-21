@@ -166,7 +166,7 @@ void PositionAnimator::setup()
 //--------------------------------------------------------------
 void PositionAnimator::start()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogVerbose(__FUNCTION__);
 
 	if (ENABLE_valueAnim)
 	{
@@ -216,7 +216,7 @@ void PositionAnimator::update()
 
 	if (animatorPosition.isAnimating())
 	{
-		animProgress = animatorPosition.getPercentDone() * 100;
+		animProgress = MIN(100, animatorPosition.getPercentDone() * 100);
 		pos = glm::vec2(animatorPosition.getCurrentPosition().x, animatorPosition.getCurrentPosition().y);
 	}
 }
@@ -407,12 +407,15 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 	{
 		// exclude bpm or time info depends of time mode
 
+		params_Time.setSerializable(!bpmMode);
 		duration.setSerializable(!bpmMode);
 		animDelay.setSerializable(!bpmMode);
+
+		params_Bpm.setSerializable(bpmMode);
 		bpmSpeed.setSerializable(bpmMode);
 		bpmBeatDuration.setSerializable(bpmMode);
 		bpmBeatDelay.setSerializable(bpmMode);
-
+		
 		if (bpmMode) {
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
 			duration = (_bar / 8.f) * (float)bpmBeatDuration;

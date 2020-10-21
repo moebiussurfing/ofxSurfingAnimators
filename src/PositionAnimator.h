@@ -191,6 +191,15 @@ public:
 		return animatorPosition.getPercentDone();
 	}
 
+	//--------------------------------------------------------------
+	float getPercentPauseDone()
+	{
+		//if (animatorPosition.isWaitingForAnimationToStart()) {
+			//animatorPosition.waitTimeLeftPercent();
+
+		return animatorPosition.waitTimeLeftPercent();
+	}
+
 	////--------------------------------------------------------------
 	//float getValue()
 	//{
