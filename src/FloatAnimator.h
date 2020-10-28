@@ -43,6 +43,10 @@ public:
 	void nextCurve();
 	void previousCurve();
 
+	float sizeCurvePlot = 100;
+	void drawCurve(glm::vec2 &p);
+
+
 	//--------------------------------------------------------------
 	void setValueTarget(float &v)
 	{
@@ -78,7 +82,10 @@ public:
 	{
 		autoSettings = b;
 	}
-
+	//--------------------------------------------------------------
+	void saveSettings();
+	void loadSettings();
+	
 	////--------------------------------------------------------------
 	//void setLooped(bool b)
 	//{
@@ -113,7 +120,7 @@ public:
 	//--------------------------------------------------------------
 	bool isAnimating()
 	{
-		return valueAnim.isAnimating();
+		return floatAnimator.isAnimating();
 	}
 
 	//--------------------------------------------------------------
@@ -172,7 +179,7 @@ public:
 	//		if (ENABLE_valueAnim)
 	//		{
 	//			//valueBack->set(valueEnd);
-	//			//valueAnim.setColor(valueEnd);
+	//			//floatAnimator.setColor(valueEnd);
 	//			//valueBack = (*float) valueEnd.get();
 	//		}
 	//	}
@@ -182,7 +189,7 @@ public:
 	void refresh_Labels()
 	{
 		repeatName = AnimRepeat_ToStr(repeatMode.get());
-		curveName = valueAnim.getCurveName(AnimCurve(curveType.get()));
+		curveName = floatAnimator.getCurveName(AnimCurve(curveType.get()));
 	}
 
 	//-
@@ -190,7 +197,7 @@ public:
 	//--------------------------------------------------------------
 	float getPercentDone()
 	{
-		return valueAnim.getPercentDone();
+		return floatAnimator.getPercentDone();
 	}
 	//--------------------------------------------------------------
 	float getValue()
@@ -227,6 +234,17 @@ public:
 		return guiPos;
 	}
 
+	//--------------------------------------------------------------
+	glm::vec2 getGuiShape()
+	{
+		ofRectangle r = gui.getShape();
+		glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + sizeCurvePlot + pad + 15);// lastone is text line height 
+		return _shape;
+	}
+	public:
+		//bool bCustomPositionPlot = false;
+		//glm::vec2 positionPlot{ 50, 50 };
+		float pad = 15;
 private:
 	string label = "Float Animator";
 
@@ -317,7 +335,7 @@ private:
 
 	float *valueBack;
 
-	ofxAnimatableFloat valueAnim;
+	ofxAnimatableFloat floatAnimator;
 
 	ofxPanel gui;
 	void Changed_params(ofAbstractParameter &e);
@@ -338,6 +356,7 @@ public:
 	}
 
 private:
+	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
 	ofParameter<int> bpmBeatDuration;

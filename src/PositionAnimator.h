@@ -15,8 +15,8 @@ private:
 	//-
 
 private:
-	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
-	std::string path_Settings;
+	std::string path_GLOBAL_Folder;// top parent folder for all other subfolders
+	std::string path_Settings;// filename
 public:
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(string folder)
@@ -83,6 +83,9 @@ public:
 	{
 		autoSettings = b;
 	}
+	//--------------------------------------------------------------
+	void saveSettings();
+	void loadSettings();
 
 	//--------------------------------------------------------------
 	void setModeBrowse(bool b) {//to autotrig animator when changing curve type
@@ -170,7 +173,7 @@ public:
 	//		if (ENABLE_valueAnim)
 	//		{
 	//			//valueBack->set(valueEnd);
-	//			//valueAnim.setColor(valueEnd);
+	//			//floatAnimator.setColor(valueEnd);
 	//			//valueBack = (*float) valueEnd.get();
 	//		}
 	//	}
@@ -251,6 +254,7 @@ public:
 	void setNameLabel(string s)//to label gui panel
 	{
 		label = s;
+		path_Settings = s + ".xml";// use for file settings too
 	}
 
 public:
@@ -341,7 +345,7 @@ public:
 	void setDuration(float d) {
 		duration = d;
 	}
-	
+
 	ofParameter<glm::vec2> posStart, posEnd, pos;
 
 	void setPosition(glm::vec2 p) {
@@ -392,6 +396,9 @@ public:
 	void setDelayBeatMax(int maxBeats) {
 		bpmBeatDelay.setMax(maxBeats);
 	}
+	void setDurationBeatMax(int maxBeats) {
+		bpmBeatDuration.setMax(maxBeats);
+	}
 
 	//-
 
@@ -408,7 +415,7 @@ public:
 	ofParameter<bool> reset;
 	//ofParameter<bool> anim_loop;
 	//int repeatMode_anim_loop_PRE = 2;
-	
+
 	bool bDone = false;
 	float sizeCurvePlot = 100;
 
@@ -422,7 +429,7 @@ public:
 			return false;
 		}
 	}
-	
+
 private:
 	void Changed_AnimatorDone(ofxAnimatable::AnimationEvent &);
 

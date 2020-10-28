@@ -164,6 +164,20 @@ void PositionAnimator::setup()
 }
 
 //--------------------------------------------------------------
+void PositionAnimator::saveSettings()
+{
+	ofLogVerbose(__FUNCTION__);
+	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+}
+
+//--------------------------------------------------------------
+void PositionAnimator::loadSettings()
+{
+	ofLogVerbose(__FUNCTION__);
+	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+}
+
+//--------------------------------------------------------------
 void PositionAnimator::start()
 {
 	ofLogVerbose(__FUNCTION__);
@@ -313,7 +327,6 @@ void PositionAnimator::draw()
 		string str;
 
 		//curve type plot
-
 		bCustomPositionPlot = !SHOW_Gui;
 		if (bCustomPositionPlot) {
 			x = positionPlot.x;
@@ -397,11 +410,13 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 		if (!ENABLE_valueAnim && animatorPosition.isAnimating()) animatorPosition.pause();
 		else if (ENABLE_valueAnim && !animatorPosition.isAnimating()) animatorPosition.resume();
 	}
+
 	//tween duration
 	else if (name == "Duration")
 	{
 		animatorPosition.setDuration(duration.get());
 	}
+
 	//bpm engine
 	else if (name == bpmMode.getName())
 	{
@@ -514,7 +529,7 @@ void PositionAnimator::doReset()
 
 	bpmMode = true;
 	bpmBeatDuration = 16;
-	bpmBeatDelay = 8;
+	bpmBeatDelay = 0;
 	bpmSpeed = 120;
 
 	//posStart = glm::vec2(700, 400);

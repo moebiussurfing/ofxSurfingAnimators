@@ -138,9 +138,17 @@ void FloatAnimator::setup()
 	params.add(value);
 	params.add(valueStart);
 	params.add(valueEnd);
-	params.add(duration);
-	params.add(animDelay);
+
+	params_Time.setName("Time Engine");
+	params_Time.add(duration);
+	params_Time.add(animDelay);
+	params.add(params_Time);
+
+	//params.add(duration);
+	//params.add(animDelay);
+
 	params.add(params_Bpm);
+
 	params.add(curveType);
 	params.add(curveName);
 	params.add(repeatMode);
@@ -166,13 +174,13 @@ void FloatAnimator::setup()
 	//autoSettings = true;
 	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 
-	ofAddListener(valueAnim.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
+	ofAddListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
 
 	//-
 
 	//startup
 	repeatName = AnimRepeat_ToStr(repeatMode.get());
-	curveName = valueAnim.getCurveName(AnimCurve(curveType.get()));
+	curveName = floatAnimator.getCurveName(AnimCurve(curveType.get()));
 }
 
 //--------------------------------------------------------------
@@ -182,9 +190,9 @@ void FloatAnimator::start()
 
 	if (ENABLE_valueAnim)
 	{
-		valueAnim.reset(valueStart);
-		if (animDelay != 0.f) valueAnim.animateToAfterDelay(valueEnd, animDelay);
-		else valueAnim.animateTo(valueEnd);
+		floatAnimator.reset(valueStart);
+		if (animDelay != 0.f) floatAnimator.animateToAfterDelay(valueEnd, animDelay);
+		else floatAnimator.animateTo(valueEnd);
 	}
 }
 
@@ -195,7 +203,7 @@ void FloatAnimator::stop()
 
 	if (ENABLE_valueAnim)
 	{
-		valueAnim.reset(valueStart);
+		floatAnimator.reset(valueStart);
 		animProgress = 0;
 	}
 }
@@ -203,20 +211,20 @@ void FloatAnimator::stop()
 //--------------------------------------------------------------
 void FloatAnimator::update()
 {
-	valueAnim.update(dt);
+	floatAnimator.update(dt);
 
 	//if (valueBack != nullptr)
 	//{
 	//    if (ENABLE_valueAnim)
-	//        valueBack->set(valueAnim.getCurrentColor());
+	//        valueBack->set(floatAnimator.getCurrentColor());
 	//    else
 	//        valueBack->set(valueStart);
 	//}
 
-	if (valueAnim.isAnimating())
+	if (floatAnimator.isAnimating())
 	{
-		animProgress = valueAnim.getPercentDone() * 100;
-		value = valueAnim.val();
+		animProgress = floatAnimator.getPercentDone() * 100;
+		value = floatAnimator.val();
 	}
 }
 
@@ -240,7 +248,6 @@ void FloatAnimator::draw()
 		string str;
 
 		//curve type plot
-
 		bCustomPositionPlot = !SHOW_Gui;
 		if (bCustomPositionPlot) {
 			x = positionPlot.x;
@@ -248,16 +255,17 @@ void FloatAnimator::draw()
 		}
 		else {
 			x = gui.getPosition().x + 45;
-			y = gui.getPosition().y + gui.getHeight() + 15;
+			y = gui.getPosition().y + gui.getHeight() + pad;
 		}
 
-		valueAnim.drawCurve(x, y, size, true, ofColor(255));
+		//drawCurve(glm::vec2 (x,y));
+		floatAnimator.drawCurve(x, y, size, true, ofColor(255));
 
 		//vertical line time
 		float h;//display delay wait progress
-		if (valueAnim.isWaitingForAnimationToStart()) h = valueAnim.waitTimeLeftPercent() * size;
+		if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
 		else h = size;
-		px = ofMap(valueAnim.getPercentDone(), 0, 1, x, x + size, true);
+		px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
 		ofSetColor(ofColor::red, 200);
 		ofSetLineWidth(2.0);
 		ofDrawLine(px, y + size, px, y + size - h);
@@ -283,7 +291,7 @@ void FloatAnimator::draw()
 
 		//-
 
-		//stateColor = valueAnim.isAnimating();
+		//stateColor = floatAnimator.isAnimating();
 		//str = label;
 		////str = "4 COLOR";
 		//ofDrawBitmapStringHighlight(str, x + 5, y - 10,
@@ -295,12 +303,85 @@ void FloatAnimator::draw()
 }
 
 //--------------------------------------------------------------
+void FloatAnimator::drawCurve(glm::vec2 &p)
+{
+	//float sizeCurvePlot = 100;
+	//animatorPosition.drawCurve(p.x, p.y, sizeCurvePlot, true, ofColor(255));
+
+	if (SHOW_Plot)
+	{
+		ofPushStyle();
+		ofFill();
+
+		float x, y, px, w;
+		bool stateColor;
+		string str;
+
+		x = p.x;
+		y = p.y;
+
+		//curve type plot
+
+		//bCustomPositionPlot = !SHOW_Gui;
+		//if (bCustomPositionPlot) {
+		//	x = positionPlot.x;
+		//	y = positionPlot.y;
+		//}
+		//else {
+		//	x = gui.getPosition().x + 45;
+		//	y = gui.getPosition().y + gui.getHeight() + 15;
+		//}
+
+		floatAnimator.drawCurve(x, y, sizeCurvePlot, true, ofColor(255));
+
+		//vertical line time
+		float h;//display delay wait progress
+		if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * sizeCurvePlot;
+		else h = sizeCurvePlot;
+		px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + sizeCurvePlot, true);
+		ofSetColor(ofColor::red, 255);
+		ofSetLineWidth(2.0);
+		ofDrawLine(px, y + sizeCurvePlot, px, y + sizeCurvePlot - h);
+
+		////vertical bar value
+		//ofRectangle r;
+		//w = 12;
+		//x += sizeCurvePlot + 7;
+		//ofFill();
+		////bg
+		//ofSetColor(0, 200);
+		//r = ofRectangle(x, y + sizeCurvePlot, w, -sizeCurvePlot);
+		//float pad = 2;//make black outpsace
+		////r = ofRectangle(x - pad * 0.5f, y + sizeCurvePlot + pad * 0.5f, w + pad, -sizeCurvePlot - pad);
+		//ofDrawRectangle(r);
+		////bar
+		//ofSetColor(ofColor::red, 200);
+		//float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
+		//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(vb*sizeCurvePlot, 1));
+		////r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + sizeCurvePlot, w - pad, pad - MAX(value.get()*sizeCurvePlot, 1));
+		////r = ofRectangle(x, y + sizeCurvePlot, w, -MAX(value.get()*sizeCurvePlot, 1));
+		//ofDrawRectangle(r);
+
+		//-
+
+		//stateColor = animatorPosition.isAnimating();
+		//str = label;
+		////str = "4 COLOR";
+		//ofDrawBitmapStringHighlight(str, x + 5, y - 10,
+		//	stateColor ? ofColor::white : ofColor::black,
+		//	!stateColor ? ofColor::white : ofColor::black);
+
+		ofPopStyle();
+	}
+
+}
+//--------------------------------------------------------------
 FloatAnimator::~FloatAnimator()
 {
 	ofRemoveListener(params.parameterChangedE(), this, &FloatAnimator::Changed_params);
 	ofRemoveListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_params);
 
-	ofRemoveListener(valueAnim.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
+	ofRemoveListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
 	exit();
 }
 
@@ -308,6 +389,20 @@ FloatAnimator::~FloatAnimator()
 void FloatAnimator::exit()
 {
 	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::saveSettings()
+{
+	ofLogVerbose(__FUNCTION__);
+	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::loadSettings()
+{
+	ofLogVerbose(__FUNCTION__);
+	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
@@ -322,20 +417,20 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 
 	else if (name == "Enable Animator")
 	{
-		if (!ENABLE_valueAnim && valueAnim.isAnimating())
-			valueAnim.pause();
-		else if (ENABLE_valueAnim && !valueAnim.isAnimating())
-			valueAnim.resume();
+		if (!ENABLE_valueAnim && floatAnimator.isAnimating())
+			floatAnimator.pause();
+		else if (ENABLE_valueAnim && !floatAnimator.isAnimating())
+			floatAnimator.resume();
 	}
 
 	//tween duration
 	else if (name == "Duration")
 	{
-		valueAnim.setDuration(duration.get());
+		floatAnimator.setDuration(duration.get());
 	}
 
 	//bpm engine
-	else if (name == bpmBeatDuration.getName() || name == bpmSpeed.getName() || name == bpmMode.getName() || name == bpmBeatDelay.getName())
+	else if (name == bpmBeatDuration.getName() || name == bpmSpeed.getName() || name == bpmBeatDelay.getName())
 	{
 		if (bpmMode) {
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
@@ -344,19 +439,46 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
+	//bpm engine
+	else if (name == bpmMode.getName())
+	{
+		// exclude bpm or time info depends of time mode
+
+		params_Time.setSerializable(!bpmMode);
+		duration.setSerializable(!bpmMode);
+		animDelay.setSerializable(!bpmMode);
+
+		params_Bpm.setSerializable(bpmMode);
+		bpmSpeed.setSerializable(bpmMode);
+		bpmBeatDuration.setSerializable(bpmMode);
+		bpmBeatDelay.setSerializable(bpmMode);
+
+		if (bpmMode) {
+			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
+			duration = (_bar / 8.f) * (float)bpmBeatDuration;
+			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
+		}
+
+		// gui workflow
+		gui.getGroup(params.getName()).getGroup(params_Time.getName()).minimize();
+		gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).minimize();
+		if (!bpmMode) gui.getGroup(params.getName()).getGroup(params_Time.getName()).maximize();
+		else gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).maximize();
+	}
+
 	else if (name == "Curve Type")
 	{
-		valueAnim.setCurve(AnimCurve(curveType.get()));
-		curveName = valueAnim.getCurveName(AnimCurve(curveType.get()));
+		floatAnimator.setCurve(AnimCurve(curveType.get()));
+		curveName = floatAnimator.getCurveName(AnimCurve(curveType.get()));
 	}
 	else if (name == "Repeat Mode")
 	{
 		repeatName = AnimRepeat_ToStr(repeatMode.get());
-		valueAnim.setRepeatType(AnimRepeat(repeatMode.get()));
+		floatAnimator.setRepeatType(AnimRepeat(repeatMode.get()));
 	}
 	else if (name == "Times")
 	{
-		valueAnim.setRepeatTimes(repeatTimes.get());
+		floatAnimator.setRepeatTimes(repeatTimes.get());
 	}
 	//else if (name == "Loop")
 	//{
@@ -365,13 +487,13 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 	//		repeatMode_anim_loop_PRE = repeatMode;
 	//		repeatMode = 2;
 	//		repeatName = AnimRepeat_ToStr(repeatMode.get());
-	//		valueAnim.setRepeatType(AnimRepeat(repeatMode.get()));
+	//		floatAnimator.setRepeatType(AnimRepeat(repeatMode.get()));
 	//	}
 	//	else
 	//	{
 	//		repeatMode = repeatMode_anim_loop_PRE;
 	//		repeatName = AnimRepeat_ToStr(repeatMode.get());
-	//		valueAnim.setRepeatType(AnimRepeat(repeatMode.get()));
+	//		floatAnimator.setRepeatType(AnimRepeat(repeatMode.get()));
 	//	}
 	//}
 	else if (name == "Reset")
@@ -380,7 +502,14 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 		{
 			reset = false;
 
-			repeatMode = 0;
+			// standard
+			//bpmBeatDelay = 0;
+			//repeatMode = 0;
+
+			// 
+			bpmBeatDelay = 2;
+			repeatMode = 3;// back and forth once
+
 			curveType = 3;
 			repeatTimes = 1;
 
@@ -388,7 +517,6 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 			duration = 1.f;
 			bpmMode = true;
 			bpmBeatDuration = 4;
-			bpmBeatDelay = 0;
 
 			valueStart = 0.f;
 			valueEnd = 1.f;
@@ -401,16 +529,16 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 	}
 	else if (name == "Value Start")
 	{
-		//valueAnim.setColor(valueStart);
-		//if (ENABLE_valueAnim && valueAnim.isAnimating())
+		//floatAnimator.setColor(valueStart);
+		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
 		//    start();
 		//}
 	}
 	else if (name == "Value End")
 	{
-		//valueAnim.setColor(valueEnd);
-		//if (ENABLE_valueAnim && valueAnim.isAnimating())
+		//floatAnimator.setColor(valueEnd);
+		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
 		//    start();
 		//}
