@@ -5,6 +5,7 @@
 #include "ofxAnimatableFloat.h"
 #include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
+#include "ofxSurfing_ofxGui.h"
 
 class FloatAnimator
 {

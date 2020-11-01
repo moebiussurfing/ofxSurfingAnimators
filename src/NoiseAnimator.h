@@ -15,6 +15,7 @@
 #endif
 #include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
+#include "ofxSurfing_ofxGui.h"
 #include "ofxBiquadFilter.h"
 
 class NoiseAnimator

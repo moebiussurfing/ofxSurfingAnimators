@@ -5,6 +5,7 @@
 #include "ofxAnimatableFloat.h"
 #include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
+#include "ofxSurfing_ofxGui.h"
 #include "ofxAnimatableOfPoint.h"
 
 class PositionAnimator
@@ -389,7 +390,9 @@ private:
 	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
+public:
 	ofParameter<int> bpmBeatDuration;
+private:
 	ofParameter<int> bpmBeatDelay;
 
 public:
@@ -403,8 +406,9 @@ public:
 	//-
 
 	ofParameter<bool> ModeBrowse;
-
+public:
 	ofParameter<float> duration;
+private:
 	ofParameter<float> animDelay;
 	ofParameter<int> repeatMode;
 	ofParameter<string> repeatName;
