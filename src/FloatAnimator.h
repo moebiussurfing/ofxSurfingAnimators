@@ -254,6 +254,7 @@ public:
 	void setNameLabel(string s)//to label gui panel
 	{
 		label = s;
+		path_Settings = label + ".xml";
 	}
 
 public:
