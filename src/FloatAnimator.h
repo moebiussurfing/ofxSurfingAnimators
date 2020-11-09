@@ -345,6 +345,13 @@ private:
 	//-
 
 	//bpm engine
+public:
+	void setDelayBeatMax(int maxBeats) {
+		bpmBeatDelay.setMax(maxBeats);
+	}
+	void setDurationBeatMax(int maxBeats) {
+		bpmBeatDuration.setMax(maxBeats);
+	}
 
 public:
 	void setBpm(float _bpm) {
