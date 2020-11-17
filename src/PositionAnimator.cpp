@@ -202,6 +202,8 @@ void PositionAnimator::start()
 		//if (animDelay != 0.f) animatorPosition.animateToAfterDelay(valueEnd, animDelay);
 		//else animatorPosition.animateTo(valueEnd);
 	}
+
+	bDone = false;
 }
 
 //--------------------------------------------------------------
