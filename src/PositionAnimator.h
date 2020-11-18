@@ -335,8 +335,9 @@ private:
 	//ofParameter<glm::vec2> *position_BACK;
 	glm::vec2 *position_BACK;
 
-	ofxPanel gui;
 	void Changed_params(ofAbstractParameter &e);
+public:
+	ofxPanel gui;
 
 	//--
 

@@ -339,8 +339,9 @@ private:
 
 	ofxAnimatableFloat floatAnimator;
 
-	ofxPanel gui;
 	void Changed_params(ofAbstractParameter &e);
+public:
+	ofxPanel gui;
 
 	//-
 
