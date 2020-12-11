@@ -16,10 +16,10 @@ with several classes to faster integration into OF Apps:
    * NoiseAnimator.h (Many Noise settings + Filters)
    * ColorAnimator.h
    * ToggleAnimator.h
-* Added GUI: Setters for from/to, time duration and pre pause, curve types...etc. 
-* Handle Settings.
-* Bpm based time scale.
-* Plotting curves.
+* Added GUI: Setters for start/end, time duration and pre pause, curve types, loop modes, repeats...etc. 
+* Handle Settings. Auto store-recall.
+* BPM based time scale.
+* Plotting realtime value curves.
 * Curve Tweens drawing.
 
 ## Dependencies
