@@ -6,11 +6,11 @@
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
 * Classes:
-   * ColorAnimator.h
-   * FadeAnimator.h
    * FloatAnimator.h
-   * NoiseAnimator.h
+   * FadeAnimator.h (ADSR envelope)
    * PositionAnimator.h
+   * NoiseAnimator.h (Several noise settings + filgers)
+   * ColorAnimator.h
    * ToggleAnimator.h
 * Added GUI.
 * Handle Settings.
@@ -22,7 +22,6 @@
 ofxAnimatable  
 ofxSurfingHelpers  
 ofxHistoryPlot  
-ofxSurfingHelpers  
 ofxGui  
 
 * Bundled into ```OF_ADDON/libs```. To filter Noise:  
