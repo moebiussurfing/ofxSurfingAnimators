@@ -2,3 +2,4 @@ ofxAnimatable
 ofxHistoryPlot
 ofxSurfingAnimators
 ofxSurfingHelpers
+ofxGui
