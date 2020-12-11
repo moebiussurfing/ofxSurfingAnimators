@@ -1,5 +1,9 @@
 # ofxSurfingAnimators
 
+**openFrameworks** helper addon for ```ofxAnimatable``` from **@armadillu** (https://github.com/armadillu/ofxAnimatable),
+with several classes to faster integration into OF Apps:  
+*ColorAnimator, FadeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator and ToggleAnimator*.
+
 ## Screenshot
 ![image](/readme_images/Capture.PNG?raw=true "image")
 
@@ -14,17 +18,17 @@
    * ToggleAnimator.h
 * Added GUI.
 * Handle Settings.
-* Bpm time scale.
+* Bpm based time scale.
 * Plotting curves.
-* Curve tween drawing.
+* Curve Tweens drawing.
 
 ## Dependencies
-ofxAnimatable  
-ofxSurfingHelpers  
-ofxHistoryPlot  
+ofxAnimatable (https://github.com/armadillu/ofxAnimatable)  
+ofxHistoryPlot (https://github.com/moebiussurfing/ofxHistoryPlot)  
+ofxSurfingHelpers (https://github.com/moebiussurfing/ofxSurfingHelpers)  
 ofxGui  
 
-* Bundled into ```OF_ADDON/libs```. To filter Noise:  
+* Bundled into ```OF_ADDON/libs```. To Filter Noise point:  
 ofxBiquadFilter  
 ofxOneEuroFilter  
 
