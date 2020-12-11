@@ -7,6 +7,8 @@
 #include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
 
+//adsr envelope class
+
 class FadeAnimator
 {
 

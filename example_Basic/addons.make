@@ -1,0 +1,5 @@
+ofxGui
+ofxAnimatable
+ofxHistoryPlot
+ofxSurfingAnimators
+ofxSurfingHelpers

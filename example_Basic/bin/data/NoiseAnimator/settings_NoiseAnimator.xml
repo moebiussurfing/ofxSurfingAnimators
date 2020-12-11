@@ -1,0 +1,43 @@
+{
+    "Noise_Animator": {
+        "Enable_Noise_Animator": "1",
+        "LOW_PASS_FILTERS": {
+            "FILTER_MODULATOR": "0",
+            "FILTER_POINT": "0",
+            "LPF_Modulator": "1",
+            "LPF_Point": "0.5"
+        },
+        "MODE_MODULATOR_Noise": "1",
+        "MODULATOR": {
+            "BPM_ENGINE": {
+                "Attack_Beat": "2",
+                "BPM": "120",
+                "BPM_Mode": "1",
+                "PreDelay_Beat": "1",
+                "Release_Beat": "2",
+                "Sustain_Beat": "4"
+            },
+            "Curve_Type": "16",
+            "Max": "1",
+            "Min": "0",
+            "TIMERS": {
+                "Attack": "0.5",
+                "PreDelay": "0.25",
+                "Release": "0.5",
+                "Sustain": "1"
+            }
+        },
+        "X": {
+            "Deep": "3",
+            "ENABLE": "1",
+            "Power": "100",
+            "Speed": "1"
+        },
+        "Y": {
+            "Deep": "1",
+            "ENABLE": "1",
+            "Power": "66",
+            "Speed": "0.5"
+        }
+    }
+}

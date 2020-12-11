@@ -57,7 +57,7 @@ void PositionAnimator::previousCurve()
 //--------------------------------------------------------------
 void PositionAnimator::setup()
 {
-	ofxSurfingHelpers::setThemeDark_ofxGui;
+	//ofxSurfingHelpers::setThemeDark_ofxGui;
 
 	ENABLE_valueAnim.set("Enable Animator", true);
 
