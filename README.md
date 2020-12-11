@@ -1,7 +1,7 @@
 # ofxSurfingAnimators
 
 ## Screenshot
-![image](/readme_images/Capture.JPG?raw=true "image")
+![image](/readme_images/Capture.PNG?raw=true "image")
 
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
