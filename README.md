@@ -11,12 +11,12 @@ with several classes to faster integration into OF Apps:
 **openFrameworks** helper addon for ```ofxAnimatable```:
 * Classes:
    * FloatAnimator.h
-   * FadeAnimator.h (ADSR envelope)
+   * FadeAnimator.h (ADSR envelope for a Float)
    * PositionAnimator.h
-   * NoiseAnimator.h (Several noise settings + filgers)
+   * NoiseAnimator.h (Many Noise settings + Filters)
    * ColorAnimator.h
    * ToggleAnimator.h
-* Added GUI.
+* Added GUI: Setters for from/to, time duration and pre pause, curve types...etc. 
 * Handle Settings.
 * Bpm based time scale.
 * Plotting curves.
