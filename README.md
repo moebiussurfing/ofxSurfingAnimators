@@ -45,7 +45,9 @@ FloatAnimator animatorFloat;
 ```.c++
 animatorFloat.setup();
 animatorFloat.update();
-animatorFloat.draw();
+animatorFloat.draw();//gui
+
+float value = animatorFloat.getValue());
 
 animatorFloat.start();
 animatorFloat.stop();
