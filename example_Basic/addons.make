@@ -1,4 +1,3 @@
-ofxGui
 ofxAnimatable
 ofxHistoryPlot
 ofxSurfingAnimators
