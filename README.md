@@ -35,6 +35,22 @@ ofxOneEuroFilter
 ## Usage
 - Look the example.
 
+### ofApp.h
+```.c++
+#include "FloatAnimator.h"
+FloatAnimator animatorFloat;
+```
+
+### ofApp.cpp
+```.c++
+animatorFloat.setup();
+animatorFloat.update();
+animatorFloat.draw();
+
+animatorFloat.start();
+animatorFloat.stop();
+```
+
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
 - **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
