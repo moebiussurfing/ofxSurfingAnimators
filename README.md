@@ -47,7 +47,7 @@ animatorFloat.setup();
 animatorFloat.update();
 animatorFloat.draw();//gui
 
-float value = animatorFloat.getValue());
+float value = animatorFloat.getValue();
 
 animatorFloat.start();
 animatorFloat.stop();
