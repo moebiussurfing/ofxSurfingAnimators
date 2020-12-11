@@ -25,7 +25,7 @@ ofxHistoryPlot
 ofxSurfingHelpers  
 ofxGui  
 
-* Bundled into ```OF_ADDON/libs```
+* Bundled into ```OF_ADDON/libs```. To filter Noise:  
 ofxBiquadFilter  
 ofxOneEuroFilter  
 
