@@ -44,7 +44,7 @@ public:
 	void nextCurve();
 	void previousCurve();
 
-	float sizeCurvePlot = 100;
+	float size = 100;
 	void drawCurve(glm::vec2 &p);
 
 
@@ -239,7 +239,7 @@ public:
 	glm::vec2 getGuiShape()
 	{
 		ofRectangle r = gui.getShape();
-		glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + sizeCurvePlot + pad + 15);// lastone is text line height 
+		glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
 		return _shape;
 	}
 	public:

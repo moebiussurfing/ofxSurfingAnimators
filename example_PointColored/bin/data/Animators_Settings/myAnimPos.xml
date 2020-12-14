@@ -1,0 +1,17 @@
+{
+    "myAnimPos": {
+        "BPM_Engine": {
+            "BPM": "46.7097",
+            "BPM_Mode": "1",
+            "Duration_Beats": "16",
+            "PreDelay_Beats": "4"
+        },
+        "Curve_Type": "3",
+        "Enable_Animator": "1",
+        "From": "0, 0",
+        "Position": "300.675, 225.356",
+        "Repeat_Mode": "0",
+        "Times": "1",
+        "To": "300.675, 225.356"
+    }
+}

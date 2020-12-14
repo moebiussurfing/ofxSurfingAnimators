@@ -9,6 +9,10 @@ ColorAnimator::ColorAnimator()
 	setFps(60);
 	SHOW_gui = true;
 	guiPos = glm::vec2(500, 500);
+
+	path_GLOBAL_Folder = "ColorAnimator";
+	path_Settings = "ColorAnimator_Settings.xml";
+	autoSettings = false;
 }
 
 //--------------------------------------------------------------
@@ -103,8 +107,8 @@ void ColorAnimator::setup()
 
 	ofAddListener(params.parameterChangedE(), this, &ColorAnimator::Changed_params);
 
-	path = "settings_ColorAnimator.xml";
-	if (autoSettings) load_GroupSettings(params, path);
+	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+
 
 	//-
 
@@ -176,11 +180,20 @@ void ColorAnimator::draw()
 			//curve plot
 			colorAnim.drawCurve(x, y, size, true, ofColor(255));
 
-			//vertical line
-			px = ofMap(colorAnim.getPercentDone(), 0, 1, x, x + size);
-			ofSetColor(ofColor::red, 200);
+			////vertical line
+			//px = ofMap(colorAnim.getPercentDone(), 0, 1, x, x + size);
+			//ofSetColor(ofColor::red, 200);
+			//ofSetLineWidth(2.0);
+			//ofDrawLine(px, y, px, y + size);
+
+			//vertical line time
+			float h;//display delay wait progress
+			if (colorAnim.isWaitingForAnimationToStart()) h = colorAnim.waitTimeLeftPercent() * size;
+			else h = size;
+			px = ofMap(colorAnim.getPercentDone(), 0, 1, x, x + size, true);
+			ofSetColor(ofColor::red, 255);
 			ofSetLineWidth(2.0);
-			ofDrawLine(px, y, px, y + size);
+			ofDrawLine(px, y + size, px, y + size- h);
 
 			//-
 
@@ -222,31 +235,32 @@ void ColorAnimator::draw()
 ColorAnimator::~ColorAnimator()
 {
 	ofRemoveListener(colorAnim.animFinished, this, &ColorAnimator::onAnim_Done);
+	exit();
 }
 
 //--------------------------------------------------------------
 void ColorAnimator::exit()
 {
-	if (autoSettings) save_GroupSettings(params, path);
+	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
-
-//--------------------------------------------------------------
-void ColorAnimator::load_GroupSettings(ofParameterGroup &g, string path)
-{
-	ofLogNotice(__FUNCTION__) << "load_GroupSettings " << path;
-	ofXml settings;
-	settings.load(path);
-	ofDeserialize(settings, g);
-}
-
-//--------------------------------------------------------------
-void ColorAnimator::save_GroupSettings(ofParameterGroup &g, string path)
-{
-	ofLogNotice(__FUNCTION__) << "XML_save_AppSettings " << path;
-	ofXml settings;
-	ofSerialize(settings, g);
-	settings.save(path);
-}
+//
+////--------------------------------------------------------------
+//void ColorAnimator::load_GroupSettings(ofParameterGroup &g, string path)
+//{
+//	ofLogNotice(__FUNCTION__) << "load_GroupSettings " << path;
+//	ofXml settings;
+//	settings.load(path);
+//	ofDeserialize(settings, g);
+//}
+//
+////--------------------------------------------------------------
+//void ColorAnimator::save_GroupSettings(ofParameterGroup &g, string path)
+//{
+//	ofLogNotice(__FUNCTION__) << "XML_save_AppSettings " << path;
+//	ofXml settings;
+//	ofSerialize(settings, g);
+//	settings.save(path);
+//}
 
 //--------------------------------------------------------------
 void ColorAnimator::Changed_params(ofAbstractParameter &e)

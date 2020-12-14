@@ -4,7 +4,7 @@
 PositionAnimator::PositionAnimator()
 {
 	path_GLOBAL_Folder = "PositionAnimator";
-	path_Settings = "settings_PositionAnimator.xml";
+	path_Settings = "PositionAnimator_Settings.xml";
 	autoSettings = false;
 
 	//ofSetLogLevel(OF_LOG_NOTICE);
@@ -92,7 +92,7 @@ void PositionAnimator::setup()
 	//bpm engine
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
-	bpmBeatDuration.set("Duration Beats", 4, 1, 8);
+	bpmBeatDuration.set("Duration Beats", 4, 1, 16);
 	bpmBeatDelay.set("PreDelay Beats", 2, 0, 8);
 	params_Bpm.setName("BPM Engine");
 
@@ -120,9 +120,10 @@ void PositionAnimator::setup()
 	//settings
 	params.setName(label);
 	params.add(ENABLE_valueAnim);
-	//params.add(pos);
-	//params.add(posStart);
-	//params.add(posEnd);
+
+	params.add(pos);
+	params.add(posStart);
+	params.add(posEnd);
 
 	params_Time.setName("Time Engine");
 	params_Time.add(duration);
@@ -531,10 +532,11 @@ void PositionAnimator::doReset()
 
 	bpmMode = true;
 	bpmBeatDuration = 16;
-	bpmBeatDelay = 0;
+	bpmBeatDelay = 2;
 	bpmSpeed = 120;
 
-	//posStart = glm::vec2(700, 400);
-	//posEnd = glm::vec2(900, 600);
+	pos = glm::vec2(0, 0);
+	posStart = glm::vec2(0, 0);
+	posEnd = glm::vec2(0, 0);
 	pos = posStart;
 }

@@ -1,0 +1,19 @@
+{
+    "myAnimColor": {
+        "BPM_Engine": {
+            "BPM": "58.8922",
+            "BPM_Mode": "1",
+            "Beat_Delay": "1",
+            "Beat_Duration": "1"
+        },
+        "Color": "255, 0, 26, 255",
+        "Color_End": "255, 0, 26, 255",
+        "Color_Start": "0, 255, 39, 255",
+        "Curve": "12",
+        "Delay": "1.01881",
+        "Duration": "1.01881",
+        "ENABLE_COLOR": "1",
+        "Repeat": "4",
+        "Times": "3"
+    }
+}

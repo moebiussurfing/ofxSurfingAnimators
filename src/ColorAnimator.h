@@ -1,160 +1,179 @@
 #pragma once
-
 #include "ofMain.h"
+
 #include "ofxAnimatableOfColor.h"
 #include "ofxGui.h"
-//#include "ofxSurfingHelpers.h"
+#include "ofxSurfingHelpers.h"
 
 class ColorAnimator
 {
 
 public:
 
-    ColorAnimator();
-    ~ColorAnimator();
+	ColorAnimator();
+	~ColorAnimator();
 
-    void setup();
-    void update();
-    void update(float _dt)
-    {
-        dt = _dt;
-        update();
-    }
-    void draw();
-    void exit();
+	void setup();
+	void update();
+	void update(float _dt)
+	{
+		dt = _dt;
+		update();
+	}
+	void draw();
+	void exit();
 
-    void start();
-    void stop();
+	void start();
+	void stop();
 
-    void nextCurve();
-    void previousCurve();
+	void nextCurve();
+	void previousCurve();
 
-    //--------------------------------------------------------------
-    void setColor_TARGET(ofColor &c)
-    {
-        color_BACK = &c;
-    }
+	//--------------------------------------------------------------
+	void setColor_TARGET(ofColor &c)
+	{
+		color_BACK = &c;
+	}
 
-    //--------------------------------------------------------------
-    void setFps(float _fps)
-    {
-        dt = 1.0f / _fps;
-    }
+	//--------------------------------------------------------------
+	void setFps(float _fps)
+	{
+		dt = 1.0f / _fps;
+	}
 
-    //--------------------------------------------------------------
-    void setVisible(bool b)
-    {
-        SHOW_gui = b;
-    }
+	//--------------------------------------------------------------
+	void setVisible(bool b)
+	{
+		SHOW_gui = b;
+	}
 
-    //--------------------------------------------------------------
-    void doReset()
-    {
-        reset = true;
-    }
+	//--------------------------------------------------------------
+	void doReset()
+	{
+		reset = true;
+	}
 
-    //--------------------------------------------------------------
-    void setEnabled(bool b)
-    {
-        ENABLE_ColorAnims = b;
-    }
+	//--------------------------------------------------------------
+	void setEnabled(bool b)
+	{
+		ENABLE_ColorAnims = b;
+	}
 
-    //--------------------------------------------------------------
-    void setLooped(bool b)
-    {
-        anim_loop = b;
-    }
 
-    //--------------------------------------------------------------
-    void setMinimized(bool b)
-    {
-        if (b)
-        {
-            gui.minimizeAll();
-        }
-        else
-        {
-            gui.maximizeAll();
-        }
-    }
+	//--------------------------------------------------------------
+	void setAutoSaveLoad(bool b)
+	{
+		autoSettings = b;
+	}
 
-    //--------------------------------------------------------------
-    bool isMinimized()
-    {
-        return gui.isMinimized();
-    }
+private:
+	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
+	std::string path_Settings;
+public:
+	//--------------------------------------------------------------
+	void setPath_GlobalFolder(string folder)
+	{
+		ofLogNotice(__FUNCTION__) << folder;
+		path_GLOBAL_Folder = folder;
+		ofxSurfingHelpers::CheckFolder(folder);
+	}
 
-    //--------------------------------------------------------------
-    void disableHeader()
-    {
-        gui.disableHeader();
-    }
+	//--------------------------------------------------------------
+	void setLooped(bool b)
+	{
+		anim_loop = b;
+	}
 
-    //--------------------------------------------------------------
-    bool isAnimating()
-    {
-        return colorAnim.isAnimating();
-    }
+	//--------------------------------------------------------------
+	void setMinimized(bool b)
+	{
+		if (b)
+		{
+			gui.minimizeAll();
+		}
+		else
+		{
+			gui.maximizeAll();
+		}
+	}
 
-    //--------------------------------------------------------------
-    bool isEnabled()
-    {
-        return ENABLE_ColorAnims;
-    }
+	//--------------------------------------------------------------
+	bool isMinimized()
+	{
+		return gui.isMinimized();
+	}
 
-    //--------------------------------------------------------------
-    void setColor_Start()
-    {
-        if (color_BACK != nullptr)
-        {
-            if (ENABLE_ColorAnims) color_BACK->set(colorStart);
-        }
-    }
+	//--------------------------------------------------------------
+	void disableHeader()
+	{
+		gui.disableHeader();
+	}
 
-    //--------------------------------------------------------------
-    void setColor_End()
-    {
-        if (color_BACK != nullptr)
-        {
-            if (ENABLE_ColorAnims)
-            {
-                color_BACK->set(colorEnd);
-                colorAnim.setColor(colorEnd);
-            }
-        }
-    }
+	//--------------------------------------------------------------
+	bool isAnimating()
+	{
+		return colorAnim.isAnimating();
+	}
 
-    //--------------------------------------------------------------
-    void refresh_Labels()
-    {
-        repeatName = AnimRepeat_ToStr(repeatMode.get());
-        curveName = colorAnim.getCurveName(AnimCurve(curveType.get()));
-    }
+	//--------------------------------------------------------------
+	bool isEnabled()
+	{
+		return ENABLE_ColorAnims;
+	}
 
-    //-
+	//--------------------------------------------------------------
+	void setColor_Start()
+	{
+		if (color_BACK != nullptr)
+		{
+			if (ENABLE_ColorAnims) color_BACK->set(colorStart);
+		}
+	}
 
-    //--------------------------------------------------------------
-    float getDelay()
-    {
-        return animDelay;
-        //return (animDelay / globalTimeScale);
-    }
+	//--------------------------------------------------------------
+	void setColor_End()
+	{
+		if (color_BACK != nullptr)
+		{
+			if (ENABLE_ColorAnims)
+			{
+				color_BACK->set(colorEnd);
+				colorAnim.setColor(colorEnd);
+			}
+		}
+	}
 
-    //--------------------------------------------------------------
-    float getDuration()
-    {
-        return duration;
-        //return (duration / globalTimeScale);
-    }
+	//--------------------------------------------------------------
+	void refresh_Labels()
+	{
+		repeatName = AnimRepeat_ToStr(repeatMode.get());
+		curveName = colorAnim.getCurveName(AnimCurve(curveType.get()));
+	}
 
-    //-
+	//-
 
-    //--------------------------------------------------------------
-    void setGuiPosition(glm::vec2 _p)
-    {
-        guiPos = _p;
-        gui.setPosition(guiPos.x, guiPos.y);
-    }
+	//--------------------------------------------------------------
+	float getDelay()
+	{
+		return animDelay;
+		//return (animDelay / globalTimeScale);
+	}
+
+	//--------------------------------------------------------------
+	float getDuration()
+	{
+		return duration;
+		//return (duration / globalTimeScale);
+	}
+
+	//-
+
+	//--------------------------------------------------------------
+	void setGuiPosition(glm::vec2 _p)
+	{
+		guiPos = _p;
+		gui.setPosition(guiPos.x, guiPos.y);
+	}
 
 	//--------------------------------------------------------------
 	glm::vec2 getGuiPosition()
@@ -166,77 +185,79 @@ public:
 	void setNameLabel(string s)
 	{
 		label = s;
+		path_Settings = label + ".xml";
 	}
 
-    ofParameterGroup params;
-	string label = "COLOR";
+	ofParameterGroup params;
+	string label = "Color Animator";
 
-    //TODO
-    //--------------------------------------------------------------
-    ofParameterGroup getParameterGroup()
-    {
-        return params;
-    }
+	//TODO
+	//--------------------------------------------------------------
+	ofParameterGroup getParameterGroup()
+	{
+		return params;
+	}
 
-    bool autoSettings = false;
+	bool autoSettings = false;
 
-    //--------------------------------------------------------------
-    void AutoSettings(bool b)
-    {
-        autoSettings = b;
-    }
 
-    //bool SHOW_Plot = true;
+	//bool SHOW_Plot = true;
 
-    //--------------------------------------------------------------
-    void setVisible_Plot(bool b)
-    {
-        SHOW_Plot = b;
-    }
+	//--------------------------------------------------------------
+	void setVisible_Plot(bool b)
+	{
+		SHOW_Plot = b;
+	}
 
-    ////--------------------------------------------------------------
-    //void setGlobalTimeScale(float timeScale)
-    //{
-    //    globalTimeScale = timeScale;
-    //}
+	////--------------------------------------------------------------
+	//void setGlobalTimeScale(float timeScale)
+	//{
+	//    globalTimeScale = timeScale;
+	//}
 
-    //tricky workaround to check if object class is created
-    bool isInstantiated()
-    {
-        return doneInstantiated;
-    }
+	//tricky workaround to check if object class is created
+	bool isInstantiated()
+	{
+		return doneInstantiated;
+	}
 
-    ofParameter<bool> ENABLE_ColorAnims;
+	ofParameter<bool> ENABLE_ColorAnims;
 
-    //---
+	//---
 
-    ofParameter<ofColor> colorCurrent;
-    ofParameter<ofColor> colorStart;
-    ofParameter<ofColor> colorEnd;
-	
+public:
+	ofColor getColorCurrent() {
+		return colorCurrent;
+	}
+
+private:
+	ofParameter<ofColor> colorCurrent;
+	ofParameter<ofColor> colorStart;
+	ofParameter<ofColor> colorEnd;
+
 	ofParameter<bool> SHOW_Plot{ "Show Plots", true };
 
 private:
 
-    ofColor *color_BACK;
-    ofxAnimatableOfColor colorAnim;
+	ofColor *color_BACK;
+	ofxAnimatableOfColor colorAnim;
 
-    //tricky workaround to check if object class is created
-    bool doneInstantiated = false;
+	//tricky workaround to check if object class is created
+	bool doneInstantiated = false;
 
-    //float globalTimeScale = 1.0f;
+	//float globalTimeScale = 1.0f;
 
-    void load_GroupSettings(ofParameterGroup &g, string path);
-    void save_GroupSettings(ofParameterGroup &g, string path);
+	//void load_GroupSettings(ofParameterGroup &g, string path);
+	//void save_GroupSettings(ofParameterGroup &g, string path);
 
-    ofxPanel gui;
-    void Changed_params(ofAbstractParameter &e);
+	ofxPanel gui;
+	void Changed_params(ofAbstractParameter &e);
 
-    ofParameter<bool> anim_loop;
-    int repeatMode_anim_loop_PRE = 2;
-    
+	ofParameter<bool> anim_loop;
+	int repeatMode_anim_loop_PRE = 2;
+
 	ofParameter<float> duration;
-    ofParameter<float> animDelay;
+	ofParameter<float> animDelay;
 
 	//-
 
@@ -255,57 +276,57 @@ private:
 
 	//-
 
-    ofParameter<int> repeatMode;
-    ofParameter<string> repeatName;
-    ofParameter<int> repeatTimes;
-    ofParameter<int> curveType;
-    ofParameter<string> curveName;
-    ofParameter<int> animProgress;
-    ofParameter<bool> reset;
+	ofParameter<int> repeatMode;
+	ofParameter<string> repeatName;
+	ofParameter<int> repeatTimes;
+	ofParameter<int> curveType;
+	ofParameter<string> curveName;
+	ofParameter<int> animProgress;
+	ofParameter<bool> reset;
 
-    void onAnim_Done(ofxAnimatable::AnimationEvent &);
+	void onAnim_Done(ofxAnimatable::AnimationEvent &);
 
-    std::string AnimRepeat_ToStr(int n)
-    {
-        std::string s("unknown");
-        switch (n)
-        {
-            case 0:
-            {
-                s = "PLAY ONCE";
-            }
-                break;
-            case 1:
-            {
-                s = "LOOP";
-            }
-                break;
-            case 2:
-            {
-                s = "LOOP BACK & FORTH";
-            }
-                break;
-            case 3:
-            {
-                s = "BACK & FORTH ONCE";
-            }
-                break;
-            case 4:
-            {
-                s = "PLAY N TIMES";
-            }
-                break;
-            case 5:
-            {
-                s = "BACK & FORTH N TIMES";
-            }
-                break;
-        }
-        return s;
-    }
+	std::string AnimRepeat_ToStr(int n)
+	{
+		std::string s("unknown");
+		switch (n)
+		{
+		case 0:
+		{
+			s = "PLAY ONCE";
+		}
+		break;
+		case 1:
+		{
+			s = "LOOP";
+		}
+		break;
+		case 2:
+		{
+			s = "LOOP BACK & FORTH";
+		}
+		break;
+		case 3:
+		{
+			s = "BACK & FORTH ONCE";
+		}
+		break;
+		case 4:
+		{
+			s = "PLAY N TIMES";
+		}
+		break;
+		case 5:
+		{
+			s = "BACK & FORTH N TIMES";
+		}
+		break;
+		}
+		return s;
+	}
 
-    float dt;
-    ofParameter<bool> SHOW_gui{"SHOW_gui", true};
-    glm::vec2 guiPos;
-    string path;
+	float dt;
+	ofParameter<bool> SHOW_gui{ "SHOW_gui", true };
+	glm::vec2 guiPos;
+	string path;
 };
