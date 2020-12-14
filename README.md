@@ -2,7 +2,7 @@
 
 **openFrameworks** helper addon for ```ofxAnimatable``` from **@armadillu**  
 (https://github.com/armadillu/ofxAnimatable)  
-Some typical classes to faster integration into your OF Apps:  
+Some classes to faster integration into your OF Apps:  
 *ColorAnimator, FadeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
 ## Screenshot
