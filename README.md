@@ -38,7 +38,7 @@ Setters for start/end, time mode, duration and pre pause, curve tween types, loo
 (https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * ofxGui  
 
-* Bundled into ```OF_ADDON/libs```. No need to add to the ```Project Generator```! 
+Bundled into ```OF_ADDON/libs```. No need to add to the ```Project Generator```! 
 (To Filter Noise point)  
 **ofxBiquadFilter**  
 (https://github.com/dzlonline/ofxBiquadFilter)
