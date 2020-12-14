@@ -8,24 +8,24 @@ Some typical classes to faster integration into your OF Apps:
 ## Screenshot
 /example_Basic (FloatAnimator + NoiseAnimator)
 ![image](/readme_images/Capture.PNG?raw=true "image")  
-/example_Envelope (FadeAnimator ADSR)
+/example_Envelope (FadeAnimator ASR)
 ![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
 * Classes:
    * FloatAnimator.h
-   * FadeAnimator.h (ADSR envelope for a Float)
+   * FadeAnimator.h (ASR envelope for a Float)
    * PositionAnimator.h
-   * NoiseAnimator.h (Many Noise settings + Filters)
+   * NoiseAnimator.h (ASR Modulated Noise 2D point + Filters)
    * ColorAnimator.h
    * ToggleAnimator.h
 * Added GUI:  
 Setters for start/end, time duration and pre pause, curve types, loop modes, repeats...etc. 
-* Handle Settings. Auto store-recall.
-* Musical BPM based time or absolute scale.
+* Handle Settings: Auto store-recall.
+* Musical BPM based or absolute time scale.
 * Plotting realtime value curves.
-* Curve Tweens drawing.
+* Curve Tweens drawing preview.
 
 ## Dependencies
 ofxAnimatable (https://github.com/armadillu/ofxAnimatable)  
@@ -33,12 +33,12 @@ ofxHistoryPlot (https://github.com/moebiussurfing/ofxHistoryPlot)
 ofxSurfingHelpers (https://github.com/moebiussurfing/ofxSurfingHelpers)  
 ofxGui  
 
-* Bundled into ```OF_ADDON/libs```. To Filter Noise point:  
+* Bundled into ```OF_ADDON/libs```. (To Filter Noise point):  
 ofxBiquadFilter  
 ofxOneEuroFilter  
 
 ## Usage
-- Look the example.
+- Look the examples.
 
 ### ofApp.h
 ```.c++
