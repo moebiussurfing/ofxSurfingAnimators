@@ -29,14 +29,14 @@ EnvelopeAnimator::EnvelopeAnimator()
 	SHOW_gui = true;
 	guiPos = glm::vec2(700, 500);
 	label = "Envelope_Modulator";
-    path_GLOBAL_Folder ="/";
-    path = path_GLOBAL_Folder + label + ".xml";
+	path_GLOBAL_Folder = "/";
+	path = path_GLOBAL_Folder + label + ".xml";
 }
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::setup()
 {
-	ENABLE_FaderMOD.set("Enable Envelope", true);
+	ENABLE_Envelope.set("Enable Envelope", true);
 	faderLoop.set("LOOP", false);
 	MODE_NoteOff.set("MODE OFF", false);
 	faderValue.set("Value", 0, 0, 1);
@@ -49,14 +49,18 @@ void EnvelopeAnimator::setup()
 	faderRelease.set("Release", 0.5, 0, 2);
 
 	reset.set("Reset", false);
-	curveType.set("Curve", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
-	curveName.set("", "");
+
+	curveTypeIn.set("Curve In", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
+	curveNameIn.set("", "");
+	curveTypeOut.set("Curve Out", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
+	curveNameOut.set("", "");
+
 	curveShow.set("Show Curve", true);
 	animProgress.set("%", 0, 0, 100);
 
 	//disable for xml serialize (not required)
 	faderLoop.setSerializable(false);
-	curveName.setSerializable(false);
+	curveNameIn.setSerializable(false);
 	animProgress.setSerializable(false);
 	reset.setSerializable(false);
 	curveShow.setSerializable(false);
@@ -66,7 +70,7 @@ void EnvelopeAnimator::setup()
 
 	//params.setName("Value");
 	params.setName(label);
-	params.add(ENABLE_FaderMOD);
+	params.add(ENABLE_Envelope);
 	////params.add(faderLoop);
 	//params.add(faderValue);
 	//params.add(faderMax);
@@ -77,7 +81,7 @@ void EnvelopeAnimator::setup()
 	//params.add(MODE_NoteOff);
 	//params.add(faderRelease);
 
-	params_Modulator.setName("ENVELOPE MOD");
+	params_Modulator.setName("VALUES");
 	//params_Modulator.add(faderLoop);
 	params_Modulator.add(faderValue);
 	params_Modulator.add(faderMax);
@@ -87,7 +91,7 @@ void EnvelopeAnimator::setup()
 	params_Timers.add(faderDelay);
 	params_Timers.add(faderAttack);
 	params_Timers.add(faderSustain);
-    //params_Timers.add(MODE_NoteOff);//TODO:
+	//params_Timers.add(MODE_NoteOff);//TODO:
 	params_Timers.add(faderRelease);
 	params_Modulator.add(params_Timers);
 
@@ -112,8 +116,11 @@ void EnvelopeAnimator::setup()
 
 	//-
 
-	params.add(curveType);
-	params.add(curveName);
+	params.add(curveTypeIn);
+	params.add(curveNameIn);
+	params.add(curveTypeOut);
+	params.add(curveNameOut);
+
 	//params.add(curveShow);
 	params.add(reset);
 	params.add(animProgress);
@@ -123,30 +130,24 @@ void EnvelopeAnimator::setup()
 	gui.setup(label);
 	gui.add(params);
 	gui.add(SHOW_Plot);
-    gui.setPosition(guiPos.x, guiPos.y);
+	gui.setPosition(guiPos.x, guiPos.y);
 
 	ofAddListener(params.parameterChangedE(), this, &EnvelopeAnimator::Changed_params);
 
-    ofAddListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
-
-	//-
-
-    if (autoSettings) ofxSurfingHelpers::loadGroup(params, path);
-
-//    curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-//    AnimCurve curve = (AnimCurve)(curveType.get());
-//    curvePlotable.setCurve(curve);
-
-//    setupAnimator();
+	ofAddListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
 	setupPlot();
 
-//    refreshGui();
+	//-
+
+	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path);
 }
 
+//TODO: king of note on/off behaviour
 //--------------------------------------------------------------
 void EnvelopeAnimator::setupAnimatorOn() {
-	faderAnimIn = AnimCurve(curveType.get());
+	faderAnimIn = AnimCurve(curveTypeIn.get());
+	faderAnimOut = AnimCurve(curveTypeOut.get());
 
 	queue.clearQueue();
 	queue.setInitialValue(faderMin.get());
@@ -160,13 +161,15 @@ void EnvelopeAnimator::setupAnimatorOn() {
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::setupAnimatorOff() {
-	faderAnimIn = AnimCurve(curveType.get());
+	faderAnimIn = AnimCurve(curveTypeIn.get());
+	faderAnimOut = AnimCurve(curveTypeOut.get());
 
 	queue.clearQueue();
 	queue.setInitialValue(faderMax.get());
 	//queue.addTransition(faderMax.get(), faderDelay.get(), LINEAR);
 	//queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
+	//queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
+	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimOut);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 }
@@ -174,24 +177,18 @@ void EnvelopeAnimator::setupAnimatorOff() {
 //--------------------------------------------------------------
 void EnvelopeAnimator::setupAnimator()
 {
-	faderAnimIn = AnimCurve(curveType.get());
-	
+	faderAnimIn = AnimCurve(curveTypeIn.get());
+	faderAnimOut = AnimCurve(curveTypeOut.get());
+
 	queue.clearQueue();
 	queue.setInitialValue(faderMin.get());
 	queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);
 	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnimIn);
 	queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
+	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimOut);
+	//queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-
-	//cout << "totalTime: " << totalTime << endl;
-	//cout << "setupAnimator()" << endl;
-	//cout << "totalTime   : " << totalTime << endl;
-	//cout << "faderDelay  : " << faderDelay << endl;
-	//cout << "faderAttack : " << faderAttack << endl;
-	//cout << "faderSustain: " << faderSustain << endl;
-	//cout << "faderRelease: " << faderRelease << endl;
 }
 
 //--------------------------------------------------------------
@@ -226,9 +223,7 @@ void EnvelopeAnimator::update()
 
 			totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 
-			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100);
-			//animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100);
-			//cout << "faderValue:" << faderValue << endl;
+			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
 		}
 		plot->update(faderValue.get());
 	}
@@ -248,32 +243,46 @@ void EnvelopeAnimator::draw()
 			int pad = 2;
 			bool stateColor;
 			string str;
+			int wplot = gui.getShape().getWidth() - 18;
+			int padPlots = 5;
+			//int padPlots = 20;//when using curve labels
 
-			//x = guiPos.x;
-			//y = ofGetHeight() - size - 20;
-			x = gui.getPosition().x + 2;
+			x = gui.getPosition().x + pad;
 			y = gui.getPosition().y + gui.getHeight() + 15;
 
-			//live alpha plot
-			plot->draw(x + size + pad, y, size, size);
+			//-
 
+			//1. two curves
 			//hide curve plot when attack/release are 0
 			if (faderRelease != 0 || faderAttack != 0)
 			{
 				//curve type
-				if (curveShow) curvePlotable.drawCurve(x, y, size, true, ofColor(255));
+				if (curveShow)
+				{
+					curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);
+					curvePlotableOut.drawCurve(x + size + 12, y, size, true, ofColor(255), false);
+				}
 			}
+
+			//-
+
+			//2. live value enveloped plot
+			plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
+			//plot->draw(x + size + pad, y + size + pad + padPlots, size, size);//right
 
 			int rx, ry, rw, rh;
 			rh = 8;
-			rx = x + size + pad;
-			ry = y + size - rh;
+			rx = x + pad;//left
+			//rx = x + size + pad;//right
+			ry = y + 2 * size - rh + padPlots;
+			//ry = y + size - rh;
+
 			if (isAnimating())
 			{
-				//progress bar
-				px = ofMap(animProgress, 0, 100, 0, size, true);
+				//2.1 progress bar
+				px = ofMap(animProgress, 0, 100, 0, wplot, true);
 				rw = px;
-				ofRectangle r(rx, ry, rw, rh);
+				ofRectangle r(rx, ry + pad, rw, rh);
 
 				ofFill();
 				ofSetColor(ofColor::white, 255);
@@ -295,12 +304,11 @@ void EnvelopeAnimator::draw()
 
 			//-
 
-			//vertical red bar value
+			//2.2 vertical red bar value
 			float vb = ofMap(faderValue.get(), faderMin.get(), faderMax.get(), 0.f, 1.f, true);
 			int w = 10;
-			rx += size + pad;
-			//rx += size - w + 3;
-			ry += rh;
+			rx += wplot + 3;
+			ry += rh + pad;
 			ofFill();
 
 			//bg
@@ -309,6 +317,7 @@ void EnvelopeAnimator::draw()
 			ofRectangle r2;
 			r2 = ofRectangle(rx, ry, w, -size);
 			ofDrawRectangle(r2);
+
 			//bar
 			ofSetColor(ofColor::red, 225);
 			r2 = ofRectangle(rx + 0.5*pad, ry - 0.5*pad, w - pad, pad - MAX(vb*size, 1));
@@ -337,7 +346,7 @@ void EnvelopeAnimator::draw()
 //--------------------------------------------------------------
 void EnvelopeAnimator::start()
 {
-	if (ENABLE_FaderMOD)
+	if (ENABLE_Envelope)
 	{
 		//mark
 		//plot->update(1);
@@ -360,7 +369,7 @@ void EnvelopeAnimator::start()
 //--------------------------------------------------------------
 void EnvelopeAnimator::startOn()
 {
-	if (ENABLE_FaderMOD)
+	if (ENABLE_Envelope)
 	{
 		setupAnimatorOn();
 
@@ -377,7 +386,7 @@ void EnvelopeAnimator::startOn()
 //--------------------------------------------------------------
 void EnvelopeAnimator::startOff()
 {
-	if (ENABLE_FaderMOD)
+	if (ENABLE_Envelope)
 	{
 		setupAnimatorOff();
 
@@ -402,7 +411,7 @@ void EnvelopeAnimator::startOff()
 void EnvelopeAnimator::stop()
 {
 	//cout << "stop()" << endl;
-	if (ENABLE_FaderMOD)
+	if (ENABLE_Envelope)
 	{
 		faderValue = faderMin.get();
 		queue.setInitialValue(faderMin.get());
@@ -420,38 +429,38 @@ EnvelopeAnimator::~EnvelopeAnimator()
 {
 	ofRemoveListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
-    exit();
+	exit();
 }
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::exit()
 {
 	/*if (autoSettings)*/
-    ofxSurfingHelpers::saveGroup(params, path);
+	ofxSurfingHelpers::saveGroup(params, path);
 }
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::nextCurve()
 {
-	curveType++;
-	curveType = curveType % NUM_ANIM_CURVES;
+	curveTypeIn++;
+	curveTypeIn = curveTypeIn % NUM_ANIM_CURVES;
 }
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::previousCurve()
 {
-	curveType--;
-	if (curveType < 0)
-		curveType = NUM_ANIM_CURVES - 1;
+	curveTypeIn--;
+	if (curveTypeIn < 0)
+		curveTypeIn = NUM_ANIM_CURVES - 1;
 }
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 {
 	string name = e.getName();
-	if (name != "%"
-		&& name != "Value")
-		ofLogVerbose(__FUNCTION__) << name << ": " << e;
+	if (name != "%" &&
+		name != "Value")
+		ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
 	//-
 
@@ -470,11 +479,16 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 	if (false) {}
 
 	//bpm engine
-	else if (name == bpmMode.getName() || name == bpmSpeed.getName() ||
+	else if (
+		name == bpmMode.getName() ||
+		name == bpmSpeed.getName() ||
 		name == bpmBeatDelay.getName() ||
-		name == bpmBeatAttack.getName() || name == bpmBeatSustain.getName() || name == bpmBeatRelease.getName())
+		name == bpmBeatAttack.getName() ||
+		name == bpmBeatSustain.getName() ||
+		name == bpmBeatRelease.getName())
 	{
-		if (bpmMode) {
+		if (bpmMode)
+		{
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
 			float _ratio = 2.0f;
 			faderDelay = (_bar / _ratio) * (float)bpmBeatDelay;
@@ -486,15 +500,22 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 		if (name == bpmMode.getName())
 		{
 			//workflow
-            refreshGui();
+			refreshGui();
 		}
 	}
 
-	else if (name == "Curve")
+	else if (name == curveTypeIn.getName())
 	{
-		curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-		AnimCurve curve = (AnimCurve)(curveType.get());
-		curvePlotable.setCurve(curve);
+		curveNameIn = ofxAnimatable::getCurveName(AnimCurve(curveTypeIn.get()));
+		AnimCurve curve = (AnimCurve)(curveTypeIn.get());
+		curvePlotableIn.setCurve(curve);
+	}
+
+	else if (name == curveTypeOut.getName())
+	{
+		curveNameOut = ofxAnimatable::getCurveName(AnimCurve(curveTypeOut.get()));
+		AnimCurve curve = (AnimCurve)(curveTypeOut.get());
+		curvePlotableOut.setCurve(curve);
 	}
 
 	else if (name == "Reset")
@@ -518,7 +539,8 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 			bpmBeatSustain = 4;
 			bpmBeatRelease = 2;
 
-			curveType = 3;
+			curveTypeIn = 3;
+			curveTypeOut = 3;
 
 			faderMin = 0.f;
 			faderMax = 1.0f;
@@ -534,7 +556,7 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 	}
 	else if (name == "Enable Envelope")
 	{
-		if (!ENABLE_FaderMOD)
+		if (!ENABLE_Envelope)
 		{
 			faderValue = faderMax;
 		}

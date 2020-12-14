@@ -73,7 +73,7 @@ public:
 	//--------------------------------------------------------------
 	void setEnabled(bool b)
 	{
-		ENABLE_FaderMOD = b;
+		ENABLE_Envelope = b;
 	}
 
 	//--------------------------------------------------------------
@@ -188,7 +188,7 @@ public:
 	//--------------------------------------------------------------
 	bool isEnabled()
 	{
-		return ENABLE_FaderMOD;
+		return ENABLE_Envelope;
 	}
 
 	//--------------------------------------------------------------
@@ -212,9 +212,13 @@ public:
 	//--------------------------------------------------------------
 	void refresh_Labels()
 	{
-		curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-		AnimCurve curve = (AnimCurve)(curveType.get());
-		curvePlotable.setCurve(curve);
+		curveNameIn = ofxAnimatable::getCurveName(AnimCurve(curveTypeIn.get()));
+		AnimCurve curveI = (AnimCurve)(curveTypeIn.get());
+		curvePlotableIn.setCurve(curveI);
+
+		curveNameOut = ofxAnimatable::getCurveName(AnimCurve(curveTypeOut.get()));
+		AnimCurve curveO = (AnimCurve)(curveTypeOut.get());
+		curvePlotableIn.setCurve(curveO);
 	}
 
 	//--------------------------------------------------------------
@@ -287,7 +291,7 @@ private:
 	void Changed_params(ofAbstractParameter &e);
 
 public:
-	ofParameter<bool> ENABLE_FaderMOD;
+	ofParameter<bool> ENABLE_Envelope;
 	float getValue() {
 		return faderValue.get();
 	}
@@ -330,8 +334,13 @@ private:
 	//-
 
 	ofParameter<int> animProgress;
-	ofParameter<int> curveType;
-	ofParameter<string> curveName;
+	
+	ofParameter<int> curveTypeIn;
+	ofParameter<string> curveNameIn;
+	
+	ofParameter<int> curveTypeOut;
+	ofParameter<string> curveNameOut;
+
 	ofParameter<bool> curveShow;
 	ofParameter<bool> reset;
 
@@ -344,7 +353,8 @@ private:
 
 	AnimCurve faderAnimIn;
 	AnimCurve faderAnimOut;
-	ofxAnimatableFloat curvePlotable;
+	ofxAnimatableFloat curvePlotableIn;
+	ofxAnimatableFloat curvePlotableOut;
 
 	float *float_BACK;
 
@@ -355,7 +365,7 @@ private:
     void refreshGui(){
 
         auto &g1 = gui.getGroup(label);//1st level
-        auto &g2 = g1.getGroup("ENVELOPE MOD");//2nd level
+        auto &g2 = g1.getGroup(params_Modulator.getName());//2nd level
         auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
         auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
         g3.minimize();

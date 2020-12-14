@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    float fps = 30;
+    float fps = 60;
 	ofSetFrameRate(fps);
 	ofSetCircleResolution(200);
 	
@@ -49,7 +49,7 @@ void ofApp::draw() {
 	ofPopMatrix();
 
     //help
-	string s = "PRESS SPACE TO TRIG ENVELOPE ANIMATOR\n(TO CIRCLE RADIUS)";
+	string s = "PRESS SPACE TO TRIG ENVELOPE ANIMATOR";
 	ofDrawBitmapStringHighlight(s, 25 + 2 * 205, 30);
 }
 

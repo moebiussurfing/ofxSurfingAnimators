@@ -1,10 +1,13 @@
 {
     "Envelope_ADSR": {
-        "Curve": "35",
-        "ENVELOPE_MOD": {
+        "Curve_In": "26",
+        "Curve_Out": "29",
+        "Enable_Envelope": "1",
+        "UnknownName": "EASE_OUT_BOUNCE",
+        "VALUES": {
             "BPM_ENGINE": {
                 "Attack_Beat": "2",
-                "BPM": "80.9365",
+                "BPM": "120",
                 "BPM_Mode": "1",
                 "PreDelay_Beat": "1",
                 "Release_Beat": "2",
@@ -13,12 +16,11 @@
             "Max": "1",
             "Min": "0",
             "TIMERS": {
-                "Attack": "0.741322",
-                "Delay": "0.370661",
-                "Release": "0.741322",
-                "Sustain": "1.48264"
+                "Attack": "0.5",
+                "Delay": "0.25",
+                "Release": "0.5",
+                "Sustain": "1"
             }
-        },
-        "Enable_Envelope": "1"
+        }
     }
 }
