@@ -1,7 +1,6 @@
 {
     "Envelope_ADSR": {
-        "Curve": "23",
-        "ENABLE": "1",
+        "Curve": "35",
         "ENVELOPE_MOD": {
             "BPM_ENGINE": {
                 "Attack_Beat": "2",
@@ -19,6 +18,7 @@
                 "Release": "0.741322",
                 "Sustain": "1.48264"
             }
-        }
+        },
+        "Enable_Envelope": "1"
     }
 }

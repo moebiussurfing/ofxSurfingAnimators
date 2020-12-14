@@ -1,9 +1,9 @@
-#include "FadeAnimator.h"
+#include "EnvelopeAnimator.h"
 
 //--------------------------------------------------------------
-void FadeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
+void EnvelopeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
 {
-	//cout << "FadeAnimator FINISHED" << endl;
+	//cout << "EnvelopeAnimator FINISHED" << endl;
 
 	faderValue = faderMin.get();
 	if (float_BACK != nullptr)
@@ -20,7 +20,7 @@ void FadeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
 }
 
 //--------------------------------------------------------------
-FadeAnimator::FadeAnimator()
+EnvelopeAnimator::EnvelopeAnimator()
 {
 	ofSetLogLevel(OF_LOG_SILENT);
 
@@ -34,12 +34,12 @@ FadeAnimator::FadeAnimator()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::setup()
+void EnvelopeAnimator::setup()
 {
-	ENABLE_FaderMOD.set("ENABLE", true);
+	ENABLE_FaderMOD.set("Enable Envelope", true);
 	faderLoop.set("LOOP", false);
 	MODE_NoteOff.set("MODE OFF", false);
-	faderValue.set("VALUE", 0, 0, 1);
+	faderValue.set("Value", 0, 0, 1);
 	faderMin.set("Min", 0, 0, 1);
 	faderMax.set("Max", 1, 0, 1);
 
@@ -64,7 +64,7 @@ void FadeAnimator::setup()
 
 	//--
 
-	//params.setName("VALUE");
+	//params.setName("Value");
 	params.setName(label);
 	params.add(ENABLE_FaderMOD);
 	////params.add(faderLoop);
@@ -125,9 +125,9 @@ void FadeAnimator::setup()
 	gui.add(SHOW_Plot);
     gui.setPosition(guiPos.x, guiPos.y);
 
-	ofAddListener(params.parameterChangedE(), this, &FadeAnimator::Changed_params);
+	ofAddListener(params.parameterChangedE(), this, &EnvelopeAnimator::Changed_params);
 
-    ofAddListener(queue.eventQueueDone, this, &FadeAnimator::onAnimQueueDone);
+    ofAddListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
 	//-
 
@@ -145,43 +145,43 @@ void FadeAnimator::setup()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::setupAnimatorOn() {
-	faderAnim = AnimCurve(curveType.get());
+void EnvelopeAnimator::setupAnimatorOn() {
+	faderAnimIn = AnimCurve(curveType.get());
 
 	queue.clearQueue();
 	queue.setInitialValue(faderMin.get());
 	queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);
-	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnim);
+	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnimIn);
 	//queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-	//queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
+	//queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::setupAnimatorOff() {
-	faderAnim = AnimCurve(curveType.get());
+void EnvelopeAnimator::setupAnimatorOff() {
+	faderAnimIn = AnimCurve(curveType.get());
 
 	queue.clearQueue();
 	queue.setInitialValue(faderMax.get());
 	//queue.addTransition(faderMax.get(), faderDelay.get(), LINEAR);
 	//queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
+	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::setupAnimator()
+void EnvelopeAnimator::setupAnimator()
 {
-	faderAnim = AnimCurve(curveType.get());
-
+	faderAnimIn = AnimCurve(curveType.get());
+	
 	queue.clearQueue();
 	queue.setInitialValue(faderMin.get());
 	queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);
-	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnim);
+	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnimIn);
 	queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
+	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnimIn);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 
@@ -195,7 +195,7 @@ void FadeAnimator::setupAnimator()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::setupPlot()
+void EnvelopeAnimator::setupPlot()
 {
 	plot = new ofxHistoryPlot(NULL, "fader", 100, false);
 	plot->setBackgroundColor(ofColor(0, 230));
@@ -214,7 +214,7 @@ void FadeAnimator::setupPlot()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::update()
+void EnvelopeAnimator::update()
 {
 	//if (!bPaused) 
 	{
@@ -235,7 +235,7 @@ void FadeAnimator::update()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::draw()
+void EnvelopeAnimator::draw()
 {
 	if (SHOW_gui)
 	{
@@ -283,6 +283,18 @@ void FadeAnimator::draw()
 
 			//-
 
+			//TODO:
+			////vertical line time
+			//float h;//display delay wait progress
+			//if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
+			//else h = size;
+			//px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
+			//ofSetColor(ofColor::red, 200);
+			//ofSetLineWidth(2.0);
+			//ofDrawLine(px, y + size, px, y + size - h);
+
+			//-
+
 			//vertical red bar value
 			float vb = ofMap(faderValue.get(), faderMin.get(), faderMax.get(), 0.f, 1.f, true);
 			int w = 10;
@@ -323,7 +335,7 @@ void FadeAnimator::draw()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::start()
+void EnvelopeAnimator::start()
 {
 	if (ENABLE_FaderMOD)
 	{
@@ -346,7 +358,7 @@ void FadeAnimator::start()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::startOn()
+void EnvelopeAnimator::startOn()
 {
 	if (ENABLE_FaderMOD)
 	{
@@ -363,7 +375,7 @@ void FadeAnimator::startOn()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::startOff()
+void EnvelopeAnimator::startOff()
 {
 	if (ENABLE_FaderMOD)
 	{
@@ -381,13 +393,13 @@ void FadeAnimator::startOff()
 }
 
 ////--------------------------------------------------------------
-//void FadeAnimator::pause()
+//void EnvelopeAnimator::pause()
 //{
 //	queue.pausePlayback();
 //}
 
 //--------------------------------------------------------------
-void FadeAnimator::stop()
+void EnvelopeAnimator::stop()
 {
 	//cout << "stop()" << endl;
 	if (ENABLE_FaderMOD)
@@ -404,29 +416,29 @@ void FadeAnimator::stop()
 }
 
 //--------------------------------------------------------------
-FadeAnimator::~FadeAnimator()
+EnvelopeAnimator::~EnvelopeAnimator()
 {
-	ofRemoveListener(queue.eventQueueDone, this, &FadeAnimator::onAnimQueueDone);
+	ofRemoveListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
     exit();
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::exit()
+void EnvelopeAnimator::exit()
 {
 	/*if (autoSettings)*/
     ofxSurfingHelpers::saveGroup(params, path);
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::nextCurve()
+void EnvelopeAnimator::nextCurve()
 {
 	curveType++;
 	curveType = curveType % NUM_ANIM_CURVES;
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::previousCurve()
+void EnvelopeAnimator::previousCurve()
 {
 	curveType--;
 	if (curveType < 0)
@@ -434,11 +446,11 @@ void FadeAnimator::previousCurve()
 }
 
 //--------------------------------------------------------------
-void FadeAnimator::Changed_params(ofAbstractParameter &e)
+void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 {
 	string name = e.getName();
 	if (name != "%"
-		&& name != "VALUE")
+		&& name != "Value")
 		ofLogVerbose(__FUNCTION__) << name << ": " << e;
 
 	//-
@@ -513,14 +525,14 @@ void FadeAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == "VALUE")
+	else if (name == "Value")
 	{
 		if (float_BACK != nullptr)
 		{
 			(*float_BACK) = faderValue;
 		}
 	}
-	else if (name == "ENABLE")
+	else if (name == "Enable Envelope")
 	{
 		if (!ENABLE_FaderMOD)
 		{

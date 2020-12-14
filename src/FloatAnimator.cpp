@@ -258,6 +258,8 @@ void FloatAnimator::draw()
 			y = gui.getPosition().y + gui.getHeight() + pad;
 		}
 
+		//-
+
 		//drawCurve(glm::vec2 (x,y));
 		floatAnimator.drawCurve(x, y, size, true, ofColor(255));
 
@@ -269,6 +271,8 @@ void FloatAnimator::draw()
 		ofSetColor(ofColor::red, 200);
 		ofSetLineWidth(2.0);
 		ofDrawLine(px, y + size, px, y + size - h);
+
+		//-
 
 		//vertical red bar value
 		ofRectangle r;

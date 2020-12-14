@@ -9,12 +9,12 @@
 
 //adsr envelope class
 
-class FadeAnimator
+class EnvelopeAnimator
 {
 
 public:
-	FadeAnimator();
-	~FadeAnimator();
+	EnvelopeAnimator();
+	~EnvelopeAnimator();
 
 	void setup();
 	void update();
@@ -342,7 +342,8 @@ private:
 	ofParameter<bool> SHOW_gui{ "SHOW GUI", true };
 	string path;
 
-	AnimCurve faderAnim;
+	AnimCurve faderAnimIn;
+	AnimCurve faderAnimOut;
 	ofxAnimatableFloat curvePlotable;
 
 	float *float_BACK;

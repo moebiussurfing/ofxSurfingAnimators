@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 
-#include "FadeAnimator.h"
+#include "EnvelopeAnimator.h"
 
 #include "ofxSurfing_ofxGui.h"//to customize gui only
 
@@ -13,7 +13,7 @@ public:
     void draw();
     void keyPressed(int key);
 
-	FadeAnimator envelope;
+	EnvelopeAnimator envelope;
 
 	void startTween();
 	void stopTween();
