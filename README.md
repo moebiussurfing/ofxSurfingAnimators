@@ -1,11 +1,15 @@
 # ofxSurfingAnimators
 
-**openFrameworks** helper addon for ```ofxAnimatable``` from **@armadillu** (https://github.com/armadillu/ofxAnimatable),
-with several classes to faster integration into OF Apps:  
-*ColorAnimator, FadeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator and ToggleAnimator*.
+**openFrameworks** helper addon for ```ofxAnimatable``` from **@armadillu**  
+(https://github.com/armadillu/ofxAnimatable)  
+Some typical classes to faster integration into your OF Apps:  
+*ColorAnimator, FadeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
 ## Screenshot
-![image](/readme_images/Capture.PNG?raw=true "image")
+/example_Basic (FloatAnimator + NoiseAnimator)
+![image](/readme_images/Capture.PNG?raw=true "image")  
+/example_Envelope (FadeAnimator ADSR)
+![image](/readme_images/Capture2.PNG?raw=true "image")
 
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
@@ -16,9 +20,10 @@ with several classes to faster integration into OF Apps:
    * NoiseAnimator.h (Many Noise settings + Filters)
    * ColorAnimator.h
    * ToggleAnimator.h
-* Added GUI: Setters for start/end, time duration and pre pause, curve types, loop modes, repeats...etc. 
+* Added GUI:  
+Setters for start/end, time duration and pre pause, curve types, loop modes, repeats...etc. 
 * Handle Settings. Auto store-recall.
-* BPM based time scale.
+* Musical BPM based time or absolute scale.
 * Plotting realtime value curves.
 * Curve Tweens drawing.
 
