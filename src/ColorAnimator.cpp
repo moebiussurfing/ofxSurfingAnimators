@@ -39,7 +39,7 @@ void ColorAnimator::previousCurve()
 //--------------------------------------------------------------
 void ColorAnimator::setup()
 {
-	ENABLE_ColorAnims.set("ENABLE COLOR", true);
+	ENABLE_ColorAnims.set("Enable Color Animator", true);
 
 	colorCurrent.set("Color", ofColor(255, 255, 255, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 	colorStart.set("Color Start", ofColor(255, 255, 255, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
@@ -275,16 +275,16 @@ void ColorAnimator::Changed_params(ofAbstractParameter &e)
 		colorAnim.setCurve(AnimCurve(curveType.get()));
 		curveName = colorAnim.getCurveName(AnimCurve(curveType.get()));
 	}
-	else if (name == "ENABLE COLOR")
+	else if (name == ENABLE_ColorAnims.getName())
 	{
 		if (!ENABLE_ColorAnims && colorAnim.isAnimating()) colorAnim.pause();
 		else if (ENABLE_ColorAnims && !colorAnim.isAnimating()) colorAnim.resume();
 	}
-	else if (name == "ENABLE COLOR")//TODO: ??
-	{
-		if (!ENABLE_ColorAnims) colorAnim.setColor(colorStart);
-		else colorAnim.setColor(colorStart);
-	}
+	//else if (name == ENABLE_ColorAnims.getName())//TODO: ??
+	//{
+	//	if (!ENABLE_ColorAnims) colorAnim.setColor(colorStart);
+	//	else colorAnim.setColor(colorStart);
+	//}
 	else if (name == "Duration")
 	{
 		colorAnim.setDuration(duration.get());

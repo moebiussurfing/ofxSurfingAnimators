@@ -59,7 +59,7 @@ void PositionAnimator::setup()
 {
 	//ofxSurfingHelpers::setThemeDark_ofxGui;
 
-	ENABLE_valueAnim.set("Enable Animator", true);
+	ENABLE_valueAnim.set("Enable Position Animator", true);
 
 	pos.set("Position", glm::vec2(0), glm::vec2(-1920, -1080), glm::vec2(1920, 1080));
 	posStart.set("From", glm::vec2(0), glm::vec2(-1920, -1080), glm::vec2(1920, 1080));
@@ -408,7 +408,7 @@ void PositionAnimator::Changed_params(ofAbstractParameter &e)
 
 	if (false) {}
 
-	else if (name == "Enable Animator")
+	else if (name == ENABLE_valueAnim.getName())
 	{
 		if (!ENABLE_valueAnim && animatorPosition.isAnimating()) animatorPosition.pause();
 		else if (ENABLE_valueAnim && !animatorPosition.isAnimating()) animatorPosition.resume();

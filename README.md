@@ -23,11 +23,11 @@ Some classes to faster integration into your OF Apps/Addons:
    * ColorAnimator.h
    * ToggleAnimator.h
 * Added GUI:  
-Setters for start/end, time duration and pre pause, curve types, loop modes, repeats...etc. 
+Setters for start/end, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
 * Handle Settings: Auto store-recall.
 * Musical BPM based or absolute time scale.
 * Plotting realtime value curves.
-* Curve Tweens drawing preview.
+* Curve Tweens preview drawing.
 
 ## Dependencies
 * ofxAnimatable  
@@ -36,11 +36,14 @@ Setters for start/end, time duration and pre pause, curve types, loop modes, rep
 (https://github.com/moebiussurfing/ofxHistoryPlot)  
 * ofxSurfingHelpers  
 (https://github.com/moebiussurfing/ofxSurfingHelpers)  
-ofxGui  
+* ofxGui  
 
-* Bundled into ```OF_ADDON/libs```. (To Filter Noise point):  
-ofxBiquadFilter  
-ofxOneEuroFilter  
+* Bundled into ```OF_ADDON/libs```. No need to add to the ```Project Generator```! 
+(To Filter Noise point)  
+**ofxBiquadFilter**  
+(https://github.com/dzlonline/ofxBiquadFilter)
+**ofxOneEuroFilter**  
+(https://github.com/i-n-g-o/ofxOneEuroFilter)
 
 ## Usage
 - Look the examples.
