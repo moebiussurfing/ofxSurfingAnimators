@@ -28,16 +28,18 @@ FadeAnimator::FadeAnimator()
 	setFps(60);
 	SHOW_gui = true;
 	guiPos = glm::vec2(700, 500);
-	label = "FadeAnimator";
+	label = "Envelope_Modulator";
+    path_GLOBAL_Folder ="/";
+    path = path_GLOBAL_Folder + label + ".xml";
 }
 
 //--------------------------------------------------------------
 void FadeAnimator::setup()
 {
-	ENABLE_FaderMOD.set("ENABLE ALPHA", true);
+	ENABLE_FaderMOD.set("ENABLE", true);
 	faderLoop.set("LOOP", false);
 	MODE_NoteOff.set("MODE OFF", false);
-	faderValue.set("ALPHA", 0, 0, 1);
+	faderValue.set("VALUE", 0, 0, 1);
 	faderMin.set("Min", 0, 0, 1);
 	faderMax.set("Max", 1, 0, 1);
 
@@ -62,7 +64,7 @@ void FadeAnimator::setup()
 
 	//--
 
-	//params.setName("ALPHA");
+	//params.setName("VALUE");
 	params.setName(label);
 	params.add(ENABLE_FaderMOD);
 	////params.add(faderLoop);
@@ -75,7 +77,7 @@ void FadeAnimator::setup()
 	//params.add(MODE_NoteOff);
 	//params.add(faderRelease);
 
-	params_Modulator.setName("MODULATOR");
+	params_Modulator.setName("ENVELOPE MOD");
 	//params_Modulator.add(faderLoop);
 	params_Modulator.add(faderValue);
 	params_Modulator.add(faderMax);
@@ -85,12 +87,12 @@ void FadeAnimator::setup()
 	params_Timers.add(faderDelay);
 	params_Timers.add(faderAttack);
 	params_Timers.add(faderSustain);
-	params_Timers.add(MODE_NoteOff);
+    //params_Timers.add(MODE_NoteOff);//TODO:
 	params_Timers.add(faderRelease);
 	params_Modulator.add(params_Timers);
 
 	//bpm engine
-	bpmMode.set("BPM Mode", true);
+	bpmMode.set("BPM Mode", false);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
 	bpmBeatDelay.set("PreDelay Beat", 1, 0, 8);
 	bpmBeatAttack.set("Attack Beat", 2, 0, 8);
@@ -118,27 +120,28 @@ void FadeAnimator::setup()
 
 	//-
 
-	gui.setup("label");
+	gui.setup(label);
 	gui.add(params);
 	gui.add(SHOW_Plot);
+    gui.setPosition(guiPos.x, guiPos.y);
 
 	ofAddListener(params.parameterChangedE(), this, &FadeAnimator::Changed_params);
 
-	gui.setPosition(guiPos.x, guiPos.y);
+    ofAddListener(queue.eventQueueDone, this, &FadeAnimator::onAnimQueueDone);
 
 	//-
 
-	path = "settings_FadeAnimator.xml";
-	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path);
+    if (autoSettings) ofxSurfingHelpers::loadGroup(params, path);
 
-	curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-	AnimCurve curve = (AnimCurve)(curveType.get());
-	curvePlotable.setCurve(curve);
+//    curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
+//    AnimCurve curve = (AnimCurve)(curveType.get());
+//    curvePlotable.setCurve(curve);
 
-	setupAnimator();
-	ofAddListener(queue.eventQueueDone, this, &FadeAnimator::onAnimQueueDone);
+//    setupAnimator();
 
 	setupPlot();
+
+//    refreshGui();
 }
 
 //--------------------------------------------------------------
@@ -404,12 +407,15 @@ void FadeAnimator::stop()
 FadeAnimator::~FadeAnimator()
 {
 	ofRemoveListener(queue.eventQueueDone, this, &FadeAnimator::onAnimQueueDone);
+
+    exit();
 }
 
 //--------------------------------------------------------------
 void FadeAnimator::exit()
 {
-	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path);
+	/*if (autoSettings)*/
+    ofxSurfingHelpers::saveGroup(params, path);
 }
 
 //--------------------------------------------------------------
@@ -432,7 +438,7 @@ void FadeAnimator::Changed_params(ofAbstractParameter &e)
 {
 	string name = e.getName();
 	if (name != "%"
-		&& name != "ALPHA")
+		&& name != "VALUE")
 		ofLogVerbose(__FUNCTION__) << name << ": " << e;
 
 	//-
@@ -468,21 +474,7 @@ void FadeAnimator::Changed_params(ofAbstractParameter &e)
 		if (name == bpmMode.getName())
 		{
 			//workflow
-			auto &g1 = gui.getGroup(label);//1st level
-			auto &g2 = g1.getGroup("MODULATOR");//2nd level
-			auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
-			auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
-			g3.minimize();
-			g4.minimize();
-			if (bpmMode)
-			{
-				g3.minimize();
-				g4.maximize();
-			}
-			else {
-				g3.maximize();
-				g4.minimize();
-			}
+            refreshGui();
 		}
 	}
 
@@ -521,14 +513,14 @@ void FadeAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == "ALPHA")
+	else if (name == "VALUE")
 	{
 		if (float_BACK != nullptr)
 		{
 			(*float_BACK) = faderValue;
 		}
 	}
-	else if (name == "ENABLE ALPHA")
+	else if (name == "ENABLE")
 	{
 		if (!ENABLE_FaderMOD)
 		{

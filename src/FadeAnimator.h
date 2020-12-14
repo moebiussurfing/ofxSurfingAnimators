@@ -180,12 +180,6 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	void setNameLabel(string s)
-	{
-		label = s;
-	}
-
-	//--------------------------------------------------------------
 	glm::vec2 getGuiPosition()
 	{
 		return guiPos;
@@ -202,6 +196,12 @@ public:
 	{
 		autoSettings = b;
 	}
+
+    //--------------------------------------------------------------
+    void setAutoSaveLoad(bool b)
+    {
+        autoSettings = b;
+    }
 
 	//--------------------------------------------------------------
 	ofParameterGroup getParameterGroup()
@@ -240,6 +240,26 @@ public:
 
 	//---
 
+public:
+    //--------------------------------------------------------------
+    void setNameLabel(string s)//to label gui panel
+    {
+        label = s;
+//        path = path_GLOBAL_Folder + label + ".xml";
+        path = path_GLOBAL_Folder + label + ".xml";
+    }
+private:
+    std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
+//    std::string path_Settings;
+public:
+    //--------------------------------------------------------------
+    void setPath_GlobalFolder(string folder)
+    {
+        ofLogNotice(__FUNCTION__) << folder;
+        path_GLOBAL_Folder = folder;
+        ofxSurfingHelpers::CheckFolder(folder);
+    }
+
 private:
 	
 	string label;
@@ -255,7 +275,7 @@ private:
 
 	ofParameter<bool> SHOW_Plot{ "Show Plot", true };
 
-	bool autoSettings = false;
+	bool autoSettings = true;
 
 	ofxHistoryPlot *plot;
 
@@ -330,4 +350,23 @@ private:
 	void setupAnimator();
 
 	void setupPlot();
+
+    void refreshGui(){
+
+        auto &g1 = gui.getGroup(label);//1st level
+        auto &g2 = g1.getGroup("ENVELOPE MOD");//2nd level
+        auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
+        auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
+        g3.minimize();
+        g4.minimize();
+        if (bpmMode.get())
+        {
+//            g3.minimize();
+            g4.maximize();
+        }
+        else {
+            g3.maximize();
+//            g4.minimize();
+        }
+    }
 };

@@ -1,0 +1,24 @@
+{
+    "Envelope_ADSR": {
+        "Curve": "23",
+        "ENABLE": "1",
+        "ENVELOPE_MOD": {
+            "BPM_ENGINE": {
+                "Attack_Beat": "2",
+                "BPM": "80.9365",
+                "BPM_Mode": "1",
+                "PreDelay_Beat": "1",
+                "Release_Beat": "2",
+                "Sustain_Beat": "4"
+            },
+            "Max": "1",
+            "Min": "0",
+            "TIMERS": {
+                "Attack": "0.741322",
+                "Delay": "0.370661",
+                "Release": "0.741322",
+                "Sustain": "1.48264"
+            }
+        }
+    }
+}
