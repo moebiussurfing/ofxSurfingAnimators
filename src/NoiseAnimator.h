@@ -4,7 +4,7 @@
 
 ///-
 ///
-#define INCLUDE_PLOTS		//plotting can be disabled without affecting the functionality
+//#define INCLUDE_PLOTS		//plotting can be disabled without affecting the functionality
 ///
 ///-
 

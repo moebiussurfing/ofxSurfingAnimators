@@ -180,6 +180,13 @@ void EnvelopeAnimator::setupAnimator()
 	faderAnimIn = AnimCurve(curveTypeIn.get());
 	faderAnimOut = AnimCurve(curveTypeOut.get());
 
+	//TODO:
+	//curve out gets flipped..
+	//static bool isCurveInvertable(AnimCurve c); //easeIn becomes easeOut, etc
+	//static AnimCurve getInverseCurve(AnimCurve c); //does this curve have an inverse?
+	//void setAutoFlipCurve(bool autoF);//when repeat set to back and forth, and autoFlip==true it will auto invert your curve when looping (ease_in > ease_out and so on)
+	//faderAnimOut = AnimCurve(curveTypeOut.get()).setAutoFlipCurve(true);
+
 	queue.clearQueue();
 	queue.setInitialValue(faderMin.get());
 	queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);

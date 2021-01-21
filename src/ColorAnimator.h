@@ -230,11 +230,13 @@ public:
 		return colorCurrent;
 	}
 
-private:
+public:
+//private:
 	ofParameter<ofColor> colorCurrent;
 	ofParameter<ofColor> colorStart;
 	ofParameter<ofColor> colorEnd;
 
+private:
 	ofParameter<bool> SHOW_Plot{ "Show Plots", true };
 
 private:
