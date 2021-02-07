@@ -1,5 +1,5 @@
 ofxAnimatable
+ofxGui
 ofxHistoryPlot
 ofxSurfingAnimators
 ofxSurfingHelpers
-ofxGui
