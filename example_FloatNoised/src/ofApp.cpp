@@ -11,8 +11,9 @@ void ofApp::setup() {
 	//animatorFloat.setFps(60);
 	//animatorFloat.setAutoSaveLoad(true);
 	animatorFloat.setup();
-	animatorFloat.valueStart = 1.f;
-	animatorFloat.valueEnd = 2.f;
+	animatorFloat.setStart(1.f);
+	animatorFloat.setEnd(2.f);
+	animatorFloat.setRanges();
 	//animatorFloat.setMinimized(true);
 	//animatorFloat.setVisible_Plot(true);
 

@@ -9,7 +9,7 @@ void NoiseAnimator::Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &)
 
 	if (float_BACK != nullptr)
 	{
-		(*float_BACK) = faderValue;
+		(*float_BACK) = faderValue.get();
 	}
 
 	//animProgress = 0;
@@ -24,6 +24,9 @@ void NoiseAnimator::Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &)
 //--------------------------------------------------------------
 NoiseAnimator::NoiseAnimator()
 {
+	float_BACK = NULL;
+	point_BACK = NULL;
+
 	ofSetLogLevel(OF_LOG_SILENT);
 
 	path_GLOBAL_Folder = "NoiseAnimator";
@@ -35,11 +38,37 @@ NoiseAnimator::NoiseAnimator()
 	setFps(fps);
 	SHOW_Gui = true;
 	guiPos = glm::vec2(700, 500);
+
+	//ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
+	//ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
+}
+
+//--------------------------------------------------------------
+void NoiseAnimator::startup()
+{
+	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+
+	curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
+	AnimCurve curve = (AnimCurve)(curveType.get());
+	curvePlotable.setCurve(curve);
+
+	setupFader();
+	ofAddListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
+
+	setupPlot();
+	setupPlot_Noise();
+
+	//-
+
+	//seed engine
+	rSeed = (int)ofRandom(0, fps * 4);
+	ENABLE_Noise = false;
 }
 
 //--------------------------------------------------------------
 void NoiseAnimator::setup()
 {
+
 	//ofxSurfingHelpers::setThemeDark_ofxGui();
 
 	//fc = 0.05;
@@ -47,11 +76,12 @@ void NoiseAnimator::setup()
 	ENABLE_Noise.set("Enable Noise Animator", true);
 	ENABLE_NoiseX.set("ENABLE", true);
 	ENABLE_NoiseY.set("ENABLE", true);
+	ENABLE_NoiseZ.set("ENABLE", true);
 	Reset_Noise.set("Reset Noise", false);
 
 	noiseSizeMax = 100;//max noise displacement. plot box sizes are 100
 	params_NoiseX.setName("X");
-	noisePowerX.set("Power", 0, 0, noiseSizeMax);
+	noisePowerX.set("Power", 20, 0, noiseSizeMax);
 	noiseSpeedX.set("Speed", 0.5, 0.1, 1);
 	noiseDeepX.set("Deep", 1, 1, 3);
 	params_NoiseX.add(ENABLE_NoiseX);
@@ -60,7 +90,7 @@ void NoiseAnimator::setup()
 	params_NoiseX.add(noiseDeepX);
 
 	params_NoiseY.setName("Y");
-	noisePowerY.set("Power", 0, 0, noiseSizeMax);
+	noisePowerY.set("Power", 20, 0, noiseSizeMax);
 	noiseSpeedY.set("Speed", 0.5, 0.1, 1);
 	noiseDeepY.set("Deep", 1, 1, 3);
 	params_NoiseY.add(ENABLE_NoiseY);
@@ -68,9 +98,18 @@ void NoiseAnimator::setup()
 	params_NoiseY.add(noiseSpeedY);
 	params_NoiseY.add(noiseDeepY);
 
+	params_NoiseZ.setName("Z");
+	noisePowerZ.set("Power", 20, 0, noiseSizeMax);
+	noiseSpeedZ.set("Speed", 0.5, 0.1, 1);
+	noiseDeepZ.set("Deep", 1, 1, 3);
+	params_NoiseZ.add(ENABLE_NoiseZ);
+	params_NoiseZ.add(noisePowerZ);
+	params_NoiseZ.add(noiseSpeedZ);
+	params_NoiseZ.add(noiseDeepZ);
+
 	//-
 
-	ENABLE_Modulator.set("MODE MODULATOR Noise", true);
+	ENABLE_Modulator.set("MODE MODULATOR Noise", false);
 
 	//filters
 	ENABLE_NoiseModulatorFilter.set("FILTER MODULATOR", true);
@@ -119,6 +158,7 @@ void NoiseAnimator::setup()
 	//params.add(SHOW_Plot);
 	params.add(params_NoiseX);
 	params.add(params_NoiseY);
+	params.add(params_NoiseZ);
 
 	params_Modulator.setName("MODULATOR");
 	//params_Modulator.add(faderLoop);
@@ -196,20 +236,11 @@ void NoiseAnimator::setup()
 	//g1.minimizeAll();
 	auto &g2 = g1.getGroup("MODULATOR");//2nd level
 	g2.minimize();
+	g1.getGroup(params_filters.getName()).minimize();
 
 	//-
 
-	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
-
-	curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-	AnimCurve curve = (AnimCurve)(curveType.get());
-	curvePlotable.setCurve(curve);
-
-	setupFader();
-	ofAddListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
-
-	setupPlot();
-	setupPlot_Noise();
+	startup();
 }
 
 //--------------------------------------------------------------
@@ -298,7 +329,15 @@ void NoiseAnimator::setupPlot_Noise()
 
 //--------------------------------------------------------------
 void NoiseAnimator::update()
+//void NoiseAnimator::update(ofEventArgs & args)
 {
+	if (ofGetFrameNum() == rSeed)
+	{
+		ENABLE_Noise = true;
+	}
+
+	//--
+
 	//TODO
 	//could improve noise system dimensions...
 	//maybe can we use msaPerlinNoise classes...
@@ -359,11 +398,38 @@ void NoiseAnimator::update()
 		{
 			noiseY = 0;
 		}
+
+		//-
+
+		if (ENABLE_NoiseZ)
+		{
+			noiseCountZ += dt * noiseSpeedZ;
+			switch (noiseDeepZ)
+			{
+			case 1:
+				noiseZ = (ofSignedNoise(noiseCountZ));//slower 1dim
+				break;
+			case 2:
+				noiseZ = (ofSignedNoise(noiseCountZ, noiseCountZ));//medium 2dim
+				break;
+			case 3:
+				noiseZ = (ofSignedNoise(2 * noiseCountZ, noiseCountZ, 2 * noiseCountZ));//faster 3dim
+				break;
+			default:
+				break;
+			}
+			noiseZ = ofClamp(noiseZ, -1, 1);
+		}
+		else
+		{
+			noiseZ = 0;
+		}
 	}
 	else
 	{
 		noiseX = 0;
 		noiseY = 0;
+		noiseZ = 0;
 	}
 
 	//--
@@ -374,7 +440,8 @@ void NoiseAnimator::update()
 	if (ENABLE_NoisePointFilter)
 	{
 		LPFpoint.setFc(ofMap(fcPoint, 0.f, 1.f, 0.001f, 0.05f, true));
-		LPFpoint.update(ofVec2f(noiseX, noiseY));
+		LPFpoint.update(ofVec3f(noiseX, noiseY, noiseZ));
+		//LPFpoint.update(ofVec2f(noiseX, noiseY));
 
 #ifdef INCLUDE_PLOTS
 		plot_NoiseX->update(-LPFpoint.value().x);
@@ -432,28 +499,50 @@ void NoiseAnimator::update()
 	{
 		if (!ENABLE_NoisePointFilter)
 		{
-			noisePos = glm::vec2(
+			noisePos = glm::vec3(
 				(LPFmodulator.value() * noiseX) * (noisePowerX * 5),
-				(LPFmodulator.value() * noiseY) * (noisePowerY * 5));
+				(LPFmodulator.value() * noiseY) * (noisePowerY * 5),
+				(LPFmodulator.value() * noiseZ) * (noisePowerZ * 5));
+
+			//noisePos = glm::vec2(
+			//	(LPFmodulator.value() * noiseX) * (noisePowerX * 5),
+			//	(LPFmodulator.value() * noiseY) * (noisePowerY * 5));
 		}
-		else {
-			noisePos = glm::vec2(
+		else
+		{
+			noisePos = glm::vec3(
 				(LPFmodulator.value() * LPFpoint.value().x) * (noisePowerX * 5),
-				(LPFmodulator.value() * LPFpoint.value().y) * (noisePowerY * 5));
+				(LPFmodulator.value() * LPFpoint.value().y) * (noisePowerY * 5),
+				(LPFmodulator.value() * LPFpoint.value().z) * (noisePowerZ * 5));
+
+			//noisePos = glm::vec2(
+			//	(LPFmodulator.value() * LPFpoint.value().x) * (noisePowerX * 5),
+			//	(LPFmodulator.value() * LPFpoint.value().y) * (noisePowerY * 5));
 		}
 	}
 	else
 	{
 		if (!ENABLE_NoisePointFilter)
 		{
-			noisePos = glm::vec2(
+			noisePos = glm::vec3(
 				(faderValue * noiseX) * (noisePowerX * 5),
-				(faderValue * noiseY) * (noisePowerY * 5));
+				(faderValue * noiseY) * (noisePowerY * 5),
+				(faderValue * noiseZ) * (noisePowerZ * 5));
+
+			//noisePos = glm::vec2(
+			//	(faderValue * noiseX) * (noisePowerX * 5),
+			//	(faderValue * noiseY) * (noisePowerY * 5));
 		}
-		else {
-			noisePos = glm::vec2(
+		else
+		{
+			noisePos = glm::vec3(
 				(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
-				(faderValue * LPFpoint.value().y) * (noisePowerY * 5));
+				(faderValue * LPFpoint.value().y) * (noisePowerY * 5),
+				(faderValue * LPFpoint.value().z) * (noisePowerZ * 5));
+
+			//noisePos = glm::vec2(
+			//	(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
+			//	(faderValue * LPFpoint.value().y) * (noisePowerY * 5));
 		}
 	}
 
@@ -461,12 +550,12 @@ void NoiseAnimator::update()
 
 	//cout << "noisePos:" << ofToString(noisePos) << endl;
 
+	//TODO:
 	//pointer back
 	if (point_BACK != nullptr)
 	{
 		(*point_BACK) = noisePos;
 	}
-
 }
 
 ////--------------------------------------------------------------
@@ -477,6 +566,7 @@ void NoiseAnimator::update()
 
 //--------------------------------------------------------------
 void NoiseAnimator::draw()
+//void NoiseAnimator::draw(ofEventArgs & args)
 {
 	if (SHOW_Gui)
 	{
@@ -657,7 +747,11 @@ void NoiseAnimator::draw()
 			else c = ofColor(255, 64);
 			ofSetColor(c);
 
-			ofDrawCircle(pxx, pyy, 3);
+
+			float nz = abs(noisePos.z);
+			float r = ofMap(nz, 0, 100, 1, 7, true);
+			ofDrawCircle(pxx, pyy, r);
+			//ofDrawCircle(pxx, pyy, 3);
 			//ofDrawCircle(nx + xPos + halfSize, ny + yPos + halfSize, 3);
 			ofPopStyle();
 		}
@@ -768,6 +862,13 @@ void NoiseAnimator::draw()
 }
 
 //--------------------------------------------------------------
+void NoiseAnimator::restart()
+{
+	stop();
+	start();
+}
+
+//--------------------------------------------------------------
 void NoiseAnimator::start()
 {
 	//cout << "start()" << endl;
@@ -814,6 +915,10 @@ void NoiseAnimator::stop()
 NoiseAnimator::~NoiseAnimator()
 {
 	ofRemoveListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
+
+	//ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
+	//ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
+
 	exit();
 }
 
@@ -846,7 +951,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
 	//-
-	
+
 	if (false) {}
 
 	//if (name == "Min" ||
@@ -911,12 +1016,16 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_Noise = true;
 			ENABLE_NoiseX = true;
 			ENABLE_NoiseY = true;
-			noisePowerX = 100;
-			noisePowerY = 100;
+			ENABLE_NoiseZ = true;
+			noisePowerX = 20;
+			noisePowerY = 20;
+			noisePowerZ = 20;
 			noiseDeepX = 1.0f;
 			noiseDeepY = 1.0f;
+			noiseDeepZ = 1.0f;
 			noiseSpeedX = 0.5f;
 			noiseSpeedY = 0.5f;
+			noiseSpeedZ = 0.5f;
 
 			//workflow
 			Reset_Modulator = true;
@@ -928,8 +1037,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		if (Reset_Modulator)
 		{
 			Reset_Modulator = false;
+			ENABLE_Modulator = false;
 
-			ENABLE_Modulator = true;
 			faderValue = faderMin;
 			ENABLE_NoisePointFilter = true;
 			ENABLE_NoiseModulatorFilter = true;
@@ -960,7 +1069,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 	{
 		if (float_BACK != nullptr)
 		{
-			(*float_BACK) = faderValue;
+			(*float_BACK) = faderValue.get();
 		}
 	}
 	else if (name == "MODE MODULATOR Noise")
@@ -981,7 +1090,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").maximize();
 		}
 	}
-	else if (name == "Enable Noise Animator")
+	else if (name == ENABLE_Noise.getName())
 	{
 		if (!ENABLE_Noise)
 		{

@@ -18,12 +18,28 @@
 #include "ofxSurfing_ofxGui.h"
 #include "ofxBiquadFilter.h"
 
-class NoiseAnimator
+class NoiseAnimator : public ofBaseApp
 {
+
+public:
+	NoiseAnimator();
+	~NoiseAnimator();
+
+public:
+	void setup();
+	void startup();
+	void update();
+	void draw();
+private:
+	//void update(ofEventArgs & args);
+	//void draw(ofEventArgs & args);
 
 private:
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 	std::string path_Settings;
+
+	int rSeed;
+
 public:
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(string folder)
@@ -36,34 +52,35 @@ public:
 public:
 	ofParameter<bool> ENABLE_NoiseModulatorFilter;
 	ofParameter<bool> ENABLE_NoisePointFilter;
+
+private:
 	ofxBiquadFilter1f LPFmodulator;//we filter the modulator envelope to avoid abrupt jumps
-	ofxBiquadFilter2f LPFpoint;//we filter the modulator point to avoid abrupt jumps
+	ofxBiquadFilter3f LPFpoint;//we filter the modulator point to avoid abrupt jumps
+	//ofxBiquadFilter2f LPFpoint;//we filter the modulator point to avoid abrupt jumps
 	//float fc;
 	ofParameter<float> fc;
 	ofParameter<float> fcPoint;
 
+private:
 	bool bCustomPositionPlot = false;
-	glm::vec2 positionPlot { 200, 50 };
-
-	NoiseAnimator();
-	~NoiseAnimator();
-
-	void setup();
-	void update();
-
-	void update(float _dt)
-	{
-		dt = _dt;
-		update();
-	}
-
-	void draw();
-	//void draw(bool disabled);
+	glm::vec2 positionPlot{ 200, 50 };
 
 	//bool bDisabled = false;//TODO: whats is doing this?
 
+public:
+	//void update(float _dt)
+	//{
+	//	dt = _dt;
+	//	update();
+	//}
+
+	//void draw();
+	//void draw(bool disabled);
+
+public:
 	void exit();
 
+	void restart();
 	void start();
 	void stop();
 
@@ -77,19 +94,22 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	glm::vec2 getNoisePoint() {
+	glm::vec3 getNoisePoint()
+	{
 		return noisePos;
 		//return glm::vec2(noiseX, noiseY);
 	}
 
 	//--------------------------------------------------------------
-	void point_TARGET(glm::vec2 &p)
+	void point_TARGET(glm::vec3 &p)
 	{
 		point_BACK = &p;
 	}
 
+private:
 	float fps;
 
+public:
 	//--------------------------------------------------------------
 	void setFps(float _fps)
 	{
@@ -225,7 +245,10 @@ public:
 		return guiPos;
 	}
 
+private:
 	string label = "Noise Animator";
+
+public:
 	//--------------------------------------------------------------
 	void setNameLabel(string s)
 	{
@@ -293,23 +316,27 @@ public:
 		return doneInstantiated;
 	}
 
-	//TODO
+	//--
+
+public:
 	ofParameterGroup params;
 
-	//ofParameter<bool> ENABLE_Noise;
 	ofParameter<bool> ENABLE_Noise;
 	ofParameter<bool> ENABLE_Modulator;
 
-	glm::vec2 noisePos;
+	//---
 
-	//---º
+	glm::vec3 noisePos;//the main point that we will use
+	//glm::vec2 noisePos;
 
-private:
+	//---
 
 	// noise
 
+private:
 	ofParameter<bool> ENABLE_NoiseX;
 	ofParameter<bool> ENABLE_NoiseY;
+	ofParameter<bool> ENABLE_NoiseZ;
 	ofParameter<bool> Reset_Noise;
 
 	ofParameterGroup params_NoiseX;
@@ -325,6 +352,13 @@ private:
 	ofParameter<int> noisePowerY;
 	ofParameter<int> noiseDeepY;
 	float noiseY;
+
+	ofParameterGroup params_NoiseZ;
+	float noiseCountZ;
+	ofParameter<float> noiseSpeedZ;
+	ofParameter<int> noisePowerZ;
+	ofParameter<int> noiseDeepZ;
+	float noiseZ;
 
 	//-
 
@@ -349,6 +383,7 @@ private:
 	ofxHistoryPlot *plot_NoiseY;
 #endif
 
+private:
 	ofxAnimatableQueue queue;
 	void Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &);
 
@@ -379,6 +414,7 @@ public:
 		//if (!bpmMode) bpmMode = true;
 	}
 	ofParameter<float> bpmSpeed;
+
 private:
 	ofParameterGroup params_Timers;
 	ofParameterGroup params_Bpm;
@@ -408,7 +444,8 @@ private:
 	ofxAnimatableFloat curvePlotable;
 
 	float *float_BACK;
-	glm::vec2 *point_BACK;
+	glm::vec3 *point_BACK;
+	//glm::vec2 *point_BACK;
 
 	void setupFader();
 	void setupPlot();

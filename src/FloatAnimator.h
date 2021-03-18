@@ -159,6 +159,21 @@ public:
 	{
 		valueEnd = v;
 	}
+	
+	//--------------------------------------------------------------
+	void setRanges() {//set params limits
+		float a, b;
+		a = valueStart;
+		b = valueEnd;
+		
+		value.setMin(a);
+		valueStart.setMin(a);
+		valueEnd.setMin(a);
+
+		value.setMax(b);
+		valueStart.setMax(b);
+		valueEnd.setMax(b);
+	}
 
 	////--------------------------------------------------------------
 	//void setValue_Start()
@@ -321,10 +336,10 @@ public:
 
 	//---
 
-public:
+private:
+	ofParameter<float> value;
 	ofParameter<float> valueStart;
 	ofParameter<float> valueEnd;
-	ofParameter<float> value;
 
 	//-
 
