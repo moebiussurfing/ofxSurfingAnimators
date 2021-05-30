@@ -1,6 +1,6 @@
 {
     "Noise_Animator": {
-        "Enable_Noise_Animator": "1",
+        "Enable_Noise_Animator": "0",
         "LOW_PASS_FILTERS": {
             "FILTER_MODULATOR": "1",
             "FILTER_POINT": "1",
