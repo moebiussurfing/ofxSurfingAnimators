@@ -250,7 +250,8 @@ void FloatAnimator::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void FloatAnimator::draw(ofEventArgs & args)
 {
-	if (SHOW_Gui)
+	if (!SHOW_Gui) return;
+
 	{
 		//gui.draw();
 
@@ -258,11 +259,9 @@ void FloatAnimator::draw(ofEventArgs & args)
 
 #ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		guiManager.begin();
-		//#endif
 		{
 			drawImGuiWidgets();
 		}
-		//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		guiManager.end();
 #endif
 	}
@@ -400,8 +399,10 @@ void FloatAnimator::drawImGuiWidgets() {
 				}
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-				bool bOpen = false;
-				ImGuiWindowFlags _flagw = (bOpen ? ImGuiWindowFlags_NoCollapse : ImGuiWindowFlags_None);
+				ImGuiWindowFlags _flagw = ImGuiWindowFlags_None;
+				//bool bOpen = false;
+				//ImGuiWindowFlags _flagw = (bOpen ? ImGuiWindowFlags_NoCollapse : ImGuiWindowFlags_None);
+
 				if (ImGui::CollapsingHeader("DURATION", _flagw)) {
 					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
 

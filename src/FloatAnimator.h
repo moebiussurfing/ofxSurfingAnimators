@@ -1,5 +1,16 @@
 #pragma once
 
+
+/*
+
+TODO:
+
++ fbo plots inside ImGui panel
++ combo presetsManager lite version
+
+*/
+
+
 #include "ofMain.h"
 
 #include "ofxAnimatableFloat.h"
@@ -519,5 +530,5 @@ private:
 	//--
 
 public:
-	ofParameter<bool> SHOW_Gui{ "SHOW_Gui", true };
+	ofParameter<bool> SHOW_Gui{ "SHOW ANIMATOR", true };
 };
