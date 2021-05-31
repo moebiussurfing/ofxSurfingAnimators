@@ -17,10 +17,11 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	// scene
+	// get animators values
 	float value = animatorFloat1.getValue();
 	myParamFloat = animatorFloat2.getValue();//update param too. not required if initiated with autoUpdate true!
 
+	// scene
 	ofSetBackgroundColor(16);
 	ofPushMatrix();
 	ofPushStyle();
@@ -41,7 +42,7 @@ void ofApp::draw() {
 	ofPopMatrix();
 
 	// help
-	string s = "PRESS SPACE TO TRIG ANIMATORS";
+	string s = "PRESS SPACE TO TRIG BOTH ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 10, 25);
 }
 

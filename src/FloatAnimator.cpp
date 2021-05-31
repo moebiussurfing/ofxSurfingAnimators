@@ -136,8 +136,9 @@ void FloatAnimator::setup()
 	//--
 
 	//settings
+	params.setName("ANIMATOR");
 	//params.setName("Float Animator");
-	params.setName(label);
+	//params.setName(label);
 	params.add(ENABLE_valueAnim);
 	params.add(value);
 	params.add(valueStart);
@@ -371,6 +372,7 @@ void FloatAnimator::drawImGuiWidgets() {
 		if (bParams)
 		{
 			//name = "PARAMETERS";
+			//name = "ANIMATOR";
 			name = "PANEL " + label;
 			//if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
 			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw))
@@ -396,24 +398,32 @@ void FloatAnimator::drawImGuiWidgets() {
 				if (ImGui::Button("+", ImVec2(_w50, _h / 2))) {
 					nextCurve();
 				}
-
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-				ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+				bool bOpen = false;
+				ImGuiWindowFlags _flagw = (bOpen ? ImGuiWindowFlags_NoCollapse : ImGuiWindowFlags_None);
+				if (ImGui::CollapsingHeader("DURATION", _flagw)) {
+					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+
+					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+					if (bpmMode) {
+						ofxImGui::AddParameter(bpmSpeed);
+						ofxImGui::AddParameter(bpmBeatDelay);
+						ofxImGui::AddParameter(bpmBeatDuration);
+					}
+					else {
+						ofxImGui::AddParameter(animDelay);
+						ofxImGui::AddParameter(duration);
+					}
+					ImGui::PopItemWidth();
+				}
+
+				//-
 
 				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-				if (bpmMode) {
-					ofxImGui::AddParameter(bpmSpeed);
-					ofxImGui::AddParameter(bpmBeatDelay);
-					ofxImGui::AddParameter(bpmBeatDuration);
-				}
-				else {
-					ofxImGui::AddParameter(animDelay);
-					ofxImGui::AddParameter(duration);
-				}
+				ofxImGui::AddGroup(params, flags);
 				ImGui::PopItemWidth();
 
-				ofxImGui::AddGroup(params, flags);
 				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
 
 				//-

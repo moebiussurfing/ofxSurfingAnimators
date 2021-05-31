@@ -6,10 +6,11 @@
 
 ## can exclude some sttings files
 
-#*.XML
-#*.xml
-#*.JSON
-#*.json
+*.XML
+*.xml
+*.JSON
+*.json
+*.ini
 
 #*/bin/*
 #!*/bin/data/
@@ -550,5 +551,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-1_example_FloatNoised/bin/data/NoiseAnimator/settings_NoiseAnimator.xml
-1_example_FloatNoised/bin/imgui.ini
+

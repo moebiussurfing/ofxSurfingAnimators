@@ -4,7 +4,7 @@
             "BPM": "120",
             "BPM_Mode": "1",
             "Beat": "8",
-            "Beat_Delay": "0"
+            "Beat_Delay": "5"
         },
         "Curve_Type": "23",
         "Enable_Animator": "1",

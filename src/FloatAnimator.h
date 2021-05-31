@@ -14,6 +14,7 @@
 
 class FloatAnimator
 {
+	//--
 
 	//public:
 private:
@@ -23,19 +24,23 @@ private:
 
 	ofParameter<float>paramFloat{ "-1", -1, -1, -1 };
 
+	//--
+
 public:
 	FloatAnimator();
 	~FloatAnimator();
 
-	//TODO:
+	//TODO://use &
 	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) {//only use to set min/max range but not auto update the param value!
-	void setup(ofParameter<float>paramFloat) {//only use to set min/max range but not auto update the param value!
+	//--------------------------------------------------------------
+	void setup(ofParameter<float> &paramFloat) {//only use to set min/max range but not auto update the param value!
 		//bAutoUpdate = autoUpdate;
 		setNameLabel(paramFloat.getName());
 		setup(paramFloat.getMin(), paramFloat.getMax());
 	}
 
 	void setup();
+	//--------------------------------------------------------------
 	void setup(float start, float end) {
 		setStart(start);
 		setEnd(end);
@@ -92,6 +97,9 @@ public:
 	}
 
 	//--------------------------------------------------------------
+	
+	// api
+
 public:
 	void start();
 	void stop();
