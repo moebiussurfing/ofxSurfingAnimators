@@ -39,8 +39,8 @@ NoiseAnimator::NoiseAnimator()
 	SHOW_Gui = true;
 	guiPos = glm::vec2(700, 500);
 
-	//ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
-	//ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
+	ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
+	ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
 }
 
 //--------------------------------------------------------------
@@ -328,8 +328,8 @@ void NoiseAnimator::setupPlot_Noise()
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::update()
-//void NoiseAnimator::update(ofEventArgs & args)
+//void NoiseAnimator::update()
+void NoiseAnimator::update(ofEventArgs & args)
 {
 	if (ofGetFrameNum() == rSeed)
 	{
@@ -565,8 +565,8 @@ void NoiseAnimator::update()
 //}
 
 //--------------------------------------------------------------
-void NoiseAnimator::draw()
-//void NoiseAnimator::draw(ofEventArgs & args)
+//void NoiseAnimator::draw()
+void NoiseAnimator::draw(ofEventArgs & args)
 {
 	if (SHOW_Gui)
 	{
@@ -916,8 +916,8 @@ NoiseAnimator::~NoiseAnimator()
 {
 	ofRemoveListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
 
-	//ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
-	//ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
+	ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
+	ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
 
 	exit();
 }

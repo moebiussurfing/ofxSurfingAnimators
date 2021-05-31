@@ -15,6 +15,7 @@
 #endif
 #include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
+#include "ofxSurfing_ImGuiBundle.h"
 #include "ofxSurfing_ofxGui.h"
 #include "ofxBiquadFilter.h"
 
@@ -28,8 +29,12 @@ public:
 public:
 	void setup();
 	void startup();
-	void update();
-	void draw();
+
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
+	//void update();
+	//void draw();
+
 private:
 	//void update(ofEventArgs & args);
 	//void draw(ofEventArgs & args);

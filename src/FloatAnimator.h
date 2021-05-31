@@ -3,15 +3,24 @@
 #include "ofMain.h"
 
 #include "ofxAnimatableFloat.h"
-#include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
-#include "ofxSurfing_ofxGui.h"
+#include "ofxSurfing_ImGuiBundle.h"
+
+//#include "ofxGui.h"
+//#include "ofxSurfing_ofxGui.h"
+
+#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 
 class FloatAnimator
 {
 private:
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	ofxSurfing_ImGui_LayoutManager guiManager;
+#endif
+
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 	std::string path_Settings;
+
 public:
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(string folder)
@@ -24,18 +33,32 @@ public:
 public:
 	bool bCustomPositionPlot = false;
 	glm::vec2 positionPlot{ 50, 50 };
+	
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
 
 	FloatAnimator();
 	~FloatAnimator();
 
 	void setup();
-	void update();
-	void update(float _dt)
-	{
-		dt = _dt;
-		update();
-	}
-	void draw();
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
+	void drawImGuiWidgets();
+
+	//void update();
+	//void draw();
+
+	//void update(float _dt)
+	//{
+	//	dt = _dt;
+	//	update();
+	//}
+
 	void exit();
 
 	void start();
@@ -93,30 +116,30 @@ public:
 	//    anim_loop = b;
 	//}
 
-	//--------------------------------------------------------------
-	void setMinimized(bool b)
-	{
-		if (b)
-		{
-			gui.minimizeAll();
-		}
-		else
-		{
-			gui.maximizeAll();
-		}
-	}
+	////--------------------------------------------------------------
+	//void setMinimized(bool b)
+	//{
+	//	if (b)
+	//	{
+	//		gui.minimizeAll();
+	//	}
+	//	else
+	//	{
+	//		gui.maximizeAll();
+	//	}
+	//}
 
-	//--------------------------------------------------------------
-	bool isMinimized()
-	{
-		return gui.isMinimized();
-	}
+	////--------------------------------------------------------------
+	//bool isMinimized()
+	//{
+	//	return gui.isMinimized();
+	//}
 
-	//--------------------------------------------------------------
-	void disableHeader()
-	{
-		gui.disableHeader();
-	}
+	////--------------------------------------------------------------
+	//void disableHeader()
+	//{
+	//	gui.disableHeader();
+	//}
 
 	//--------------------------------------------------------------
 	bool isAnimating()
@@ -237,26 +260,27 @@ public:
 
 	//-
 
-	//--------------------------------------------------------------
-	void setGuiPosition(glm::vec2 _p)
-	{
-		guiPos = _p;
-		gui.setPosition(guiPos.x, guiPos.y);
-	}
+	////--------------------------------------------------------------
+	//void setGuiPosition(glm::vec2 _p)
+	//{
+	//	guiPos = _p;
+	//	gui.setPosition(guiPos.x, guiPos.y);
+	//}
 
-	//--------------------------------------------------------------
-	glm::vec2 getGuiPosition()
-	{
-		return guiPos;
-	}
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiPosition()
+	//{
+	//	return guiPos;
+	//}
 
-	//--------------------------------------------------------------
-	glm::vec2 getGuiShape()
-	{
-		ofRectangle r = gui.getShape();
-		glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
-		return _shape;
-	}
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiShape()
+	//{
+	//	ofRectangle r = gui.getShape();
+	//	glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
+	//	return _shape;
+	//}
+
 	public:
 		//bool bCustomPositionPlot = false;
 		//glm::vec2 positionPlot{ 50, 50 };
@@ -355,8 +379,9 @@ private:
 	ofxAnimatableFloat floatAnimator;
 
 	void Changed_params(ofAbstractParameter &e);
-public:
-	ofxPanel gui;
+
+//public:
+//	ofxPanel gui;
 
 	//-
 
@@ -445,7 +470,7 @@ private:
 	}
 
 	ofParameter<bool> SHOW_Gui{ "SHOW_Gui", true };
-	glm::vec2 guiPos;
+	//glm::vec2 guiPos;
 	//string path;
 	float dt;
 };

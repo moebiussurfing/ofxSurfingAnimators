@@ -24,16 +24,16 @@ void ofApp::setup() {
 	//animatorNoise.setMinimized(true);
 	//animatorNoise.setVisible_Plot(true);
 
-	animatorFloat.setGuiPosition(glm::vec2(5 + 0 * 205, 5));
-	animatorNoise.setGuiPosition(glm::vec2(5 + 1 * 205, 5));
+	//animatorFloat.setGuiPosition(glm::vec2(5 + 0 * 205, 5));
+	//animatorNoise.setGuiPosition(glm::vec2(5 + 1 * 205, 5));
 
 	startTween();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	animatorFloat.update();
-	animatorNoise.update();
+	//animatorFloat.update();
+	//animatorNoise.update();
 }
 
 //--------------------------------------------------------------
@@ -41,8 +41,8 @@ void ofApp::draw() {
 	ofSetBackgroundColor(16);
 
 	//guis
-	animatorFloat.draw();
-	animatorNoise.draw();
+	//animatorFloat.draw();
+	//animatorNoise.draw();
 
 	//scene
 	ofPushMatrix();
@@ -63,8 +63,6 @@ void ofApp::draw() {
 	s = "PRESS SPACE TO TRIG ALL ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 25 + 2 * 205, 30);
 }
-
-
 
 //--------------------------------------------------------------
 void ofApp::startTween() {

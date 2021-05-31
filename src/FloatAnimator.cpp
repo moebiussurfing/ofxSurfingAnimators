@@ -13,7 +13,10 @@ FloatAnimator::FloatAnimator()
 	doneInstantiated = true;
 	setFps(60);
 	SHOW_Gui = true;
-	guiPos = glm::vec2(500, 500);
+	//guiPos = glm::vec2(500, 500);
+
+	ofAddListener(ofEvents().update, this, &FloatAnimator::update);
+	ofAddListener(ofEvents().draw, this, &FloatAnimator::draw, OF_EVENT_ORDER_AFTER_APP);
 }
 
 //--------------------------------------------------------------
@@ -21,7 +24,7 @@ void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent &)
 {
 	ofLogNotice(__FUNCTION__);
 
-	//workflow
+	// workflow
 	if (repeatMode == 2 || repeatMode == 3 || repeatMode == 5)//with a back mode. force to start
 	{
 		if (value != valueStart) value = valueStart;
@@ -59,8 +62,8 @@ void FloatAnimator::previousCurve()
 //--------------------------------------------------------------
 void FloatAnimator::setup()
 {
-	ofxSurfingHelpers::setThemeDark_ofxGui;
-	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
+//	ofxSurfingHelpers::setThemeDark_ofxGui;
+//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
 
 	ENABLE_valueAnim.set("Enable Animator", true);
 
@@ -163,11 +166,20 @@ void FloatAnimator::setup()
 
 	//-
 
-	//gui
-	gui.setup(label);
-	gui.setPosition(guiPos.x, guiPos.y - 20);
-	gui.add(params);
-	gui.add(SHOW_Plot);
+	//// gui
+	//gui.setup(label);
+	//gui.setPosition(guiPos.x, guiPos.y - 20);
+	//gui.add(params);
+	//gui.add(SHOW_Plot);
+
+	//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+	// gui
+	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
+	guiManager.setup();//initiate ImGui
+	//guiManager.setUseAdvancedSubPanel(true);
+#endif
 
 	//-
 
@@ -207,9 +219,8 @@ void FloatAnimator::stop()
 		animProgress = 0;
 	}
 }
-
 //--------------------------------------------------------------
-void FloatAnimator::update()
+void FloatAnimator::update(ofEventArgs & args)
 {
 	floatAnimator.update(dt);
 
@@ -229,13 +240,28 @@ void FloatAnimator::update()
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::draw()
+void FloatAnimator::draw(ofEventArgs & args)
 {
 	if (SHOW_Gui)
 	{
+		//gui.draw();
 
-		gui.draw();
+		//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+		guiManager.begin();
+		{
+			//#endif
+
+			drawImGuiWidgets();
+
+			//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+		}
+		guiManager.end();
+#endif
 	}
+
+	//-
 
 	if (SHOW_Plot)
 	{
@@ -254,8 +280,12 @@ void FloatAnimator::draw()
 			y = positionPlot.y;
 		}
 		else {
-			x = gui.getPosition().x + 45;
-			y = gui.getPosition().y + gui.getHeight() + pad;
+			//x = positionGuiLayout.get().x + 45;
+			x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
+			y = positionGuiLayout.get().y + heightGuiLayout + pad;
+
+			//x = gui.getPosition().x + 45;
+			//y = gui.getPosition().y + gui.getHeight() + pad;
 		}
 
 		//-
@@ -303,6 +333,67 @@ void FloatAnimator::draw()
 		//	!stateColor ? ofColor::white : ofColor::black);
 
 		ofPopStyle();
+	}
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::drawImGuiWidgets() {
+	{
+		auto mainSettings = ofxImGui::Settings();
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+		string name;
+
+		//bool bOpen;
+		//ImGuiColorEditFlags _flagc;
+
+		// widgets sizes
+		float _spcx;
+		float _spcy;
+		float _w100;
+		float _h100;
+		float _w99;
+		float _w50;
+		float _w33;
+		float _w25;
+		float _h;
+
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+		if (guiManager.auto_resize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		// 1. window parameters
+		static bool bParams = true;
+		if (bParams)
+		{
+			//name = "PARAMETERS";
+			name = label;
+			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw))
+			{
+				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+				flags |= ImGuiTreeNodeFlags_DefaultOpen;
+				flags |= ImGuiTreeNodeFlags_Framed;
+
+				ofxImGui::AddGroup(params, flags);
+				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+
+				//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+				guiManager.drawAdvancedSubPanel();
+#endif
+
+				//get window position for advanced layout paired position
+				auto posx = ImGui::GetWindowPos().x;
+				auto posy = ImGui::GetWindowPos().y;
+				widthGuiLayout = ImGui::GetWindowWidth();
+				heightGuiLayout = ImGui::GetWindowHeight();
+				positionGuiLayout = glm::vec2(posx, posy);
+				//positionGuiLayout = glm::vec2(posx + w, posy);
+			}
+			ofxImGui::EndWindow(mainSettings);
+		}
+#endif
 	}
 }
 
@@ -386,6 +477,10 @@ FloatAnimator::~FloatAnimator()
 	ofRemoveListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_params);
 
 	ofRemoveListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
+
+	ofRemoveListener(ofEvents().update, this, &FloatAnimator::update);
+	ofRemoveListener(ofEvents().draw, this, &FloatAnimator::draw, OF_EVENT_ORDER_AFTER_APP);
+
 	exit();
 }
 
@@ -463,11 +558,11 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
 		}
 
-		// gui workflow
-		gui.getGroup(params.getName()).getGroup(params_Time.getName()).minimize();
-		gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).minimize();
-		if (!bpmMode) gui.getGroup(params.getName()).getGroup(params_Time.getName()).maximize();
-		else gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).maximize();
+		//// gui workflow
+		//gui.getGroup(params.getName()).getGroup(params_Time.getName()).minimize();
+		//gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).minimize();
+		//if (!bpmMode) gui.getGroup(params.getName()).getGroup(params_Time.getName()).maximize();
+		//else gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).maximize();
 	}
 
 	else if (name == "Curve Type")
