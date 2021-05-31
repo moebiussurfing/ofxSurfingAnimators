@@ -13,14 +13,34 @@
 #ifdef INCLUDE_PLOTS
 #include "ofxHistoryPlot.h"
 #endif
-#include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfing_ImGuiBundle.h"
-#include "ofxSurfing_ofxGui.h"
-#include "ofxBiquadFilter.h"
+#include "ofxBiquadFilter.h"//TODO change to smoother bc could be more performant
+//#include "ofxGui.h"
+//#include "ofxSurfing_ofxGui.h"
+
+#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+//#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
 class NoiseAnimator : public ofBaseApp
 {
+
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+public:
+	ofxSurfing_ImGui_LayoutManager guiManager;
+#endif
+public:
+	void drawImGuiWidgets();
+
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
+
+	//-
 
 public:
 	NoiseAnimator();
@@ -35,7 +55,7 @@ public:
 	//void update();
 	//void draw();
 
-private:
+//private:
 	//void update(ofEventArgs & args);
 	//void draw(ofEventArgs & args);
 
@@ -159,30 +179,30 @@ public:
 		faderLoop = b;
 	}
 
-	//--------------------------------------------------------------
-	void disableHeader()
-	{
-		gui.disableHeader();
-	}
+	////--------------------------------------------------------------
+	//void disableHeader()
+	//{
+	//	gui.disableHeader();
+	//}
 
-	//--------------------------------------------------------------
-	void setMinimized(bool b)
-	{
-		if (!b)
-		{
-			gui.maximizeAll();
-		}
-		else
-		{
-			gui.minimizeAll();
-		}
-	}
+	////--------------------------------------------------------------
+	//void setMinimized(bool b)
+	//{
+	//	if (!b)
+	//	{
+	//		gui.maximizeAll();
+	//	}
+	//	else
+	//	{
+	//		gui.minimizeAll();
+	//	}
+	//}
 
-	//--------------------------------------------------------------
-	bool isMinimized()
-	{
-		return gui.isMinimized();
-	}
+	////--------------------------------------------------------------
+	//bool isMinimized()
+	//{
+	//	return gui.isMinimized();
+	//}
 
 	//--------------------------------------------------------------
 	void setDebug(bool b)
@@ -237,18 +257,18 @@ public:
 
 	//-
 
-	//--------------------------------------------------------------
-	void setGuiPosition(glm::vec2 _p)
-	{
-		guiPos = _p;
-		gui.setPosition(guiPos.x, guiPos.y);
-	}
+	////--------------------------------------------------------------
+	//void setGuiPosition(glm::vec2 _p)
+	//{
+	//	guiPos = _p;
+	//	gui.setPosition(guiPos.x, guiPos.y);
+	//}
 
-	//--------------------------------------------------------------
-	glm::vec2 getGuiPosition()
-	{
-		return guiPos;
-	}
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiPosition()
+	//{
+	//	return guiPos;
+	//}
 
 private:
 	string label = "Noise Animator";
@@ -392,8 +412,9 @@ private:
 	ofxAnimatableQueue queue;
 	void Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &);
 
-	ofxPanel gui;
-	glm::vec2 guiPos;
+	//ofxPanel gui;
+	//glm::vec2 guiPos;
+
 	void Changed_params(ofAbstractParameter &e);
 
 	ofParameterGroup params_Modulator;

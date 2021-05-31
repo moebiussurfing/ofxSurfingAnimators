@@ -5,7 +5,8 @@ FloatAnimator::FloatAnimator()
 {
 	path_GLOBAL_Folder = "FloatAnimator";
 	path_Settings = "settings_FloatAnimator.xml";
-	autoSettings = false;
+	autoSettings = true;
+	//autoSettings = false;
 
 	//ofSetLogLevel(OF_LOG_NOTICE);
 	//ofSetLogLevel(OF_LOG_SILENT);
@@ -62,8 +63,8 @@ void FloatAnimator::previousCurve()
 //--------------------------------------------------------------
 void FloatAnimator::setup()
 {
-//	ofxSurfingHelpers::setThemeDark_ofxGui;
-//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
+	//	ofxSurfingHelpers::setThemeDark_ofxGui;
+	//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
 
 	ENABLE_valueAnim.set("Enable Animator", true);
 
@@ -236,6 +237,12 @@ void FloatAnimator::update(ofEventArgs & args)
 	{
 		animProgress = floatAnimator.getPercentDone() * 100;
 		value = floatAnimator.val();
+
+		//TODO: autoUpdate param
+		//if (bAutoUpdate) {
+		//	if (paramFloat.getName() != "-1")
+		//		paramFloat = value;
+		//}
 	}
 }
 
@@ -250,13 +257,11 @@ void FloatAnimator::draw(ofEventArgs & args)
 
 #ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		guiManager.begin();
+		//#endif
 		{
-			//#endif
-
 			drawImGuiWidgets();
-
-			//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		}
+		//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		guiManager.end();
 #endif
 	}
@@ -362,17 +367,51 @@ void FloatAnimator::drawImGuiWidgets() {
 
 		// 1. window parameters
 		static bool bParams = true;
+		//static bool bOpen = false;
 		if (bParams)
 		{
 			//name = "PARAMETERS";
-			name = label;
+			name = "PANEL " + label;
+			//if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
 			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw))
 			{
 				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-				flags |= ImGuiTreeNodeFlags_DefaultOpen;
+				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
 				flags |= ImGuiTreeNodeFlags_Framed;
+
+				if (ImGui::Button("START", ImVec2(_w100, _h))) {
+					start();
+				}
+				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				ofxImGui::AddParameter(value);
+				ImGui::PopItemWidth();
+
+				ImGui::Text("CURVE");
+				if (ImGui::Button("-", ImVec2(_w50, _h / 2))) {
+					previousCurve();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("+", ImVec2(_w50, _h / 2))) {
+					nextCurve();
+				}
+
+				ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+				ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+
+				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				if (bpmMode) {
+					ofxImGui::AddParameter(bpmSpeed);
+					ofxImGui::AddParameter(bpmBeatDelay);
+					ofxImGui::AddParameter(bpmBeatDuration);
+				}
+				else {
+					ofxImGui::AddParameter(animDelay);
+					ofxImGui::AddParameter(duration);
+				}
+				ImGui::PopItemWidth();
 
 				ofxImGui::AddGroup(params, flags);
 				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
@@ -631,7 +670,7 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 		//floatAnimator.setColor(valueStart);
 		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
-		//    start();
+		start();
 		//}
 	}
 	else if (name == "Value End")
@@ -639,7 +678,7 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 		//floatAnimator.setColor(valueEnd);
 		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
-		//    start();
+		start();
 		//}
 	}
 }

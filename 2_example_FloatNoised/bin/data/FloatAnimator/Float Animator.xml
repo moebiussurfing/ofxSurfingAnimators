@@ -1,0 +1,16 @@
+{
+    "Float_Animator": {
+        "BPM_Engine": {
+            "BPM": "120",
+            "BPM_Mode": "1",
+            "Beat": "4",
+            "Beat_Delay": "2"
+        },
+        "Curve_Type": "3",
+        "Enable_Animator": "1",
+        "Repeat_Mode": "3",
+        "Times": "1",
+        "Value_End": "2",
+        "Value_Start": "1"
+    }
+}

@@ -1,5 +1,5 @@
 {
-    "Noise_Animator": {
+    "myNoise": {
         "Enable_Noise_Animator": "1",
         "LOW_PASS_FILTERS": {
             "FILTER_MODULATOR": "1",
@@ -17,7 +17,7 @@
                 "Release_Beat": "2",
                 "Sustain_Beat": "4"
             },
-            "Curve_Type": "3",
+            "Curve_Type": "16",
             "Max": "1",
             "Min": "0",
             "TIMERS": {
@@ -36,13 +36,13 @@
         "Y": {
             "Deep": "1",
             "ENABLE": "1",
-            "Power": "66",
+            "Power": "20",
             "Speed": "0.5"
         },
         "Z": {
             "Deep": "1",
             "ENABLE": "1",
-            "Power": "100",
+            "Power": "20",
             "Speed": "0.5"
         }
     }

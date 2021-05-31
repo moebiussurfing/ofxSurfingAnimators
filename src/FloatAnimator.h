@@ -10,14 +10,75 @@
 //#include "ofxSurfing_ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+//#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
 class FloatAnimator
 {
+
+	//public:
+private:
+	//TODO: use a pointer to allow autoUpdate..
+	//ofParameter<float> * paramRef = NULL;
+	//bool bAutoUpdate = false;
+
+	ofParameter<float>paramFloat{ "-1", -1, -1, -1 };
+
+public:
+	FloatAnimator();
+	~FloatAnimator();
+
+	//TODO:
+	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) {//only use to set min/max range but not auto update the param value!
+	void setup(ofParameter<float>paramFloat) {//only use to set min/max range but not auto update the param value!
+		//bAutoUpdate = autoUpdate;
+		setNameLabel(paramFloat.getName());
+		setup(paramFloat.getMin(), paramFloat.getMax());
+	}
+
+	void setup();
+	void setup(float start, float end) {
+		setStart(start);
+		setEnd(end);
+		setRanges();
+		setup();
+	}
+
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
+	//void update();
+	//void draw();
+	//void update(float _dt)
+	//{
+	//	dt = _dt;
+	//	update();
+	//}
+	void exit();
+
+	//-
+
 private:
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfing_ImGui_LayoutManager guiManager;
 #endif
 
+public:
+	void drawImGuiWidgets();
+
+private:
+	bool bCustomPositionPlot = false;
+	glm::vec2 positionPlot{ 50, 50 };
+
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
+
+	//-
+
+private:
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 	std::string path_Settings;
 
@@ -30,47 +91,20 @@ public:
 		ofxSurfingHelpers::CheckFolder(folder);
 	}
 
+	//--------------------------------------------------------------
 public:
-	bool bCustomPositionPlot = false;
-	glm::vec2 positionPlot{ 50, 50 };
-	
-	float widthGuiLayout;
-	float heightGuiLayout;
-	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
-	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
-		glm::vec2(0,0),
-		glm::vec2(ofGetWidth(), ofGetHeight())
-	};
-
-	FloatAnimator();
-	~FloatAnimator();
-
-	void setup();
-	void update(ofEventArgs & args);
-	void draw(ofEventArgs & args);
-	void drawImGuiWidgets();
-
-	//void update();
-	//void draw();
-
-	//void update(float _dt)
-	//{
-	//	dt = _dt;
-	//	update();
-	//}
-
-	void exit();
-
 	void start();
 	void stop();
 
 	void nextCurve();
 	void previousCurve();
 
+private:
 	float size = 100;
 	void drawCurve(glm::vec2 &p);
 
 
+public:
 	//--------------------------------------------------------------
 	void setValueTarget(float &v)
 	{
@@ -109,11 +143,32 @@ public:
 	//--------------------------------------------------------------
 	void saveSettings();
 	void loadSettings();
-	
+
 	////--------------------------------------------------------------
 	//void setLooped(bool b)
 	//{
 	//    anim_loop = b;
+	//}
+
+	////--------------------------------------------------------------
+	//void setGuiPosition(glm::vec2 _p)
+	//{
+	//	guiPos = _p;
+	//	gui.setPosition(guiPos.x, guiPos.y);
+	//}
+
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiPosition()
+	//{
+	//	return guiPos;
+	//}
+
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiShape()
+	//{
+	//	ofRectangle r = gui.getShape();
+	//	glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
+	//	return _shape;
 	//}
 
 	////--------------------------------------------------------------
@@ -182,20 +237,15 @@ public:
 	{
 		valueEnd = v;
 	}
-	
+
 	//--------------------------------------------------------------
 	void setRanges() {//set params limits
 		float a, b;
 		a = valueStart;
 		b = valueEnd;
-		
-		value.setMin(a);
-		valueStart.setMin(a);
-		valueEnd.setMin(a);
 
-		value.setMax(b);
-		valueStart.setMax(b);
-		valueEnd.setMax(b);
+		setStartRange(a);
+		setEndRange(b);
 	}
 
 	////--------------------------------------------------------------
@@ -260,31 +310,10 @@ public:
 
 	//-
 
-	////--------------------------------------------------------------
-	//void setGuiPosition(glm::vec2 _p)
-	//{
-	//	guiPos = _p;
-	//	gui.setPosition(guiPos.x, guiPos.y);
-	//}
-
-	////--------------------------------------------------------------
-	//glm::vec2 getGuiPosition()
-	//{
-	//	return guiPos;
-	//}
-
-	////--------------------------------------------------------------
-	//glm::vec2 getGuiShape()
-	//{
-	//	ofRectangle r = gui.getShape();
-	//	glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
-	//	return _shape;
-	//}
-
-	public:
-		//bool bCustomPositionPlot = false;
-		//glm::vec2 positionPlot{ 50, 50 };
-		float pad = 15;
+public:
+	//bool bCustomPositionPlot = false;
+	//glm::vec2 positionPlot{ 50, 50 };
+	float pad = 15;
 private:
 	string label = "Float Animator";
 
@@ -327,6 +356,7 @@ public:
 
 	ofParameterGroup params;
 	ofParameter<bool> ENABLE_valueAnim;
+
 private:
 	ofParameterGroup params_Control;
 	ofParameterGroup params_Helpers;
@@ -380,27 +410,31 @@ private:
 
 	void Changed_params(ofAbstractParameter &e);
 
-//public:
-//	ofxPanel gui;
+	//public:
+	//	ofxPanel gui;
 
-	//-
+		//-
 
-	//bpm engine
+		// bpm engine
 public:
+	//--------------------------------------------------------------
 	void setDelayBeatMax(int maxBeats) {
 		bpmBeatDelay.setMax(maxBeats);
 	}
+	//--------------------------------------------------------------
 	void setDurationBeatMax(int maxBeats) {
 		bpmBeatDuration.setMax(maxBeats);
 	}
 
 public:
+	//--------------------------------------------------------------
 	void setBpm(float _bpm) {
 		bpmSpeed = _bpm;
 		//if (!bpmMode) bpmMode = true;
 	}
 	ofParameter<float> bpmSpeed;
 
+	//--------------------------------------------------------------
 	void setModeBrowse(bool b) {//to autotrig animator when changing curve type
 		ModeBrowse = b;
 	}
@@ -430,6 +464,7 @@ private:
 
 	void Changed_AnimatorDone(ofxAnimatable::AnimationEvent &);
 
+	//--------------------------------------------------------------
 	std::string AnimRepeat_ToStr(int n)
 	{
 		std::string s("unknown");
@@ -469,8 +504,12 @@ private:
 		return s;
 	}
 
-	ofParameter<bool> SHOW_Gui{ "SHOW_Gui", true };
 	//glm::vec2 guiPos;
 	//string path;
 	float dt;
+
+	//--
+
+public:
+	ofParameter<bool> SHOW_Gui{ "SHOW_Gui", true };
 };

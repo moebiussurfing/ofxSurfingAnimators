@@ -1,0 +1,16 @@
+{
+    "myFloat": {
+        "BPM_Engine": {
+            "BPM": "185.349",
+            "BPM_Mode": "1",
+            "Beat": "8",
+            "Beat_Delay": "0"
+        },
+        "Curve_Type": "7",
+        "Enable_Animator": "1",
+        "Repeat_Mode": "3",
+        "Times": "1",
+        "Value_End": "1",
+        "Value_Start": "0"
+    }
+}

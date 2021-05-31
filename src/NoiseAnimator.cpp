@@ -37,7 +37,7 @@ NoiseAnimator::NoiseAnimator()
 	fps = 60;
 	setFps(fps);
 	SHOW_Gui = true;
-	guiPos = glm::vec2(700, 500);
+	//guiPos = glm::vec2(700, 500);
 
 	ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
 	ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
@@ -223,20 +223,29 @@ void NoiseAnimator::setup()
 
 	//-
 
-	//gui
-	gui.setup(label);
-	//gui.setup("6 NOISE");
-	gui.setPosition(guiPos.x, guiPos.y);
-	gui.add(params);
-	gui.add(SHOW_Plot);
+	////gui
+	//gui.setup(label);
+	////gui.setup("6 NOISE");
+	//gui.setPosition(guiPos.x, guiPos.y);
+	//gui.add(params);
+	//gui.add(SHOW_Plot);
 
-	//collapse groups
-	//gui.getGroup("MODULATOR").minimizeAll();
-	auto &g1 = gui.getGroup(label);//1st level
-	//g1.minimizeAll();
-	auto &g2 = g1.getGroup("MODULATOR");//2nd level
-	g2.minimize();
-	g1.getGroup(params_filters.getName()).minimize();
+	////collapse groups
+	////gui.getGroup("MODULATOR").minimizeAll();
+	//auto &g1 = gui.getGroup(label);//1st level
+	////g1.minimizeAll();
+	//auto &g2 = g1.getGroup("MODULATOR");//2nd level
+	//g2.minimize();
+	//g1.getGroup(params_filters.getName()).minimize();
+
+	//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+	// gui
+	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
+	guiManager.setup();//initiate ImGui
+	//guiManager.setUseAdvancedSubPanel(true);
+#endif
 
 	//-
 
@@ -570,8 +579,24 @@ void NoiseAnimator::draw(ofEventArgs & args)
 {
 	if (SHOW_Gui)
 	{
-		gui.draw();
+		//gui.draw();
+
+		//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+		guiManager.begin();
+		//#endif
+		{
+
+			drawImGuiWidgets();
+
+		}
+		//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+		guiManager.end();
+#endif
 	}
+
+	//-
 
 	if (SHOW_Plot)// && ENABLE_Noise)
 	{
@@ -592,8 +617,11 @@ void NoiseAnimator::draw(ofEventArgs & args)
 			y = positionPlot.y;
 		}
 		else {
-			x = gui.getPosition().x + 16;
-			y = gui.getPosition().y + gui.getHeight() + 15;
+			//x = gui.getPosition().x + 16;
+			//y = gui.getPosition().y + gui.getHeight() + 15;
+
+			x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
+			y = positionGuiLayout.get().y + heightGuiLayout + pad;
 		}
 
 		int xPos;
@@ -862,6 +890,69 @@ void NoiseAnimator::draw(ofEventArgs & args)
 }
 
 //--------------------------------------------------------------
+void NoiseAnimator::drawImGuiWidgets() {
+	{
+		auto mainSettings = ofxImGui::Settings();
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+		string name;
+
+		//bool bOpen;
+		//ImGuiColorEditFlags _flagc;
+
+		// widgets sizes
+		float _spcx;
+		float _spcy;
+		float _w100;
+		float _h100;
+		float _w99;
+		float _w50;
+		float _w33;
+		float _w25;
+		float _h;
+
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+		if (guiManager.auto_resize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		// 1. window parameters
+		static bool bParams = true;
+		static bool bOpen = false;
+
+		if (bParams)
+		{
+			//name = "PARAMETERS";
+			name = "PANEL " + label;
+			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
+			{
+				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
+				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
+				flags |= ImGuiTreeNodeFlags_Framed;
+
+				ofxImGui::AddGroup(params, flags);
+				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+
+				//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+				guiManager.drawAdvancedSubPanel();
+#endif
+
+				//get window position for advanced layout paired position
+				auto posx = ImGui::GetWindowPos().x;
+				auto posy = ImGui::GetWindowPos().y;
+				widthGuiLayout = ImGui::GetWindowWidth();
+				heightGuiLayout = ImGui::GetWindowHeight();
+				positionGuiLayout = glm::vec2(posx, posy);
+				//positionGuiLayout = glm::vec2(posx + w, posy);
+			}
+			ofxImGui::EndWindow(mainSettings);
+		}
+#endif
+	}
+}
+
+//--------------------------------------------------------------
 void NoiseAnimator::restart()
 {
 	stop();
@@ -982,22 +1073,22 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 
 		if (name == bpmMode.getName())
 		{
-			//workflow
-			auto &g1 = gui.getGroup(label);//1st level
-			auto &g2 = g1.getGroup("MODULATOR");//2nd level
-			auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
-			auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
-			g3.minimize();
-			g4.minimize();
-			if (bpmMode)
-			{
-				g3.minimize();
-				g4.maximize();
-			}
-			else {
-				g3.maximize();
-				g4.minimize();
-			}
+			//// workflow
+			//auto &g1 = gui.getGroup(label);//1st level
+			//auto &g2 = g1.getGroup("MODULATOR");//2nd level
+			//auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
+			//auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
+			//g3.minimize();
+			//g4.minimize();
+			//if (bpmMode)
+			//{
+			//	g3.minimize();
+			//	g4.maximize();
+			//}
+			//else {
+			//	g3.maximize();
+			//	g4.minimize();
+			//}
 		}
 	}
 
@@ -1027,7 +1118,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			noiseSpeedY = 0.5f;
 			noiseSpeedZ = 0.5f;
 
-			//workflow
+			// workflow
 			Reset_Modulator = true;
 			ENABLE_Modulator = false;
 		}
@@ -1085,7 +1176,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			stop();
 			//faderValue = faderMin;
 
-			////workflow
+			//// workflow
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").minimize();//avoid add-empty-space bug
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").maximize();
 		}
@@ -1094,7 +1185,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 	{
 		if (!ENABLE_Noise)
 		{
-			//workflow
+			// workflow
 			ENABLE_Modulator = false;
 			stop();
 		}
