@@ -81,6 +81,13 @@ public:
 	void drawImGuiWidgets();
 
 private:
+
+	ofFbo fboPlot;
+	void drawPlot();
+	ImVec2 plotShape;
+
+	//-
+
 	bool bCustomPositionPlot = false;
 	glm::vec2 positionPlot{ 50, 50 };
 
@@ -115,8 +122,8 @@ public:
 	void start();
 	void stop();
 
-	void nextCurve();
-	void previousCurve();
+	void nextCurve(bool bAutoTrig = true);
+	void previousCurve(bool bAutoTrig = true);
 
 private:
 	float size = 100;
