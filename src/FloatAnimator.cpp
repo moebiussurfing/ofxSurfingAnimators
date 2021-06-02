@@ -99,7 +99,7 @@ void FloatAnimator::setup()
 	//bpm engine
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
-	bpmBeatDuration.set("Beat", 4, 1, 8);
+	bpmBeatDuration.set("Beat Duration", 4, 1, 8);
 	bpmBeatDelay.set("Beat Delay", 0, 0, 8);
 	params_Bpm.setName("BPM Engine");
 	params_Bpm.add(bpmSpeed);
@@ -444,7 +444,7 @@ void FloatAnimator::drawImGuiWidgets() {
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 				//-
-				
+
 				flagst = ImGuiTreeNodeFlags_None;
 				flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
@@ -454,13 +454,19 @@ void FloatAnimator::drawImGuiWidgets() {
 					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-
-					ofxSurfingHelpers::AddDragFloatSlider(animDelay);
-					ofxSurfingHelpers::AddDragFloatSlider(duration);
-					//ofxImGui::AddParameter(animDelay);
-					//ofxImGui::AddParameter(duration);
+					if (!bpmMode) {
+						ofxImGui::AddParameter(animDelay);
+						ofxImGui::AddParameter(duration);
+					}
+					else
+					{
+						ofxSurfingHelpers::AddDragFloatSlider(animDelay);
+						ofxSurfingHelpers::AddDragFloatSlider(duration);
+					}
+					ImGui::PopItemWidth();
 
 					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+
 					if (bpmMode) {
 
 						ofxSurfingHelpers::AddDragFloatSlider(bpmSpeed);
@@ -482,8 +488,11 @@ void FloatAnimator::drawImGuiWidgets() {
 						if (ImGui::Button("DOUBLE", ImVec2(_w50, _h / 2))) {
 							bpmSpeed = bpmSpeed * 2.0f;
 						}
-						ofxImGui::AddParameter(bpmBeatDelay);
+
+						ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 						ofxImGui::AddParameter(bpmBeatDuration);
+						ofxImGui::AddParameter(bpmBeatDelay);
+						ImGui::PopItemWidth();
 					}
 					//else {
 					//	ofxImGui::AddParameter(animDelay);
@@ -497,7 +506,6 @@ void FloatAnimator::drawImGuiWidgets() {
 						bpmBeatDelay = 0;
 						bpmBeatDuration = 4;
 					}
-					ImGui::PopItemWidth();
 				}
 
 				//-
@@ -522,12 +530,12 @@ void FloatAnimator::drawImGuiWidgets() {
 					ofxImGui::AddCombo(curveType, curveNamesList);
 					////ofxImGui::AddParameter(curveName);
 					//ImGui::Text(curveName.get().c_str());
-					
+
 					ofxImGui::AddParameter(repeatMode);
 					//ofxImGui::AddParameter(repeatName);
 					ImGui::Text(repeatName.get().c_str());
 					if (repeatMode == 4 || repeatMode == 5)
-					ofxImGui::AddParameter(repeatTimes);
+						ofxImGui::AddParameter(repeatTimes);
 					ImGui::PopItemWidth();
 				}
 
