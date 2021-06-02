@@ -412,33 +412,42 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				static ImGuiTreeNodeFlags flagst;
 				flagst = ImGuiTreeNodeFlags_None;
-				flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
 
 				if (ImGui::Button("START", ImVec2(_w100, _h))) {
 					start();
 				}
-				//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-				ImGui::PushItemWidth(_w100 - 50);
-				ofxImGui::AddParameter(animProgress);
-				ofxImGui::AddParameter(value);
-				ImGui::PopItemWidth();
-				ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+				if (ImGui::CollapsingHeader("MONITOR", flagst))
+				{
+					//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+					ImGui::PushItemWidth(_w100 - 50);
+					ofxImGui::AddParameter(animProgress);
+					ofxImGui::AddParameter(value);
+					ImGui::PopItemWidth();
+					ImGui::Dummy(ImVec2(0.0f, 2.0f));
+				}
 
 				//ImGui::Text("CURVE:");
 				//ofxImGui::AddParameter(curveName);
 				//ImGui::Text(curveName.get().c_str());
 				ofxImGui::AddCombo(curveType, curveNamesList);
-				if (ImGui::Button("-", ImVec2(_w50, _h / 2))) {
+
+				if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
 					previousCurve();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("+", ImVec2(_w50, _h / 2))) {
+				if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
 					nextCurve();
 				}
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 				//-
+				
+				flagst = ImGuiTreeNodeFlags_None;
+				flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				flagst |= ImGuiTreeNodeFlags_Framed;
 
 				if (ImGui::CollapsingHeader("DURATION", flagst))
 				{
