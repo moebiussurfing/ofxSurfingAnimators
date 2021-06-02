@@ -317,7 +317,8 @@ public:
 	//--------------------------------------------------------------
 	float getValue()
 	{
-		return value.get();
+		if (floatAnimator.isWaitingForAnimationToStart()) return valueStart;
+		else return value.get();
 	}
 
 	//--------------------------------------------------------------
@@ -342,6 +343,8 @@ public:
 	float pad = 15;
 private:
 	string label = "Float Animator";
+	
+	std::vector<std::string> curveNamesList;
 
 public:
 	//--------------------------------------------------------------
@@ -352,6 +355,10 @@ public:
 	}
 
 public:
+	std::vector<std::string> getAllCurveNames() {
+		return floatAnimator.getAllCurveNames();
+	}
+
 	//control settings
 	//--------------------------------------------------------------
 	ofParameterGroup getControls()
@@ -434,7 +441,7 @@ private:
 
 	ofxAnimatableFloat floatAnimator;
 
-	void Changed_params(ofAbstractParameter &e);
+	void Changed_Params(ofAbstractParameter &e);
 
 	//public:
 	//	ofxPanel gui;

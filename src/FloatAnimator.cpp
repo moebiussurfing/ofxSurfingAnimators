@@ -38,24 +38,24 @@ void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent &)
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::nextCurve()
+void FloatAnimator::nextCurve(bool bAutoTrig)
 {
 	curveType++;
 	curveType = curveType % NUM_ANIM_CURVES;
 
-	if (ModeBrowse) {
+	if (ModeBrowse && bAutoTrig) {
 		start();
 	}
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::previousCurve()
+void FloatAnimator::previousCurve(bool bAutoTrig)
 {
 	curveType--;
 	if (curveType < 0) curveType = 0;
 	//if (curveType < 0) curveType = NUM_ANIM_CURVES - 1;
 
-	if (ModeBrowse) {
+	if (ModeBrowse && bAutoTrig) {
 		start();
 	}
 }
@@ -163,8 +163,8 @@ void FloatAnimator::setup()
 	params.add(animProgress);
 	//params.add(anim_loop);
 
-	ofAddListener(params.parameterChangedE(), this, &FloatAnimator::Changed_params);
-	ofAddListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_params);
+	ofAddListener(params.parameterChangedE(), this, &FloatAnimator::Changed_Params);
+	ofAddListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_Params);
 
 	//-
 
@@ -192,9 +192,23 @@ void FloatAnimator::setup()
 
 	//-
 
-	//startup
+	// startup
 	repeatName = AnimRepeat_ToStr(repeatMode.get());
 	curveName = floatAnimator.getCurveName(AnimCurve(curveType.get()));
+
+	curveNamesList = getAllCurveNames();
+
+	//--
+
+	// plot
+	plotShape = ImVec2(210, 140);
+	ofFbo::Settings fboSettings;
+	fboSettings.width = plotShape.x;
+	fboSettings.height = plotShape.y;
+	fboSettings.internalformat = GL_RGBA;
+	fboSettings.textureTarget = GL_TEXTURE_2D;
+	fboPlot.allocate(fboSettings);
+
 }
 
 //--------------------------------------------------------------
@@ -270,75 +284,93 @@ void FloatAnimator::draw(ofEventArgs & args)
 
 	if (SHOW_Plot)
 	{
-		ofPushStyle();
-		ofFill();
+		//drawPlot();
 
-		float x, y, size, px, w;
-		size = 100;
-		bool stateColor;
-		string str;
-
-		//curve type plot
-		bCustomPositionPlot = !SHOW_Gui;
-		if (bCustomPositionPlot) {
-			x = positionPlot.x;
-			y = positionPlot.y;
+		fboPlot.begin();
+		{
+			ofClear(0, 0);
+			drawPlot();
 		}
-		else {
-			//x = positionGuiLayout.get().x + 45;
-			x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
-			y = positionGuiLayout.get().y + heightGuiLayout + pad;
-
-			//x = gui.getPosition().x + 45;
-			//y = gui.getPosition().y + gui.getHeight() + pad;
-		}
-
-		//-
-
-		//drawCurve(glm::vec2 (x,y));
-		floatAnimator.drawCurve(x, y, size, true, ofColor(255));
-
-		//vertical line time
-		float h;//display delay wait progress
-		if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
-		else h = size;
-		px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
-		ofSetColor(ofColor::red, 200);
-		ofSetLineWidth(2.0);
-		ofDrawLine(px, y + size, px, y + size - h);
-
-		//-
-
-		//vertical red bar value
-		ofRectangle r;
-		w = 12;
-		x += size + 7;
-		ofFill();
-		//bg
-		ofSetColor(0, 200);
-		r = ofRectangle(x, y + size, w, -size);
-		float pad = 2;//make black outpsace
-		//r = ofRectangle(x - pad * 0.5f, y + size + pad * 0.5f, w + pad, -size - pad);
-		ofDrawRectangle(r);
-		//bar
-		ofSetColor(ofColor::red, 200);
-		float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
-		r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(vb*size, 1));
-		//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(value.get()*size, 1));
-		//r = ofRectangle(x, y + size, w, -MAX(value.get()*size, 1));
-		ofDrawRectangle(r);
-
-		//-
-
-		//stateColor = floatAnimator.isAnimating();
-		//str = label;
-		////str = "4 COLOR";
-		//ofDrawBitmapStringHighlight(str, x + 5, y - 10,
-		//	stateColor ? ofColor::white : ofColor::black,
-		//	!stateColor ? ofColor::white : ofColor::black);
-
-		ofPopStyle();
+		fboPlot.end();
 	}
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::drawPlot() {
+
+	// curve type plot
+
+	ofPushStyle();
+	ofFill();
+
+	float x, y, size, px, w;
+	size = 100;
+	bool stateColor;
+	string str;
+
+	// a.
+	//bCustomPositionPlot = !SHOW_Gui;
+	//if (bCustomPositionPlot) {
+	//	x = positionPlot.x;
+	//	y = positionPlot.y;
+	//}
+	//else {
+	//	//x = positionGuiLayout.get().x + 45;
+	//	x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
+	//	y = positionGuiLayout.get().y + heightGuiLayout + pad;
+	//	//x = gui.getPosition().x + 45;
+	//	//y = gui.getPosition().y + gui.getHeight() + pad;
+	//}
+
+	// b.
+	x = 0;
+	y = 20;
+
+	//-
+
+	//drawCurve(glm::vec2 (x,y));
+	floatAnimator.drawCurve(x, y, size, true, ofColor(255));
+
+	//vertical line time
+	float h;//display delay wait progress
+	if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
+	else h = size;
+	px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
+	ofSetColor(ofColor::red, 200);
+	ofSetLineWidth(2.0);
+	ofDrawLine(px, y + size, px, y + size - h);
+
+	//-
+
+	//vertical red bar value
+	ofRectangle r;
+	w = 12;
+	x += size + 7;
+	ofFill();
+	//bg
+	ofSetColor(0, 200);
+	r = ofRectangle(x, y + size, w, -size);
+	float pad = 2;//make black outpsace
+	//r = ofRectangle(x - pad * 0.5f, y + size + pad * 0.5f, w + pad, -size - pad);
+	ofDrawRectangle(r);
+	//bar
+	ofSetColor(ofColor::red, 200);
+	float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
+	r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(vb*size, 1));
+	//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(value.get()*size, 1));
+	//r = ofRectangle(x, y + size, w, -MAX(value.get()*size, 1));
+	ofDrawRectangle(r);
+
+	//-
+
+	//stateColor = floatAnimator.isAnimating();
+	//str = label;
+	////str = "4 COLOR";
+	//ofDrawBitmapStringHighlight(str, x + 5, y - 10,
+	//	stateColor ? ofColor::white : ofColor::black,
+	//	!stateColor ? ofColor::white : ofColor::black);
+
+	ofPopStyle();
 }
 
 //--------------------------------------------------------------
@@ -378,18 +410,25 @@ void FloatAnimator::drawImGuiWidgets() {
 			{
 				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
-				flags |= ImGuiTreeNodeFlags_Framed;
+				static ImGuiTreeNodeFlags flagst;
+				flagst = ImGuiTreeNodeFlags_None;
+				flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				flagst |= ImGuiTreeNodeFlags_Framed;
 
 				if (ImGui::Button("START", ImVec2(_w100, _h))) {
 					start();
 				}
-				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				ImGui::PushItemWidth(_w100 - 50);
+				ofxImGui::AddParameter(animProgress);
 				ofxImGui::AddParameter(value);
 				ImGui::PopItemWidth();
+				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-				ImGui::Text("CURVE");
+				//ImGui::Text("CURVE:");
+				//ofxImGui::AddParameter(curveName);
+				//ImGui::Text(curveName.get().c_str());
+				ofxImGui::AddCombo(curveType, curveNamesList);
 				if (ImGui::Button("-", ImVec2(_w50, _h / 2))) {
 					previousCurve();
 				}
@@ -399,47 +438,145 @@ void FloatAnimator::drawImGuiWidgets() {
 				}
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-				ImGuiWindowFlags _flagw = ImGuiWindowFlags_None;
-				//bool bOpen = false;
-				//ImGuiWindowFlags _flagw = (bOpen ? ImGuiWindowFlags_NoCollapse : ImGuiWindowFlags_None);
+				//-
 
-				if (ImGui::CollapsingHeader("DURATION", _flagw)) {
-					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+				if (ImGui::CollapsingHeader("DURATION", flagst))
+				{
+					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+
+					ofxSurfingHelpers::AddDragFloatSlider(animDelay);
+					ofxSurfingHelpers::AddDragFloatSlider(duration);
+					//ofxImGui::AddParameter(animDelay);
+					//ofxImGui::AddParameter(duration);
+
+					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
 					if (bpmMode) {
-						ofxImGui::AddParameter(bpmSpeed);
+
+						ofxSurfingHelpers::AddDragFloatSlider(bpmSpeed);
+						//float _bpmSpeed = bpmSpeed.get();
+						//ImGui::PushID(1);
+						//if(ImGui::DragFloat("BPM", &_bpmSpeed)) {
+						//	bpmSpeed.set(_bpmSpeed);
+						//}
+						//ImGui::PopID();
+
+						//ImGui::PushID(2);
+						//ofxImGui::AddParameter(bpmSpeed);
+						//ImGui::PopID();
+
+						if (ImGui::Button("HALF", ImVec2(_w50, _h / 2))) {
+							bpmSpeed = bpmSpeed / 2.0f;
+						}
+						ImGui::SameLine();
+						if (ImGui::Button("DOUBLE", ImVec2(_w50, _h / 2))) {
+							bpmSpeed = bpmSpeed * 2.0f;
+						}
 						ofxImGui::AddParameter(bpmBeatDelay);
 						ofxImGui::AddParameter(bpmBeatDuration);
 					}
-					else {
-						ofxImGui::AddParameter(animDelay);
-						ofxImGui::AddParameter(duration);
+					//else {
+					//	ofxImGui::AddParameter(animDelay);
+					//	ofxImGui::AddParameter(duration);
+					//}
+					if (ImGui::Button("Reset Time", ImVec2(_w100, _h / 2))) {
+						bpmSpeed = 120;
+						animDelay = 0.f;
+						duration = 1.f;
+						bpmMode = true;
+						bpmBeatDelay = 0;
+						bpmBeatDuration = 4;
 					}
 					ImGui::PopItemWidth();
 				}
 
 				//-
 
-				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-				ofxImGui::AddGroup(params, flags);
-				ImGui::PopItemWidth();
+				// animator group
 
-				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+				//ofxImGui::AddParameter(bpmSpeed);
+				//ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h);
+				//ofxImGui::AddParameter(duration);
+				//ofxImGui::AddParameter(animDelay);
+				//ofxImGui::AddParameter(bpmBeatDuration);
+				//ofxImGui::AddParameter(bpmBeatDelay);
+
+				flagst = ImGuiTreeNodeFlags_None;
+				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				flagst |= ImGuiTreeNodeFlags_Framed;
+				if (ImGui::CollapsingHeader("CURVE", flagst))
+				{
+					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+
+					ofxImGui::AddParameter(curveType);
+					ofxImGui::AddCombo(curveType, curveNamesList);
+					////ofxImGui::AddParameter(curveName);
+					//ImGui::Text(curveName.get().c_str());
+					
+					ofxImGui::AddParameter(repeatMode);
+					//ofxImGui::AddParameter(repeatName);
+					ImGui::Text(repeatName.get().c_str());
+					if (repeatMode == 4 || repeatMode == 5)
+					ofxImGui::AddParameter(repeatTimes);
+					ImGui::PopItemWidth();
+				}
+
+				//ofxImGui::AddParameter(animProgress);
+				//ofxImGui::AddParameter(reset);
+				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
+
+				////bundle
+				//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				//ofxImGui::AddGroup(params, flagst);
+				//ImGui::PopItemWidth();
 
 				//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
-				guiManager.drawAdvancedSubPanel();
-#endif
+				flagst = ImGuiTreeNodeFlags_None;
+				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				flagst |= ImGuiTreeNodeFlags_Framed;
+				if (ImGui::CollapsingHeader("EXTRA", flagst))
+				{
+					ImGui::Indent();
 
-				//get window position for advanced layout paired position
-				auto posx = ImGui::GetWindowPos().x;
-				auto posy = ImGui::GetWindowPos().y;
-				widthGuiLayout = ImGui::GetWindowWidth();
-				heightGuiLayout = ImGui::GetWindowHeight();
-				positionGuiLayout = glm::vec2(posx, posy);
-				//positionGuiLayout = glm::vec2(posx + w, posy);
+					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+
+					ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+					ofxSurfingHelpers::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+					ofxSurfingHelpers::AddBigToggle(reset, _w100, _h / 2, false);
+
+					//-
+
+#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+					guiManager.drawAdvancedSubPanel();
+#endif
+					ImGui::Unindent();
+				}
+
+				//-
+
+				////get window position for advanced layout paired position
+				//auto posx = ImGui::GetWindowPos().x;
+				//auto posy = ImGui::GetWindowPos().y;
+				//widthGuiLayout = ImGui::GetWindowWidth();
+				//heightGuiLayout = ImGui::GetWindowHeight();
+				//positionGuiLayout = glm::vec2(posx, posy);
+				////positionGuiLayout = glm::vec2(posx + w, posy);
+
+				//--
+
+				// plot fbo
+
+				if (SHOW_Plot)
+				{
+					widthGuiLayout = ImGui::GetWindowWidth();
+					float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
+					ImGui::Indent(_spacing);
+					ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+					ImGui::Image(textureID, plotShape);
+					ImGui::Unindent;
+				}
 			}
 			ofxImGui::EndWindow(mainSettings);
 		}
@@ -523,8 +660,8 @@ void FloatAnimator::drawCurve(glm::vec2 &p)
 //--------------------------------------------------------------
 FloatAnimator::~FloatAnimator()
 {
-	ofRemoveListener(params.parameterChangedE(), this, &FloatAnimator::Changed_params);
-	ofRemoveListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_params);
+	ofRemoveListener(params.parameterChangedE(), this, &FloatAnimator::Changed_Params);
+	ofRemoveListener(params_Bpm.parameterChangedE(), this, &FloatAnimator::Changed_Params);
 
 	ofRemoveListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
 
@@ -555,7 +692,7 @@ void FloatAnimator::loadSettings()
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::Changed_params(ofAbstractParameter &e)
+void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 {
 	string name = e.getName();
 	if (name != "%") ofLogVerbose(__FUNCTION__) << name << " : " << e;
@@ -645,26 +782,25 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 	//		floatAnimator.setRepeatType(AnimRepeat(repeatMode.get()));
 	//	}
 	//}
-	else if (name == "Reset")
+	else if (name == reset.getName())
 	{
 		if (reset)
 		{
 			reset = false;
 
 			// standard
-			//bpmBeatDelay = 0;
+
 			//repeatMode = 0;
-
-			// 
-			bpmBeatDelay = 2;
-			repeatMode = 3;// back and forth once
-
+			repeatMode = 0;// play once
+			//repeatMode = 3;// back and forth once
 			curveType = 3;
 			repeatTimes = 1;
 
+			bpmSpeed = 120;
 			animDelay = 0.f;
 			duration = 1.f;
 			bpmMode = true;
+			bpmBeatDelay = 0;
 			bpmBeatDuration = 4;
 
 			valueStart = 0.f;
@@ -676,20 +812,20 @@ void FloatAnimator::Changed_params(ofAbstractParameter &e)
 	else if (name == "Value")
 	{
 	}
-	else if (name == "Value Start")
+	else if (name == valueStart.getName())
 	{
 		//floatAnimator.setColor(valueStart);
 		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
-		start();
+		if (ModeBrowse) start();
 		//}
 	}
-	else if (name == "Value End")
+	else if (name == valueEnd.getName())
 	{
 		//floatAnimator.setColor(valueEnd);
 		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
 		//{
-		start();
+		if (ModeBrowse) start();
 		//}
 	}
 }
