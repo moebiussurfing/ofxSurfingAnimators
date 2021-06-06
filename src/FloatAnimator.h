@@ -15,7 +15,7 @@ TODO:
 
 #include "ofxAnimatableFloat.h"
 #include "ofxSurfingHelpers.h"
-#include "ofxSurfing_ImGuiBundle.h"
+#include "ofxSurfingImGui.h"
 
 //#include "ofxGui.h"
 //#include "ofxSurfing_ofxGui.h"

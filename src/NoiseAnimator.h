@@ -14,7 +14,7 @@
 #include "ofxHistoryPlot.h"
 #endif
 #include "ofxSurfingHelpers.h"
-#include "ofxSurfing_ImGuiBundle.h"
+#include "ofxSurfingImGui.h"
 #include "ofxBiquadFilter.h"//TODO change to smoother bc could be more performant
 //#include "ofxGui.h"
 //#include "ofxSurfing_ofxGui.h"
