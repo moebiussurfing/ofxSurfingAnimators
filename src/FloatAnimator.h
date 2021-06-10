@@ -74,7 +74,7 @@ public:
 
 private:
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-	ofxSurfing_ImGui_LayoutManager guiManager;
+	ofxSurfing_ImGui_Manager guiManager;
 #endif
 
 public:

@@ -23,7 +23,7 @@ FloatAnimator::FloatAnimator()
 //--------------------------------------------------------------
 void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent &)
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogVerbose(__FUNCTION__);
 
 	// workflow
 	if (repeatMode == 2 || repeatMode == 3 || repeatMode == 5)//with a back mode. force to start
@@ -214,7 +214,7 @@ void FloatAnimator::setup()
 //--------------------------------------------------------------
 void FloatAnimator::start()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogVerbose(__FUNCTION__);
 
 	if (ENABLE_valueAnim)
 	{
@@ -227,7 +227,7 @@ void FloatAnimator::start()
 //--------------------------------------------------------------
 void FloatAnimator::stop()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogVerbose(__FUNCTION__);
 
 	if (ENABLE_valueAnim)
 	{
@@ -408,7 +408,7 @@ void FloatAnimator::drawImGuiWidgets() {
 			//if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
 			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw))
 			{
-				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+				ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 				static ImGuiTreeNodeFlags flagst;
 				flagst = ImGuiTreeNodeFlags_None;
@@ -451,7 +451,7 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				if (ImGui::CollapsingHeader("DURATION", flagst))
 				{
-					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+					ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 					if (!bpmMode) {
@@ -460,16 +460,16 @@ void FloatAnimator::drawImGuiWidgets() {
 					}
 					else
 					{
-						ofxSurfingHelpers::AddDragFloatSlider(animDelay);
-						ofxSurfingHelpers::AddDragFloatSlider(duration);
+						ofxSurfing::AddDragFloatSlider(animDelay);
+						ofxSurfing::AddDragFloatSlider(duration);
 					}
 					ImGui::PopItemWidth();
 
-					ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h / 2);
+					ofxSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
 
 					if (bpmMode) {
 
-						ofxSurfingHelpers::AddDragFloatSlider(bpmSpeed);
+						ofxSurfing::AddDragFloatSlider(bpmSpeed);
 						//float _bpmSpeed = bpmSpeed.get();
 						//ImGui::PushID(1);
 						//if(ImGui::DragFloat("BPM", &_bpmSpeed)) {
@@ -513,7 +513,7 @@ void FloatAnimator::drawImGuiWidgets() {
 				// animator group
 
 				//ofxImGui::AddParameter(bpmSpeed);
-				//ofxSurfingHelpers::AddBigToggle(bpmMode, _w100, _h);
+				//ofxSurfing::AddBigToggle(bpmMode, _w100, _h);
 				//ofxImGui::AddParameter(duration);
 				//ofxImGui::AddParameter(animDelay);
 				//ofxImGui::AddParameter(bpmBeatDuration);
@@ -557,11 +557,11 @@ void FloatAnimator::drawImGuiWidgets() {
 				{
 					ImGui::Indent();
 
-					ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+					ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-					ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-					ofxSurfingHelpers::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-					ofxSurfingHelpers::AddBigToggle(reset, _w100, _h / 2, false);
+					ofxSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+					ofxSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+					ofxSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 
 					//-
 

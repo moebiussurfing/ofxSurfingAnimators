@@ -923,14 +923,14 @@ void NoiseAnimator::drawImGuiWidgets() {
 			name = "PANEL " + label;
 			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
 			{
-				ofxSurfingHelpers::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+				ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
 				flags |= ImGuiTreeNodeFlags_Framed;
 
 				ofxImGui::AddGroup(params, flags);
-				ofxSurfingHelpers::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+				ofxSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
 
 				//-
 

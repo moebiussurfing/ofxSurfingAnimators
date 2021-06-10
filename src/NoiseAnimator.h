@@ -27,7 +27,7 @@ class NoiseAnimator : public ofBaseApp
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 public:
-	ofxSurfing_ImGui_LayoutManager guiManager;
+	ofxSurfing_ImGui_Manager guiManager;
 #endif
 public:
 	void drawImGuiWidgets();
