@@ -59,11 +59,11 @@ FloatAnimator animatorFloat;
 
 ### ofApp.cpp
 ```.c++
-setup() {
+void setup() {
    animatorFloat.setup(0.0f, 1.0f);
 }
 
-udate() {
+void update() {
    float value = animatorFloat.getValue();
 }
 
