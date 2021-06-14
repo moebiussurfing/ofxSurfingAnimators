@@ -538,6 +538,8 @@ void FloatAnimator::drawImGuiWidgets() {
 				}
 
 				//ofxImGuiSurfing::AddParameter(animProgress);
+
+				ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 				//ofxImGuiSurfing::AddParameter(reset);
 				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
 
@@ -563,7 +565,7 @@ void FloatAnimator::drawImGuiWidgets() {
 
 						ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
 						ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-						ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+						//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 
 						//-
 
