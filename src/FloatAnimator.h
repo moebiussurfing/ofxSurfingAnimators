@@ -16,9 +16,7 @@ TODO:
 #include "ofxAnimatableFloat.h"
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
-
 //#include "ofxGui.h"
-//#include "ofxSurfing_ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
@@ -42,9 +40,9 @@ public:
 	~FloatAnimator();
 
 	//TODO://use &
-	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) {//only use to set min/max range but not auto update the param value!
+	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) { // only use to set min/max range but not auto update the param value!
 	//--------------------------------------------------------------
-	void setup(ofParameter<float> &paramFloat) {//only use to set min/max range but not auto update the param value!
+	void setup(ofParameter<float> &paramFloat) { // only use to set min/max range but not auto update the param value!
 		//bAutoUpdate = autoUpdate;
 		setNameLabel(paramFloat.getName());
 		setup(paramFloat.getMin(), paramFloat.getMax());

@@ -911,7 +911,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 		float _h;
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		if (guiManager.auto_resize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		// 1. window parameters
 		static bool bParams = true;
@@ -923,14 +923,14 @@ void NoiseAnimator::drawImGuiWidgets() {
 			name = "PANEL " + label;
 			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
 			{
-				ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
 				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
 				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
 				flags |= ImGuiTreeNodeFlags_Framed;
 
 				ofxImGui::AddGroup(params, flags);
-				ofxSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+				ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
 
 				//-
 

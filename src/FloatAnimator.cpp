@@ -176,7 +176,7 @@ void FloatAnimator::setup()
 
 	//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	// gui
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
 	guiManager.setup();//initiate ImGui
@@ -271,7 +271,7 @@ void FloatAnimator::draw(ofEventArgs & args)
 
 		//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		guiManager.begin();
 		{
 			drawImGuiWidgets();
@@ -376,26 +376,18 @@ void FloatAnimator::drawPlot() {
 //--------------------------------------------------------------
 void FloatAnimator::drawImGuiWidgets() {
 	{
-		auto mainSettings = ofxImGui::Settings();
-		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
 		string name;
 
-		//bool bOpen;
-		//ImGuiColorEditFlags _flagc;
-
 		// widgets sizes
-		float _spcx;
-		float _spcy;
 		float _w100;
-		float _h100;
 		float _w99;
 		float _w50;
 		float _w33;
 		float _w25;
 		float _h;
 
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		if (guiManager.auto_resize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		// 1. window parameters
 		static bool bParams = true;
@@ -405,10 +397,9 @@ void FloatAnimator::drawImGuiWidgets() {
 			//name = "PARAMETERS";
 			//name = "ANIMATOR";
 			name = "PANEL " + label;
-			//if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
-			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw))
+			guiManager.beginWindow(name.c_str(), NULL, _flagsw);
 			{
-				ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
 				static ImGuiTreeNodeFlags flagst;
 				flagst = ImGuiTreeNodeFlags_None;
@@ -423,16 +414,16 @@ void FloatAnimator::drawImGuiWidgets() {
 				{
 					//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 					ImGui::PushItemWidth(_w100 - 50);
-					ofxImGui::AddParameter(animProgress);
-					ofxImGui::AddParameter(value);
+					ofxImGuiSurfing::AddParameter(animProgress);
+					ofxImGuiSurfing::AddParameter(value);
 					ImGui::PopItemWidth();
 					ImGui::Dummy(ImVec2(0.0f, 2.0f));
 				}
 
 				//ImGui::Text("CURVE:");
-				//ofxImGui::AddParameter(curveName);
+				//ofxImGuiSurfing::AddParameter(curveName);
 				//ImGui::Text(curveName.get().c_str());
-				ofxImGui::AddCombo(curveType, curveNamesList);
+				ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
 
 				if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
 					previousCurve();
@@ -451,25 +442,25 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				if (ImGui::CollapsingHeader("DURATION", flagst))
 				{
-					ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 					if (!bpmMode) {
-						ofxImGui::AddParameter(animDelay);
-						ofxImGui::AddParameter(duration);
+						ofxImGuiSurfing::AddParameter(animDelay);
+						ofxImGuiSurfing::AddParameter(duration);
 					}
 					else
 					{
-						ofxSurfing::AddDragFloatSlider(animDelay);
-						ofxSurfing::AddDragFloatSlider(duration);
+						ofxImGuiSurfing::AddDragFloatSlider(animDelay);
+						ofxImGuiSurfing::AddDragFloatSlider(duration);
 					}
 					ImGui::PopItemWidth();
 
-					ofxSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
+					ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
 
 					if (bpmMode) {
 
-						ofxSurfing::AddDragFloatSlider(bpmSpeed);
+						ofxImGuiSurfing::AddDragFloatSlider(bpmSpeed);
 						//float _bpmSpeed = bpmSpeed.get();
 						//ImGui::PushID(1);
 						//if(ImGui::DragFloat("BPM", &_bpmSpeed)) {
@@ -478,7 +469,7 @@ void FloatAnimator::drawImGuiWidgets() {
 						//ImGui::PopID();
 
 						//ImGui::PushID(2);
-						//ofxImGui::AddParameter(bpmSpeed);
+						//ofxImGuiSurfing::AddParameter(bpmSpeed);
 						//ImGui::PopID();
 
 						if (ImGui::Button("HALF", ImVec2(_w50, _h / 2))) {
@@ -490,13 +481,13 @@ void FloatAnimator::drawImGuiWidgets() {
 						}
 
 						ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-						ofxImGui::AddParameter(bpmBeatDuration);
-						ofxImGui::AddParameter(bpmBeatDelay);
+						ofxImGuiSurfing::AddParameter(bpmBeatDuration);
+						ofxImGuiSurfing::AddParameter(bpmBeatDelay);
 						ImGui::PopItemWidth();
 					}
 					//else {
-					//	ofxImGui::AddParameter(animDelay);
-					//	ofxImGui::AddParameter(duration);
+					//	ofxImGuiSurfing::AddParameter(animDelay);
+					//	ofxImGuiSurfing::AddParameter(duration);
 					//}
 					if (ImGui::Button("Reset Time", ImVec2(_w100, _h / 2))) {
 						bpmSpeed = 120;
@@ -512,40 +503,41 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				// animator group
 
-				//ofxImGui::AddParameter(bpmSpeed);
-				//ofxSurfing::AddBigToggle(bpmMode, _w100, _h);
-				//ofxImGui::AddParameter(duration);
-				//ofxImGui::AddParameter(animDelay);
-				//ofxImGui::AddParameter(bpmBeatDuration);
-				//ofxImGui::AddParameter(bpmBeatDelay);
+				//ofxImGuiSurfing::AddParameter(bpmSpeed);
+				//ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
+				//ofxImGuiSurfing::AddParameter(duration);
+				//ofxImGuiSurfing::AddParameter(animDelay);
+				//ofxImGuiSurfing::AddParameter(bpmBeatDuration);
+				//ofxImGuiSurfing::AddParameter(bpmBeatDelay);
 
 				flagst = ImGuiTreeNodeFlags_None;
 				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
+
 				if (ImGui::CollapsingHeader("CURVE", flagst))
 				{
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 
-					ofxImGui::AddParameter(curveType);
-					ofxImGui::AddCombo(curveType, curveNamesList);
-					////ofxImGui::AddParameter(curveName);
+					ofxImGuiSurfing::AddParameter(curveType);
+					ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+					////ofxImGuiSurfing::AddParameter(curveName);
 					//ImGui::Text(curveName.get().c_str());
 
-					ofxImGui::AddParameter(repeatMode);
-					//ofxImGui::AddParameter(repeatName);
+					ofxImGuiSurfing::AddParameter(repeatMode);
+					//ofxImGuiSurfing::AddParameter(repeatName);
 					ImGui::Text(repeatName.get().c_str());
 					if (repeatMode == 4 || repeatMode == 5)
-						ofxImGui::AddParameter(repeatTimes);
+						ofxImGuiSurfing::AddParameter(repeatTimes);
 					ImGui::PopItemWidth();
 				}
 
-				//ofxImGui::AddParameter(animProgress);
-				//ofxImGui::AddParameter(reset);
+				//ofxImGuiSurfing::AddParameter(animProgress);
+				//ofxImGuiSurfing::AddParameter(reset);
 				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
 
 				////bundle
 				//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-				//ofxImGui::AddGroup(params, flagst);
+				//ofxImGuiSurfing::AddGroup(params, flagst);
 				//ImGui::PopItemWidth();
 
 				//-
@@ -553,21 +545,22 @@ void FloatAnimator::drawImGuiWidgets() {
 				flagst = ImGuiTreeNodeFlags_None;
 				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
+
 				if (ImGui::CollapsingHeader("EXTRA", flagst))
 				{
 					ImGui::Indent();
 
-					ofxSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-					ofxSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-					ofxSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-					ofxSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 
 					//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
-					guiManager.drawAdvancedSubPanel();
-#endif
+					ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+					if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+		
 					ImGui::Unindent();
 				}
 
@@ -595,9 +588,8 @@ void FloatAnimator::drawImGuiWidgets() {
 					ImGui::Unindent;
 				}
 			}
-			ofxImGui::EndWindow(mainSettings);
+			guiManager.endWindow();
 		}
-#endif
 	}
 }
 
