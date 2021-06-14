@@ -69,7 +69,6 @@ animatorFloat.stop();
 
 ## Tested systems
 - **Windows10** / **VS2017** / **OF ~0.11**
-- **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
 
 ## Author
 Addon by **@moebiusSurfing**  
