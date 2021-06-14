@@ -7,20 +7,16 @@ Some classes to faster integration into your OF Apps/Addons:
 
 ## Screenshots
 
-/1_example_Float (2 x FloatAnimator)
-
+#### 1_example_Float (2 x FloatAnimator)
 ![gif](/readme_images/1_example_Float.gif?raw=true "gif")  
 
-/2_example_FloatNoised (FloatAnimator + NoiseAnimator)
-
+#### 2_example_FloatNoised (FloatAnimator + NoiseAnimator)
 ![gif](/readme_images/2_example_FloatNoised.gif?raw=true "gif")  
 
-/3_example_PointColored (EnvelopeAnimator)
-
+#### 3_example_PointColored (EnvelopeAnimator)
 ![image](/readme_images/3_example_PointColored.PNG?raw=true "image")
 
-/4_example_Envelope (Point + Color animators)
-
+#### 4_example_Envelope (Point + Color animators)
 ![image](/readme_images/4_example_Envelope.PNG?raw=true "image")
  	
 ## Overview

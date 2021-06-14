@@ -1,5 +1,18 @@
 #pragma once
+
 #include "ofMain.h"
+
+
+/*
+
+
+TODO:
+
++ switch to ImGui
++ switch to float lerp class and customize to color
+
+*/
+
 
 #include "ofxAnimatableOfColor.h"
 #include "ofxGui.h"
