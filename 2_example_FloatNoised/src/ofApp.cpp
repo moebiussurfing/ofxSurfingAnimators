@@ -5,10 +5,10 @@ void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofSetCircleResolution(200);
 	
-	animatorFloat.setNameLabel("myFloat");
+	animatorFloat.setNameLabel("Radius");
 	animatorFloat.setup(1, 2);
 
-	animatorNoise.setNameLabel("myNoise");
+	animatorNoise.setNameLabel("Position");
 	animatorNoise.setup();
 
 
@@ -22,7 +22,7 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	//scene
+	// scene
 	ofSetBackgroundColor(16);
 	ofPushMatrix();
 	ofPushStyle();
@@ -38,7 +38,7 @@ void ofApp::draw() {
 	ofPopStyle();
 	ofPopMatrix();
 
-	//help
+	// help
 	string s = "PRESS SPACE TO TRIG ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 10, 25);
 }

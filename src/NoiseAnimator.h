@@ -4,7 +4,7 @@
 
 ///-
 ///
-//#define INCLUDE_PLOTS		//plotting can be disabled without affecting the functionality
+#define INCLUDE_PLOTS		//plotting can be disabled without affecting the functionality
 ///
 ///-
 
@@ -16,6 +16,7 @@
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
 #include "ofxBiquadFilter.h"//TODO change to smoother bc could be more performant
+
 //#include "ofxGui.h"
 //#include "ofxSurfing_ofxGui.h"
 
@@ -29,6 +30,7 @@ class NoiseAnimator : public ofBaseApp
 public:
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
+
 public:
 	void drawImGuiWidgets();
 

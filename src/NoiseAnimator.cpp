@@ -240,8 +240,8 @@ void NoiseAnimator::setup()
 
 	//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 	// gui
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
 	guiManager.setup();//initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
@@ -583,17 +583,14 @@ void NoiseAnimator::draw(ofEventArgs & args)
 
 		//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		guiManager.begin();
-		//#endif
 		{
-
 			drawImGuiWidgets();
-
 		}
-		//#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
 		guiManager.end();
 #endif
+
 	}
 
 	//-
@@ -892,7 +889,6 @@ void NoiseAnimator::draw(ofEventArgs & args)
 //--------------------------------------------------------------
 void NoiseAnimator::drawImGuiWidgets() {
 	{
-		auto mainSettings = ofxImGui::Settings();
 		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
 		string name;
 
@@ -910,6 +906,8 @@ void NoiseAnimator::drawImGuiWidgets() {
 		float _w25;
 		float _h;
 
+		//TODO: not styled widgets
+
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
@@ -919,9 +917,8 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 		if (bParams)
 		{
-			//name = "PARAMETERS";
 			name = "PANEL " + label;
-			if (ofxImGui::BeginWindow(name.c_str(), mainSettings, _flagsw, &bOpen))
+			guiManager.beginWindow(name, &bOpen, _flagsw);
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
@@ -929,12 +926,17 @@ void NoiseAnimator::drawImGuiWidgets() {
 				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
 				flags |= ImGuiTreeNodeFlags_Framed;
 
-				ofxImGui::AddGroup(params, flags);
+				if (ImGui::Button("START", ImVec2(_w100, _h))) {
+					start();
+				}
+				ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+				ofxImGuiSurfing::AddGroup(params, flags);
 				ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
 
 				//-
 
-#ifndef USE_RANDOMIZE_IMGUI_EXTERNAL
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 				guiManager.drawAdvancedSubPanel();
 #endif
 
@@ -946,7 +948,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 				positionGuiLayout = glm::vec2(posx, posy);
 				//positionGuiLayout = glm::vec2(posx + w, posy);
 			}
-			ofxImGui::EndWindow(mainSettings);
+			guiManager.endWindow();
 		}
 #endif
 	}
@@ -1105,9 +1107,9 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			Reset_Noise = false;
 
 			ENABLE_Noise = true;
-			ENABLE_NoiseX = true;
-			ENABLE_NoiseY = true;
-			ENABLE_NoiseZ = true;
+			ENABLE_NoiseX = false;
+			ENABLE_NoiseY = false;
+			ENABLE_NoiseZ = false;
 			noisePowerX = 20;
 			noisePowerY = 20;
 			noisePowerZ = 20;
@@ -1131,8 +1133,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_Modulator = false;
 
 			faderValue = faderMin;
-			ENABLE_NoisePointFilter = true;
-			ENABLE_NoiseModulatorFilter = true;
+			ENABLE_NoisePointFilter = false;
+			ENABLE_NoiseModulatorFilter = false;
 			fc = 0.5f;
 			fcPoint = 0.5f;
 
@@ -1185,8 +1187,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 	{
 		if (!ENABLE_Noise)
 		{
-			// workflow
-			ENABLE_Modulator = false;
+			//// workflow
+			//ENABLE_Modulator = false;
 			stop();
 		}
 	}

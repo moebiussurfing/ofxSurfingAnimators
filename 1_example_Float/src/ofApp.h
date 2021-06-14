@@ -11,7 +11,7 @@
 	One of the animators is linked to an ofParameter
 
 	USAGE
-	+ press space key to trig both animators
+	+ press space key to trig start both animators
 	+ press start button of each panel to trig start each animator
 
 */

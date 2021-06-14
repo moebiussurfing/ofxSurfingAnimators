@@ -1,13 +1,13 @@
 {
-    "myNoise": {
+    "Position": {
         "Enable_Noise_Animator": "1",
         "LOW_PASS_FILTERS": {
-            "FILTER_MODULATOR": "1",
+            "FILTER_MODULATOR": "0",
             "FILTER_POINT": "1",
             "LPF_Modulator": "0.5",
             "LPF_Point": "0.5"
         },
-        "MODE_MODULATOR_Noise": "0",
+        "MODE_MODULATOR_Noise": "1",
         "MODULATOR": {
             "BPM_ENGINE": {
                 "Attack_Beat": "2",
@@ -17,7 +17,7 @@
                 "Release_Beat": "2",
                 "Sustain_Beat": "4"
             },
-            "Curve_Type": "16",
+            "Curve_Type": "3",
             "Max": "1",
             "Min": "0",
             "TIMERS": {
@@ -28,20 +28,20 @@
             }
         },
         "X": {
-            "Deep": "1",
+            "Deep": "3",
             "ENABLE": "1",
-            "Power": "20",
-            "Speed": "0.5"
+            "Power": "41",
+            "Speed": "1"
         },
         "Y": {
             "Deep": "1",
             "ENABLE": "1",
-            "Power": "20",
-            "Speed": "0.5"
+            "Power": "44",
+            "Speed": "0.573"
         },
         "Z": {
             "Deep": "1",
-            "ENABLE": "1",
+            "ENABLE": "0",
             "Power": "20",
             "Speed": "0.5"
         }

@@ -1,20 +1,16 @@
 {
-    "myFloat": {
+    "ANIMATOR": {
         "BPM_Engine": {
             "BPM": "120",
             "BPM_Mode": "1",
-            "Beat": "4",
-            "Beat_Delay": "0"
+            "Beat_Delay": "4",
+            "Beat_Duration": "6"
         },
-        "Curve_Type": "16",
+        "Curve_Type": "28",
         "Enable_Animator": "1",
-        "Repeat_Mode": "0",
-        "Time_Engine": {
-            "Duration": "1",
-            "PreDelay": "0"
-        },
-        "Times": "1",
+        "Repeat_Mode": "5",
+        "Times": "2",
         "Value_End": "1",
-        "Value_Start": "0"
+        "Value_Start": "0.325"
     }
 }

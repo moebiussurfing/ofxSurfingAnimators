@@ -2,6 +2,13 @@
 
 #include "ofMain.h"
 
+/*
+
+	EXAMPLE OVERVIEW
+	Trigs a float to change a circle radius adding an enveloped noise point that modifies the circle position.
+
+*/
+
 #include "FloatAnimator.h"
 #include "NoiseAnimator.h"
 

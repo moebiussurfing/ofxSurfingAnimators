@@ -179,7 +179,7 @@ void FloatAnimator::setup()
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	// gui
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	guiManager.setup();//initiate ImGui
+	guiManager.setup(); // initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
 #endif
 
@@ -409,6 +409,12 @@ void FloatAnimator::drawImGuiWidgets() {
 				if (ImGui::Button("START", ImVec2(_w100, _h))) {
 					start();
 				}
+				
+				if (ImGui::CollapsingHeader("RANGE", flagst))
+				{
+					ofxImGuiSurfing::AddParameter(valueStart);
+					ofxImGuiSurfing::AddParameter(valueEnd);
+				}
 
 				if (ImGui::CollapsingHeader("MONITOR", flagst))
 				{
@@ -545,34 +551,27 @@ void FloatAnimator::drawImGuiWidgets() {
 				flagst = ImGuiTreeNodeFlags_None;
 				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
+				
+				ImGui::Dummy(ImVec2(0.0f, 5.0f));
+				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+				if (guiManager.bExtra)
+					//if (ImGui::CollapsingHeader("EXTRA", flagst))
+					{
+						ImGui::Indent();
 
-				if (ImGui::CollapsingHeader("EXTRA", flagst))
-				{
-					ImGui::Indent();
+						ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+						ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+						ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+						ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 
-					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-					ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-					ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+						//-
 
-					//-
+						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+						if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
 
-					ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
-					if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
-		
-					ImGui::Unindent();
-				}
-
-				//-
-
-				////get window position for advanced layout paired position
-				//auto posx = ImGui::GetWindowPos().x;
-				//auto posy = ImGui::GetWindowPos().y;
-				//widthGuiLayout = ImGui::GetWindowWidth();
-				//heightGuiLayout = ImGui::GetWindowHeight();
-				//positionGuiLayout = glm::vec2(posx, posy);
-				////positionGuiLayout = glm::vec2(posx + w, posy);
+						ImGui::Unindent();
+					}
 
 				//--
 

@@ -16,6 +16,7 @@ TODO:
 #include "ofxAnimatableFloat.h"
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
+
 //#include "ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
@@ -23,17 +24,6 @@ TODO:
 
 class FloatAnimator
 {
-	//--
-
-	//public:
-private:
-	//TODO: use a pointer to allow autoUpdate..
-	//ofParameter<float> * paramRef = NULL;
-	//bool bAutoUpdate = false;
-
-	ofParameter<float>paramFloat{ "-1", -1, -1, -1 };
-
-	//--
 
 public:
 	FloatAnimator();
@@ -59,6 +49,7 @@ public:
 
 	void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
+
 	//void update();
 	//void draw();
 	//void update(float _dt)
@@ -66,7 +57,17 @@ public:
 	//	dt = _dt;
 	//	update();
 	//}
+
 	void exit();
+	
+	//--
+
+private:
+	//TODO: use a pointer to allow autoUpdate..
+	//ofParameter<float> * paramRef = NULL;
+	//bool bAutoUpdate = false;
+
+	ofParameter<float>paramFloat{ "-1", -1, -1, -1 };
 
 	//-
 
@@ -79,7 +80,6 @@ public:
 	void drawImGuiWidgets();
 
 private:
-
 	ofFbo fboPlot;
 	void drawPlot();
 	ImVec2 plotShape;
@@ -312,6 +312,7 @@ public:
 	{
 		return floatAnimator.getPercentDone();
 	}
+
 	//--------------------------------------------------------------
 	float getValue()
 	{

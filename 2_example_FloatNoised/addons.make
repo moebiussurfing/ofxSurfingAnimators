@@ -4,3 +4,4 @@ ofxHistoryPlot
 ofxImGui
 ofxSurfingAnimators
 ofxSurfingHelpers
+ofxSurfingImGui
