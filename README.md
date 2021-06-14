@@ -5,7 +5,9 @@
 Some classes to faster integration into your OF Apps/Addons:  
 *ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
-## ScreenshotS
+## Screenshots
+/1_example_Float (2 x FloatAnimator)
+![gif](/readme_images/1_example_Float.gif?raw=true "gif")  
 /2_example_FloatNoised (FloatAnimator + NoiseAnimator)
 ![image](/readme_images/2_example_FloatNoised.PNG?raw=true "image")  
 /3_example_PointColored (EnvelopeAnimator)
@@ -32,9 +34,10 @@ Setters for start/end, time mode, duration and pre pause, curve tween types, loo
 ## Dependencies
 * [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
 * [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
+* [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxImGui [**FORK**]](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
-* ofxGui  [ **OF** ]
+* ofxGui [ **OF** ]
 
 Bundled into ```OF_ADDON/libs```. No need to add to the ```Project Generator```!  
 (To Filter Noise point)  
