@@ -1,8 +1,8 @@
 # ofxSurfingAnimators
 
-**openFrameworks** helper addon for ```ofxAnimatable``` from **@armadillu**  
-(https://github.com/armadillu/ofxAnimatable)  
-Some classes to faster integration into your OF Apps/Addons:  
+**openFrameworks** helper add-on for [ofxAnimatable]((https://github.com/armadillu/ofxAnimatable) from **@armadillu**  
+ 
+Some classes to faster integration into your OF Apps/Add-ons:  
 *ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
 ## Screenshots
@@ -28,25 +28,25 @@ Some classes to faster integration into your OF Apps/Addons:
    * NoiseAnimator.h (Envelope Modulated 2D Noise point + Filters)
    * ColorAnimator.h
    * ToggleAnimator.h
-* Added GUI:  
-Setters for start/end, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
+* Added **ImGui** based **GUI**:  
+Setters for Start/End, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
 * Handle Settings: Auto store-recall.
-* Musical BPM based or absolute time scale.
-* Plotting realtime value curves.
-* Curve Tweens preview drawing.
+* Musical **BPM** based or absolute **time scale**.
+* **Plotting** realtime value curves.
+* **Curves preview** drawing.
 
 ## Dependencies
 * [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
 * [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
-* [ofxImGui [**FORK**]](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
+* [ofxImGui [ **FORK** ]](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
 * ofxGui [ **OF** ]
 
-Bundled into ```OF_ADDON/libs```. No need to add to the ```Project Generator```!  
+Bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
 (To Filter Noise point)  
-**ofxBiquadFilter**  (https://github.com/dzlonline/ofxBiquadFilter)  
-**ofxOneEuroFilter**  (https://github.com/i-n-g-o/ofxOneEuroFilter)
+[ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)  
+[ofxOneEuroFilter](https://github.com/i-n-g-o/ofxOneEuroFilter)
 
 ## Usage
 - Look the examples.
@@ -59,21 +59,28 @@ FloatAnimator animatorFloat;
 
 ### ofApp.cpp
 ```.c++
-animatorFloat.setup(0, 1);
+setup() {
+   animatorFloat.setup(0.0f, 1.0f);
+}
 
-float value = animatorFloat.getValue();
+udate() {
+   float value = animatorFloat.getValue();
+}
 
-animatorFloat.start();
-animatorFloat.stop();
+void keyPressed(int key){
+   if (key == ' '){
+      animatorFloat.start();
+      animatorFloat.stop();
+   }
+}
 ```
 
-## Tested systems
+## Tested Systems
 - **Windows10** / **VS2017** / **OF ~0.11**
-- **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
 
 ## Author
 Addon by **@moebiusSurfing**  
 *(ManuMolina). 2020.*
 
 ## License
-*MIT License.*
+MIT License
