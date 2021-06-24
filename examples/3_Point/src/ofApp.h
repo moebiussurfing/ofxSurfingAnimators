@@ -7,6 +7,7 @@
 #include "ofxSurfing_ofxGui.h"//to customize gui only
 
 class ofApp : public ofBaseApp {
+
 public:
 	void setup();
 	void update();
