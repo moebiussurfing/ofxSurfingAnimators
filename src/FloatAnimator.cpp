@@ -135,10 +135,12 @@ void FloatAnimator::setup()
 
 	//--
 
-	//settings
-	params.setName("ANIMATOR");
+	// settings
+	params.setName(label + " ANIM");
+	//params.setName("ANIMATOR");
 	//params.setName("Float Animator");
 	//params.setName(label);
+
 	params.add(ENABLE_valueAnim);
 	params.add(value);
 	params.add(valueStart);
@@ -161,6 +163,7 @@ void FloatAnimator::setup()
 	params.add(repeatTimes);
 	params.add(reset);
 	params.add(animProgress);
+	params.add(SHOW_Gui);
 	//params.add(anim_loop);
 
 	ofAddListener(params.parameterChangedE(), this, &FloatAnimator::Changed_Params);
@@ -176,8 +179,8 @@ void FloatAnimator::setup()
 
 	//-
 
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	// gui
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
 	guiManager.setup(); // initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
@@ -209,6 +212,13 @@ void FloatAnimator::setup()
 	fboSettings.textureTarget = GL_TEXTURE_2D;
 	fboPlot.allocate(fboSettings);
 
+	//--
+
+#ifdef USE_SURFING_PRESETS
+	presets.setPathPresets(path_GLOBAL_Folder + "/presets/" + params.getName());
+	presets.addGroup(params);
+	//presets.addGroup(getParameters());
+#endif
 }
 
 //--------------------------------------------------------------
@@ -409,7 +419,20 @@ void FloatAnimator::drawImGuiWidgets() {
 				if (ImGui::Button("START", ImVec2(_w100, _h))) {
 					start();
 				}
-				
+
+				//-
+
+#ifdef USE_SURFING_PRESETS
+				//bool bOpen = true;
+				//ImGuiTreeNodeFlags _flagt2 = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+				//_flagt2 |= ImGuiTreeNodeFlags_Framed;
+				//if (ImGui::TreeNodeEx("PRESETS", _flagt2))
+				{
+					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+					presets.draw_ImGui_Minimal();
+					//ImGui::TreePop();
+				}
+#endif
 				if (ImGui::CollapsingHeader("RANGE", flagst))
 				{
 					ofxImGuiSurfing::AddParameter(valueStart);
@@ -452,13 +475,13 @@ void FloatAnimator::drawImGuiWidgets() {
 
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 					if (!bpmMode) {
-						ofxImGuiSurfing::AddParameter(animDelay);
 						ofxImGuiSurfing::AddParameter(duration);
+						ofxImGuiSurfing::AddParameter(animDelay);
 					}
 					else
 					{
-						ofxImGuiSurfing::AddDragFloatSlider(animDelay);
 						ofxImGuiSurfing::AddDragFloatSlider(duration);
+						ofxImGuiSurfing::AddDragFloatSlider(animDelay);
 					}
 					ImGui::PopItemWidth();
 
@@ -553,27 +576,27 @@ void FloatAnimator::drawImGuiWidgets() {
 				flagst = ImGuiTreeNodeFlags_None;
 				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				flagst |= ImGuiTreeNodeFlags_Framed;
-				
+
 				ImGui::Dummy(ImVec2(0.0f, 5.0f));
 				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
 				if (guiManager.bExtra)
 					//if (ImGui::CollapsingHeader("EXTRA", flagst))
-					{
-						ImGui::Indent();
+				{
+					ImGui::Indent();
 
-						ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-						ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-						ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-						//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+					//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 
-						//-
+					//-
 
-						ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-						if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+					ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+					if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
 
-						ImGui::Unindent();
-					}
+					ImGui::Unindent();
+				}
 
 				//--
 
@@ -838,4 +861,24 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 		if (ModeBrowse) start();
 		//}
 	}
+
+	//-
+
+//	else if (name == SHOW_Gui.getName() && !SHOW_Gui)
+//	{
+//#ifdef USE_SURFING_PRESETS
+//		presets.bGui = false;
+//#endif
+//	}
+
+	//-
+
+	// workflow
+
+#ifdef USE_SURFING_PRESETS
+	else if (name == SHOW_Gui.getName() && !SHOW_Gui)
+	{
+		presets.bGui = false;
+	}
+#endif
 }

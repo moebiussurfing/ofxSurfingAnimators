@@ -1,5 +1,5 @@
-ofxGui
 ofxAnimatable
+ofxGui
 ofxHistoryPlot
 ofxImGui
 ofxSurfingAnimators

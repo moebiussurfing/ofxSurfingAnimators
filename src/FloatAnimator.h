@@ -17,13 +17,25 @@ TODO:
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
 
+#define USE_SURFING_PRESETS
+
 //#include "ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
+#ifdef USE_SURFING_PRESETS
+#include "ofxSurfingPresets.h"
+#endif
+
 class FloatAnimator
 {
+	//----
+
+public:
+#ifdef USE_SURFING_PRESETS
+		ofxSurfingPresets presets;
+#endif
 
 public:
 	FloatAnimator();
@@ -351,6 +363,10 @@ public:
 	{
 		label = s;
 		path_Settings = label + ".xml";
+
+		//TODO: allow more than one instance.
+		// must use different name and paths
+		//params.setName(label + "_ANIM");
 	}
 
 public:
@@ -422,7 +438,8 @@ public:
 
 	//---
 
-private:
+//private:
+public:
 	ofParameter<float> value;
 	ofParameter<float> valueStart;
 	ofParameter<float> valueEnd;
