@@ -50,7 +50,7 @@ public:
 		setup(paramFloat.getMin(), paramFloat.getMax());
 	}
 
-	void setup();
+	virtual void setup();
 	//--------------------------------------------------------------
 	void setup(float start, float end) {
 		setStart(start);
@@ -59,7 +59,7 @@ public:
 		setup();
 	}
 
-	void update(ofEventArgs & args);
+	virtual void update(ofEventArgs & args);
 	void draw(ofEventArgs & args);
 
 	//void update();

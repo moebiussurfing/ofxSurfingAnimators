@@ -1,5 +1,29 @@
 #include "PositionAnimator.h"
-//
+
+void PositionAnimator::setup() {
+	FloatAnimator::setup();
+	
+	ofAddListener(ofEvents().update, this, &PositionAnimator::update);
+
+	posStart = glm::vec2(0, 0);
+	posEnd = glm::vec2(500, 500);
+}
+
+void PositionAnimator::update(ofEventArgs & args) {
+	FloatAnimator::update(args);
+
+	//float x = ofLerp(getValue(), posStart.get().x, posEnd.get().x);
+	//float y = ofLerp(getValue(), posStart.get().y, posEnd.get().y);
+	
+	float x = ofMap(getValue(), 0, 1, posStart.get().x, posEnd.get().x);
+	float y = ofMap(getValue(), 0, 1, posStart.get().y, posEnd.get().y);
+
+	pos = glm::vec2(x, y);
+
+	//cout << "getValue(): " << getValue() << endl;
+	//cout << "x,y: " << x << ", " << y << endl;
+}
+
 ////--------------------------------------------------------------
 //PositionAnimator::PositionAnimator()
 //{

@@ -2,70 +2,59 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-    float fps = 60;
+	float fps = 60;
 	ofSetFrameRate(fps);
 	ofSetCircleResolution(200);
-	
-    ofxSurfingHelpers::setThemeDark_ofxGui();
 
-	//posAnim.setPath_GlobalFolder("Animators_Settings/");
-	//posAnim.setNameLabel("myAnimPos");
-	//posAnim.setAutoSaveLoad(true);
-	//posAnim.setFps(fps);
 	posAnim.setup();
-	//posAnim.setGuiPosition(glm::vec2(5 + 1 * 205, 5));
+	posAnim.setPositionStart(glm::vec2(200, 200));
+	posAnim.setPositionEnd(glm::vec2(600, 600));
 
 	startTween();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-
-	float myFloat1 = posAnim.getValue(); // to radius aka scale
-
-	//posAnim.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofSetBackgroundColor(16);
 
-	////guis
-	//posAnim.draw();
+	//get position animator
+	float x = posAnim.getCurrentPosition().x;
+	float y = posAnim.getCurrentPosition().y;
 
-	////scene
-	//ofPushMatrix();
-	//ofPushStyle();
-	//ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.5);
+	//scene
+	{
+		ofPushStyle();
 
-	////get color animator
-	//ofSetColor(128);
-	//ofFill();
+		//get color animator
+		ofSetColor(255);
+		ofFill();
 
-	////get position animator
-	//ofPushMatrix();
-	//ofTranslate(posAnim.getCurrentPosition().x, posAnim.getCurrentPosition().y);
-	////big circle
-	//ofDrawCircle(0, 0, 100);
-	////border
-	//ofSetColor(255);
-	//ofNoFill();
-	//ofDrawCircle(0, 0, 100);
-	//ofPopMatrix();
-	//
-	////start/end points connected
-	//ofSetColor(255);
-	//ofFill();
-	//ofDrawCircle(posAnim.getPositionStart().x, posAnim.getPositionStart().y, 5);
-	//ofDrawCircle(posAnim.getPositionEnd().x, posAnim.getPositionEnd().y, 5);
-	//ofDrawLine(posAnim.getPositionStart(), posAnim.getPositionEnd());
+		//big circle
+		ofDrawCircle(x, y, 100);
 
-	//ofPopStyle();
-	//ofPopMatrix();
+		//border
+		ofSetColor(0);
+		ofNoFill();
+		ofDrawCircle(x, y, 100);
 
- //   //help
-	//string s = "PRESS SPACE TO TRIG ANIMATORS";
-	//ofDrawBitmapStringHighlight(s, 25 + 2 * 205, 30);
+		//start/end points connected
+		ofSetColor(255, 0, 0);
+		ofFill();
+		ofDrawCircle(posAnim.getPositionStart().x, posAnim.getPositionStart().y, 5);
+		ofDrawCircle(posAnim.getPositionEnd().x, posAnim.getPositionEnd().y, 5);
+		ofDrawLine(posAnim.getPositionStart(), posAnim.getPositionEnd());
+
+		ofPopStyle();
+	}
+
+	//-
+
+	//help
+	string s = "PRESS SPACE TO TRIG ANIMATOR. \nRETURN TO RANDOMIZE POSITIONS";
+	ofDrawBitmapStringHighlight(s, 10, 20);
 }
 
 //--------------------------------------------------------------
@@ -83,6 +72,13 @@ void ofApp::keyPressed(int key) {
 	cout << "key: " << key << endl;
 
 	if (key == ' ') startTween();
-	if (key == OF_KEY_RETURN) stopTween();
+	
+	// randomize start/end
+	if (key == OF_KEY_RETURN)
+	{
+		posAnim.setPositionStart(glm::vec2(ofRandom(200, 200), ofRandom(200, ofGetHeight() - 200)));
+		posAnim.setPositionEnd(glm::vec2(ofRandom(ofGetWidth() - 200, ofGetWidth() - 400), ofRandom(200, ofGetHeight() - 200)));
+		posAnim.start();
+	}
 }
 

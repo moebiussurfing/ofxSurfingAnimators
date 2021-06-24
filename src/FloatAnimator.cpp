@@ -433,35 +433,7 @@ void FloatAnimator::drawImGuiWidgets() {
 					//ImGui::TreePop();
 				}
 #endif
-				if (ImGui::CollapsingHeader("RANGE", flagst))
-				{
-					ofxImGuiSurfing::AddParameter(valueStart);
-					ofxImGuiSurfing::AddParameter(valueEnd);
-				}
 
-				if (ImGui::CollapsingHeader("MONITOR", flagst))
-				{
-					//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-					ImGui::PushItemWidth(_w100 - 50);
-					ofxImGuiSurfing::AddParameter(animProgress);
-					ofxImGuiSurfing::AddParameter(value);
-					ImGui::PopItemWidth();
-					ImGui::Dummy(ImVec2(0.0f, 2.0f));
-				}
-
-				//ImGui::Text("CURVE:");
-				//ofxImGuiSurfing::AddParameter(curveName);
-				//ImGui::Text(curveName.get().c_str());
-				ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
-
-				if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
-					previousCurve();
-				}
-				ImGui::SameLine();
-				if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
-					nextCurve();
-				}
-				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 				//-
 
@@ -532,6 +504,8 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				// animator group
 
+				//-
+
 				//ofxImGuiSurfing::AddParameter(bpmSpeed);
 				//ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
 				//ofxImGuiSurfing::AddParameter(duration);
@@ -547,8 +521,24 @@ void FloatAnimator::drawImGuiWidgets() {
 				{
 					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 
-					ofxImGuiSurfing::AddParameter(curveType);
+					//ImGui::Text("CURVE:");
+					//ofxImGuiSurfing::AddParameter(curveName);
+					//ImGui::Text(curveName.get().c_str());
 					ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+
+					if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
+						previousCurve();
+					}
+					ImGui::SameLine();
+					if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
+						nextCurve();
+					}
+					//ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+					//-
+
+					ofxImGuiSurfing::AddParameter(curveType);
+					//ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
 					////ofxImGuiSurfing::AddParameter(curveName);
 					//ImGui::Text(curveName.get().c_str());
 
@@ -559,9 +549,36 @@ void FloatAnimator::drawImGuiWidgets() {
 						ofxImGuiSurfing::AddParameter(repeatTimes);
 					ImGui::PopItemWidth();
 				}
+				
+				//-
+
+				flagst = ImGuiTreeNodeFlags_None;
+				//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				flagst |= ImGuiTreeNodeFlags_Framed;
+
+				if (ImGui::CollapsingHeader("RANGE", flagst))
+				{
+					ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+					ofxImGuiSurfing::AddParameter(valueStart);
+					ofxImGuiSurfing::AddParameter(valueEnd);
+					ImGui::PopItemWidth();
+				}
+
+				if (ImGui::CollapsingHeader("MONITOR", flagst))
+				{
+					//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+					ImGui::PushItemWidth(_w100 - 50);
+					ofxImGuiSurfing::AddParameter(animProgress);
+					ofxImGuiSurfing::AddParameter(value);
+					ImGui::PopItemWidth();
+					ImGui::Dummy(ImVec2(0.0f, 2.0f));
+				}
+
+				//--
 
 				//ofxImGuiSurfing::AddParameter(animProgress);
 
+					ImGui::Dummy(ImVec2(0.0f, 2.0f));
 				ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 				//ofxImGuiSurfing::AddParameter(reset);
 				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
