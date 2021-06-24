@@ -1,6 +1,6 @@
 # ofxSurfingAnimators
 
-**openFrameworks** helper add-on for [ofxAnimatable]((https://github.com/armadillu/ofxAnimatable) from **@armadillu**  
+**openFrameworks** helper add-on for [ofxAnimatable](https://github.com/armadillu/ofxAnimatable) from **@armadillu**  
  
 Some classes to faster integration into your OF Apps/Add-ons:  
 *ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
