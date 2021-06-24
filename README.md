@@ -7,17 +7,20 @@ Some classes to faster integration into your OF Apps/Add-ons:
 
 ## Screenshots
 
-#### 1_example_Float (2 x FloatAnimator)
-![gif](/readme_images/1_example_Float.gif?raw=true "gif")  
+#### 1_Float (2 x FloatAnimator)
+![gif](/docs/readme_images/1_example_Float.gif?raw=true "gif")  
 
-#### 2_example_FloatNoised (FloatAnimator + NoiseAnimator)
-![gif](/readme_images/2_example_FloatNoised.gif?raw=true "gif")  
+#### 2_FloatNoised (FloatAnimator + NoiseAnimator)
+![gif](/docs/readme_images/2_example_FloatNoised.gif?raw=true "gif")  
 
-#### 3_example_PointColored (EnvelopeAnimator)
-![image](/readme_images/3_example_PointColored.PNG?raw=true "image")
+#### 3_Point (PositionAnimator)
+![image](/docs/readme_images/_.PNG?raw=true "image")
 
-#### 4_example_Envelope (Point + Color animators)
-![image](/readme_images/4_example_Envelope.PNG?raw=true "image")
+#### 4_PointColored (EnvelopeAnimator)
+![image](/docs/readme_images/3_example_PointColored.PNG?raw=true "image")
+
+#### 4_Envelope (Point + Color animators)
+![image](/docs/readme_images/4_example_Envelope.PNG?raw=true "image")
  	
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
@@ -33,14 +36,15 @@ Setters for Start/End, time mode, duration and pre pause, curve tween types, loo
 * Handle Settings: Auto store-recall.
 * Musical **BPM** based or absolute **time scale**.
 * **Plotting** realtime value curves.
-* **Curves preview** drawing.
+* **Curves Preview** drawing.
 
 ## Dependencies
 * [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
 * [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
-* [ofxImGui [ **FORK** ]](https://github.com/Daandelange/ofxImGui/tree/ofParameters-Helpers-Test)
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/) FORK
+* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets) [Recommended]  
 * ofxGui [ **OF** ]
 
 Bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
@@ -68,10 +72,7 @@ void update() {
 }
 
 void keyPressed(int key){
-   if (key == ' '){
-      animatorFloat.start();
-      animatorFloat.stop();
-   }
+   if (key == ' ') animatorFloat.start();
 }
 ```
 
