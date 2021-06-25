@@ -20,25 +20,13 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	//get position animator
-	float x = posAnim.getCurrentPosition().x;
-	float y = posAnim.getCurrentPosition().y;
-
 	//scene
 	{
+		//get position animator
+		float x = posAnim.getCurrentPosition().x;
+		float y = posAnim.getCurrentPosition().y;
+
 		ofPushStyle();
-
-		//get color animator
-		ofSetColor(255);
-		ofFill();
-
-		//big circle
-		ofDrawCircle(x, y, 100);
-
-		//border
-		ofSetColor(0);
-		ofNoFill();
-		ofDrawCircle(x, y, 100);
 
 		//start/end points connected
 		ofSetColor(255, 0, 0);
@@ -46,6 +34,16 @@ void ofApp::draw() {
 		ofDrawCircle(posAnim.getPositionStart().x, posAnim.getPositionStart().y, 5);
 		ofDrawCircle(posAnim.getPositionEnd().x, posAnim.getPositionEnd().y, 5);
 		ofDrawLine(posAnim.getPositionStart(), posAnim.getPositionEnd());
+
+		//get color animator
+		ofSetColor(255);
+		ofFill();
+		//big circle
+		ofDrawCircle(x, y, 100);
+		//border
+		ofSetColor(0);
+		ofNoFill();
+		ofDrawCircle(x, y, 100);
 
 		ofPopStyle();
 	}
@@ -69,10 +67,11 @@ void ofApp::stopTween() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	cout << "key: " << key << endl;
+
+	ofLogNotice() << "key: " << key;
 
 	if (key == ' ') startTween();
-	
+	if (key == OF_KEY_BACKSPACE) stopTween();
 	// randomize start/end
 	if (key == OF_KEY_RETURN)
 	{

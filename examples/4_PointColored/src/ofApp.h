@@ -5,9 +5,8 @@
 #include "ColorAnimator.h"
 #include "PositionAnimator.h"
 
-#include "ofxSurfing_ofxGui.h"//to customize gui only
-
 class ofApp : public ofBaseApp {
+
 public:
 	void setup();
 	void update();
@@ -19,4 +18,7 @@ public:
 
 	void startTween();
 	void stopTween();
+
+	void randomPositions();
+	void randomColors();
 };

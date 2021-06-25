@@ -98,12 +98,14 @@ void FloatAnimator::setup()
 
 	//bpm engine
 	bpmMode.set("BPM Mode", true);
+	bpmSlow.set("Slow", false);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
 	bpmBeatDuration.set("Beat Duration", 4, 1, 8);
 	bpmBeatDelay.set("Beat Delay", 0, 0, 8);
 	params_Bpm.setName("BPM Engine");
 	params_Bpm.add(bpmSpeed);
 	params_Bpm.add(bpmMode);
+	params_Bpm.add(bpmSlow);
 	params_Bpm.add(bpmBeatDuration);
 	params_Bpm.add(bpmBeatDelay);
 	//params_Bpm.add(duration);
@@ -136,7 +138,8 @@ void FloatAnimator::setup()
 	//--
 
 	// settings
-	params.setName(label + " ANIM");
+	params.setName(label);
+	//params.setName(label + " ANIM");
 	//params.setName("ANIMATOR");
 	//params.setName("Float Animator");
 	//params.setName(label);
@@ -258,6 +261,14 @@ void FloatAnimator::update(ofEventArgs & args)
 	//        valueBack->set(valueStart);
 	//}
 
+
+#ifdef USE_SURFING_PRESETS
+	if (presets.isRetrigged())
+	{
+		start();
+	}
+#endif
+
 	if (floatAnimator.isAnimating())
 	{
 		animProgress = floatAnimator.getPercentDone() * 100;
@@ -277,10 +288,6 @@ void FloatAnimator::draw(ofEventArgs & args)
 	if (!SHOW_Gui) return;
 
 	{
-		//gui.draw();
-
-		//-
-
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		guiManager.begin();
 		{
@@ -407,6 +414,7 @@ void FloatAnimator::drawImGuiWidgets() {
 			//name = "PARAMETERS";
 			//name = "ANIMATOR";
 			name = "PANEL " + label;
+			panelName = name;
 			guiManager.beginWindow(name.c_str(), NULL, _flagsw);
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
@@ -481,6 +489,9 @@ void FloatAnimator::drawImGuiWidgets() {
 							bpmSpeed = bpmSpeed * 2.0f;
 						}
 
+						ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h / 2);
+						//ofxImGuiSurfing::AddParameter(bpmSlow);
+
 						ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 						ofxImGuiSurfing::AddParameter(bpmBeatDuration);
 						ofxImGuiSurfing::AddParameter(bpmBeatDelay);
@@ -495,8 +506,9 @@ void FloatAnimator::drawImGuiWidgets() {
 						animDelay = 0.f;
 						duration = 1.f;
 						bpmMode = true;
+						bpmSlow = false;
 						bpmBeatDelay = 0;
-						bpmBeatDuration = 4;
+						bpmBeatDuration = 8;
 					}
 				}
 
@@ -549,7 +561,7 @@ void FloatAnimator::drawImGuiWidgets() {
 						ofxImGuiSurfing::AddParameter(repeatTimes);
 					ImGui::PopItemWidth();
 				}
-				
+
 				//-
 
 				flagst = ImGuiTreeNodeFlags_None;
@@ -578,7 +590,7 @@ void FloatAnimator::drawImGuiWidgets() {
 
 				//ofxImGuiSurfing::AddParameter(animProgress);
 
-					ImGui::Dummy(ImVec2(0.0f, 2.0f));
+				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 				ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
 				//ofxImGuiSurfing::AddParameter(reset);
 				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
@@ -751,7 +763,7 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 
 	if (false) {}
 
-	else if (name == "Enable Animator")
+	else if (name == ENABLE_valueAnim.getName())
 	{
 		if (!ENABLE_valueAnim && floatAnimator.isAnimating())
 			floatAnimator.pause();
@@ -760,7 +772,7 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	}
 
 	//tween duration
-	else if (name == "Duration")
+	else if (name == duration.getName())
 	{
 		floatAnimator.setDuration(duration.get());
 	}
@@ -772,10 +784,31 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
 			duration = (_bar / 8.f) * (float)bpmBeatDuration;
 			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
+
+			if (bpmSlow) {
+				_bar *= 2;
+				duration *= 2;
+				animDelay *= 2;
+			}
 		}
 	}
 
 	//bpm engine
+	else if (name == bpmSlow.getName())
+	{
+		if (bpmMode) {
+			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
+			duration = (_bar / 8.f) * (float)bpmBeatDuration;
+			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
+
+			if (bpmSlow) {
+				_bar *= 2;
+				duration *= 2;
+				animDelay *= 2;
+			}
+		}
+	}
+
 	else if (name == bpmMode.getName())
 	{
 		// exclude bpm or time info depends of time mode
@@ -793,6 +826,12 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
 			duration = (_bar / 8.f) * (float)bpmBeatDuration;
 			animDelay = (_bar / 8.f) * (float)bpmBeatDelay;
+
+			if (bpmSlow) {
+				_bar *= 2;
+				duration *= 2;
+				animDelay *= 2;
+			}
 		}
 
 		//// gui workflow
@@ -850,8 +889,9 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 			animDelay = 0.f;
 			duration = 1.f;
 			bpmMode = true;
+			bpmSlow = false;
 			bpmBeatDelay = 0;
-			bpmBeatDuration = 4;
+			bpmBeatDuration = 8;
 
 			valueStart = 0.f;
 			valueEnd = 1.f;

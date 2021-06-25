@@ -5,3 +5,4 @@ ofxImGui
 ofxSurfingAnimators
 ofxSurfingHelpers
 ofxSurfingImGui
+ofxSurfingPresets

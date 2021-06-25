@@ -6,15 +6,11 @@ void ofApp::setup() {
 	ofSetFrameRate(fps);
 	ofSetCircleResolution(200);
 	
-    ofxSurfingHelpers::setThemeDark_ofxGui();
-
     envelope.setPath_GlobalFolder("Animators_Settings/");
     envelope.setNameLabel("Envelope_ADSR");
     envelope.setAutoSaveLoad(true);
     envelope.setFps(fps);
     envelope.setup();
-
-	envelope.setGuiPosition(glm::vec2(5 + 0 * 205, 5));
 
 	startTween();
 }
@@ -50,7 +46,7 @@ void ofApp::draw() {
 
     //help
 	string s = "PRESS SPACE TO TRIG ENVELOPE ANIMATOR";
-	ofDrawBitmapStringHighlight(s, 25 + 2 * 205, 30);
+	ofDrawBitmapStringHighlight(s, 15, 15);
 }
 
 //--------------------------------------------------------------

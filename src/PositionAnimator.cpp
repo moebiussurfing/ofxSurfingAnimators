@@ -9,6 +9,10 @@ void PositionAnimator::setup() {
 	posEnd = glm::vec2(500, 500);
 }
 
+void PositionAnimator::exit() {
+	ofRemoveListener(ofEvents().update, this, &PositionAnimator::update);
+};
+
 void PositionAnimator::update(ofEventArgs & args) {
 	FloatAnimator::update(args);
 

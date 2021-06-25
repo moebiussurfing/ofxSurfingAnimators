@@ -34,7 +34,7 @@ class FloatAnimator
 
 public:
 #ifdef USE_SURFING_PRESETS
-		ofxSurfingPresets presets;
+	ofxSurfingPresets presets;
 #endif
 
 public:
@@ -71,7 +71,7 @@ public:
 	//}
 
 	void exit();
-	
+
 	//--
 
 private:
@@ -87,6 +87,9 @@ private:
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
+	string panelName;
+public:
+	string getNamePanel() { return panelName; }
 
 public:
 	void drawImGuiWidgets();
@@ -96,11 +99,6 @@ private:
 	void drawPlot();
 	ImVec2 plotShape;
 
-	//-
-
-	bool bCustomPositionPlot = false;
-	glm::vec2 positionPlot{ 50, 50 };
-
 	float widthGuiLayout;
 	float heightGuiLayout;
 	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
@@ -108,6 +106,11 @@ private:
 		glm::vec2(0,0),
 		glm::vec2(ofGetWidth(), ofGetHeight())
 	};
+
+	//-
+
+	bool bCustomPositionPlot = false;
+	glm::vec2 positionPlot{ 50, 50 };
 
 	//-
 
@@ -125,7 +128,7 @@ public:
 	}
 
 	//--------------------------------------------------------------
-	
+
 	// api
 
 public:
@@ -353,8 +356,8 @@ public:
 	//glm::vec2 positionPlot{ 50, 50 };
 	float pad = 15;
 private:
-	string label = "Float Animator";
-	
+	string label = "FloatAnim";
+
 	std::vector<std::string> curveNamesList;
 
 public:
@@ -492,6 +495,7 @@ private:
 	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
+	ofParameter<bool> bpmSlow;
 	ofParameter<int> bpmBeatDuration;
 	ofParameter<int> bpmBeatDelay;
 

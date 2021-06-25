@@ -4,8 +4,12 @@
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
 #include "ofxHistoryPlot.h"
-#include "ofxGui.h"
 #include "ofxSurfingHelpers.h"
+
+#define USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
+
+//#include "ofxGui.h"
+#include "ofxSurfingImGui.h"
 
 //adsr envelope class
 
@@ -15,6 +19,26 @@ class EnvelopeAnimator
 public:
 	EnvelopeAnimator();
 	~EnvelopeAnimator();
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
+	ofxSurfing_ImGui_Manager guiManager;
+#endif
+
+private:
+	ofFbo fboPlot;
+	void drawPlot();
+	ImVec2 plotShape;
+
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
+
+public:
+	void drawImGuiWidgets();
 
 	void setup();
 	void update();
@@ -94,30 +118,30 @@ public:
 		faderLoop = b;
 	}
 
-	//--------------------------------------------------------------
-	void disableHeader()
-	{
-		gui.disableHeader();
-	}
+	////--------------------------------------------------------------
+	//void disableHeader()
+	//{
+	//	gui.disableHeader();
+	//}
 
-	//--------------------------------------------------------------
-	void setMinimized(bool b)
-	{
-		if (!b)
-		{
-			gui.maximizeAll();
-		}
-		else
-		{
-			gui.minimizeAll();
-		}
-	}
+	////--------------------------------------------------------------
+	//void setMinimized(bool b)
+	//{
+	//	if (!b)
+	//	{
+	//		gui.maximizeAll();
+	//	}
+	//	else
+	//	{
+	//		gui.minimizeAll();
+	//	}
+	//}
 
-	//--------------------------------------------------------------
-	bool isMinimized()
-	{
-		return gui.isMinimized();
-	}
+	////--------------------------------------------------------------
+	//bool isMinimized()
+	//{
+	//	return gui.isMinimized();
+	//}
 
 	//--------------------------------------------------------------
 	void setDebug(bool b)
@@ -175,15 +199,15 @@ public:
 	//--------------------------------------------------------------
 	void setGuiPosition(glm::vec2 _p)
 	{
-		guiPos = _p;
-		gui.setPosition(guiPos.x, guiPos.y);
+		//guiPos = _p;
+		//gui.setPosition(guiPos.x, guiPos.y);
 	}
 
-	//--------------------------------------------------------------
-	glm::vec2 getGuiPosition()
-	{
-		return guiPos;
-	}
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiPosition()
+	//{
+	//	return guiPos;
+	//}
 
 	//--------------------------------------------------------------
 	bool isEnabled()
@@ -286,8 +310,8 @@ private:
 	ofxAnimatableQueue queue;
 	void onAnimQueueDone(ofxAnimatableQueue::EventArg &);
 
-	ofxPanel gui;
-	glm::vec2 guiPos;
+	//ofxPanel gui;
+	//glm::vec2 guiPos;
 	void Changed_params(ofAbstractParameter &e);
 
 public:
@@ -363,21 +387,20 @@ private:
 	void setupPlot();
 
     void refreshGui(){
-
-        auto &g1 = gui.getGroup(label);//1st level
-        auto &g2 = g1.getGroup(params_Modulator.getName());//2nd level
-        auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
-        auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
-        g3.minimize();
-        g4.minimize();
-        if (bpmMode.get())
-        {
-//            g3.minimize();
-            g4.maximize();
-        }
-        else {
-            g3.maximize();
-//            g4.minimize();
-        }
+//        auto &g1 = gui.getGroup(label);//1st level
+//        auto &g2 = g1.getGroup(params_Modulator.getName());//2nd level
+//        auto &g3 = g2.getGroup(params_Timers.getName());//3nd level
+//        auto &g4 = g2.getGroup(params_Bpm.getName());//3nd level
+//        g3.minimize();
+//        g4.minimize();
+//        if (bpmMode.get())
+//        {
+////            g3.minimize();
+//            g4.maximize();
+//        }
+//        else {
+//            g3.maximize();
+////            g4.minimize();
+//        }
     }
 };

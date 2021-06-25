@@ -8,9 +8,7 @@ class PositionAnimator : public FloatAnimator {
 
 public:
 	void setup();
-	void exit() {
-		ofRemoveListener(ofEvents().update, this, &PositionAnimator::update);
-	};
+	void exit();
 
 	void update(ofEventArgs & args);
 
