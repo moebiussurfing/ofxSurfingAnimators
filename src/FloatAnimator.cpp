@@ -642,8 +642,8 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		ImGui::Dummy(ImVec2(0.0f, 5.0f));
 		ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+		//if (ImGui::CollapsingHeader("EXTRA", flagst))
 		if (guiManager.bExtra)
-			//if (ImGui::CollapsingHeader("EXTRA", flagst))
 		{
 			ImGui::Indent();
 
@@ -682,10 +682,15 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 void FloatAnimator::drawImGuiWidgets() {
 	{
 		drawImGuiWidgetsBegin();
-		drawImGuiWidgetsExtra();
-		float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
-		float _h = ofxImGuiSurfing::getWidgetsHeight();
-		ImGui::Button("TEST", ImVec2(_w100, 2 * _h));
+	
+		// NOTE:
+		// this splitted section is to insert custom widget for different animator types
+		// that we will derive from this float class
+		//drawImGuiWidgetsExtra();
+		//float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+		//float _h = ofxImGuiSurfing::getWidgetsHeight();
+		//ImGui::Button("TEST", ImVec2(_w100, 2 * _h));
+		
 		drawImGuiWidgetsEnd();
 	}
 }
