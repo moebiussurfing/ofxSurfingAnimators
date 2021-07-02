@@ -4,13 +4,17 @@
 
 #include "FloatAnimator.h"
 
+//ofxSurfing_ImGui_Manager guiManager;
+
 class PositionAnimator : public FloatAnimator {
 
 public:
 	void setup();
 	void exit();
-
 	void update(ofEventArgs & args);
+	//void draw(ofEventArgs & args);
+
+	void drawImGuiWidgetsExtra();
 
 	ofParameter<glm::vec2> posStart, posEnd, pos;
 

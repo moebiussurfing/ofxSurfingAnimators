@@ -393,6 +393,10 @@ void FloatAnimator::drawPlot() {
 
 //--------------------------------------------------------------
 void FloatAnimator::drawImGuiWidgetsExtra() {
+
+	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+	float _h = ofxImGuiSurfing::getWidgetsHeight();
+	ImGui::Button("TEST_ExtraF", ImVec2(_w100, 2 * _h));
 }
 
 //--------------------------------------------------------------
@@ -686,10 +690,7 @@ void FloatAnimator::drawImGuiWidgets() {
 		// NOTE:
 		// this splitted section is to insert custom widget for different animator types
 		// that we will derive from this float class
-		//drawImGuiWidgetsExtra();
-		//float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
-		//float _h = ofxImGuiSurfing::getWidgetsHeight();
-		//ImGui::Button("TEST", ImVec2(_w100, 2 * _h));
+		drawImGuiWidgetsExtra();
 		
 		drawImGuiWidgetsEnd();
 	}

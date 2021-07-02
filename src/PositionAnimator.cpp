@@ -1,12 +1,17 @@
 #include "PositionAnimator.h"
 
 void PositionAnimator::setup() {
+	setNameLabel("posAnim");
+
 	FloatAnimator::setup();
-	
+
 	ofAddListener(ofEvents().update, this, &PositionAnimator::update);
 
 	posStart = glm::vec2(0, 0);
 	posEnd = glm::vec2(500, 500);
+
+	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
+	guiManager.setup();
 }
 
 void PositionAnimator::exit() {
@@ -18,7 +23,7 @@ void PositionAnimator::update(ofEventArgs & args) {
 
 	//float x = ofLerp(getValue(), posStart.get().x, posEnd.get().x);
 	//float y = ofLerp(getValue(), posStart.get().y, posEnd.get().y);
-	
+
 	float x = ofMap(getValue(), 0, 1, posStart.get().x, posEnd.get().x);
 	float y = ofMap(getValue(), 0, 1, posStart.get().y, posEnd.get().y);
 
@@ -27,6 +32,33 @@ void PositionAnimator::update(ofEventArgs & args) {
 	//cout << "getValue(): " << getValue() << endl;
 	//cout << "x,y: " << x << ", " << y << endl;
 }
+
+////--------------------------------------------------------------
+//void PositionAnimator::draw(ofEventArgs & args)
+//{
+//	//FloatAnimator::draw(args);
+//
+//	//TODO. split begin/end imGui? inheritage? derive?
+//	//guiManager.begin();
+//	{
+//		//ImGui::Begin("PANEL posAnim");
+//		drawImGuiWidgetsExtra();
+//		//ImGui::End();
+//	}
+//	//guiManager.end();
+//}
+
+//--------------------------------------------------------------
+void PositionAnimator::drawImGuiWidgetsExtra() {
+	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+	float _h = ofxImGuiSurfing::getWidgetsHeight();
+	ImGui::Button("TEST_ExtraP", ImVec2(_w100, 2 * _h));
+
+	ofxImGuiSurfing::AddParameter(pos);
+	ofxImGuiSurfing::AddParameter(posStart);
+	ofxImGuiSurfing::AddParameter(posEnd);
+}
+
 
 ////--------------------------------------------------------------
 //PositionAnimator::PositionAnimator()
