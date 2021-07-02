@@ -94,6 +94,11 @@ public:
 public:
 	void drawImGuiWidgets();
 
+	void drawImGuiWidgetsExtra();
+	void drawImGuiWidgetsBegin();
+	void drawImGuiWidgetsEnd();
+	bool bParams = true;
+
 private:
 	ofFbo fboPlot;
 	void drawPlot();

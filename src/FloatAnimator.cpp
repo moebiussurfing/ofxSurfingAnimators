@@ -280,6 +280,20 @@ void FloatAnimator::update(ofEventArgs & args)
 		//		paramFloat = value;
 		//}
 	}
+
+	//-
+
+	if (SHOW_Plot && SHOW_Gui)
+	{
+		//drawPlot();
+
+		fboPlot.begin();
+		{
+			ofClear(0, 0);
+			drawPlot();
+		}
+		fboPlot.end();
+	}
 }
 
 //--------------------------------------------------------------
@@ -295,20 +309,6 @@ void FloatAnimator::draw(ofEventArgs & args)
 		}
 		guiManager.end();
 #endif
-	}
-
-	//-
-
-	if (SHOW_Plot)
-	{
-		//drawPlot();
-
-		fboPlot.begin();
-		{
-			ofClear(0, 0);
-			drawPlot();
-		}
-		fboPlot.end();
 	}
 }
 
@@ -390,6 +390,307 @@ void FloatAnimator::drawPlot() {
 	ofPopStyle();
 }
 
+
+//--------------------------------------------------------------
+void FloatAnimator::drawImGuiWidgetsExtra() {
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::drawImGuiWidgetsBegin() {
+	// 1. window parameters
+	//static bool bParams = true;
+	//static bool bOpen = false;
+	if (bParams)
+	{
+		string name;
+
+		// widgets sizes
+		float _w100;
+		float _w99;
+		float _w50;
+		float _w33;
+		float _w25;
+		float _h;
+
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		//name = "PARAMETERS";
+		//name = "ANIMATOR";
+		name = "PANEL " + label;
+		panelName = name;
+		guiManager.beginWindow(name.c_str(), NULL, _flagsw);
+		{
+			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+
+			static ImGuiTreeNodeFlags flagst;
+			flagst = ImGuiTreeNodeFlags_None;
+			//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+			flagst |= ImGuiTreeNodeFlags_Framed;
+
+			if (ImGui::Button("START", ImVec2(_w100, _h))) {
+				start();
+			}
+
+			//--
+		}
+	}
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::drawImGuiWidgetsEnd() {
+
+	//--
+
+	if (bParams)//??
+	{
+		string name;
+
+		// widgets sizes
+		float _w100;
+		float _w99;
+		float _w50;
+		float _w33;
+		float _w25;
+		float _h;
+
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+
+		static ImGuiTreeNodeFlags flagst;
+		flagst = ImGuiTreeNodeFlags_None;
+		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		//-
+
+#ifdef USE_SURFING_PRESETS
+				//bool bOpen = true;
+				//ImGuiTreeNodeFlags _flagt2 = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+				//_flagt2 |= ImGuiTreeNodeFlags_Framed;
+				//if (ImGui::TreeNodeEx("PRESETS", _flagt2))
+		{
+			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+			presets.draw_ImGui_Minimal();
+			//ImGui::TreePop();
+		}
+#endif
+
+
+		//-
+
+		flagst = ImGuiTreeNodeFlags_None;
+		flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		if (ImGui::CollapsingHeader("DURATION", flagst))
+		{
+			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+
+			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+			if (!bpmMode) {
+				ofxImGuiSurfing::AddParameter(duration);
+				ofxImGuiSurfing::AddParameter(animDelay);
+			}
+			else
+			{
+				ofxImGuiSurfing::AddDragFloatSlider(duration);
+				ofxImGuiSurfing::AddDragFloatSlider(animDelay);
+			}
+			ImGui::PopItemWidth();
+
+			ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
+
+			if (bpmMode) {
+
+				ofxImGuiSurfing::AddDragFloatSlider(bpmSpeed);
+				//float _bpmSpeed = bpmSpeed.get();
+				//ImGui::PushID(1);
+				//if(ImGui::DragFloat("BPM", &_bpmSpeed)) {
+				//	bpmSpeed.set(_bpmSpeed);
+				//}
+				//ImGui::PopID();
+
+				//ImGui::PushID(2);
+				//ofxImGuiSurfing::AddParameter(bpmSpeed);
+				//ImGui::PopID();
+
+				if (ImGui::Button("HALF", ImVec2(_w50, _h / 2))) {
+					bpmSpeed = bpmSpeed / 2.0f;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("DOUBLE", ImVec2(_w50, _h / 2))) {
+					bpmSpeed = bpmSpeed * 2.0f;
+				}
+
+				ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h / 2);
+				//ofxImGuiSurfing::AddParameter(bpmSlow);
+
+				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+				ofxImGuiSurfing::AddParameter(bpmBeatDuration);
+				ofxImGuiSurfing::AddParameter(bpmBeatDelay);
+				ImGui::PopItemWidth();
+			}
+			//else {
+			//	ofxImGuiSurfing::AddParameter(animDelay);
+			//	ofxImGuiSurfing::AddParameter(duration);
+			//}
+			if (ImGui::Button("Reset Time", ImVec2(_w100, _h / 2))) {
+				bpmSpeed = 120;
+				animDelay = 0.f;
+				duration = 1.f;
+				bpmMode = true;
+				bpmSlow = false;
+				bpmBeatDelay = 0;
+				bpmBeatDuration = 8;
+			}
+		}
+
+		//-
+
+		// animator group
+
+		//-
+
+		//ofxImGuiSurfing::AddParameter(bpmSpeed);
+		//ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
+		//ofxImGuiSurfing::AddParameter(duration);
+		//ofxImGuiSurfing::AddParameter(animDelay);
+		//ofxImGuiSurfing::AddParameter(bpmBeatDuration);
+		//ofxImGuiSurfing::AddParameter(bpmBeatDelay);
+
+		flagst = ImGuiTreeNodeFlags_None;
+		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		if (ImGui::CollapsingHeader("CURVE", flagst))
+		{
+			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+
+			//ImGui::Text("CURVE:");
+			//ofxImGuiSurfing::AddParameter(curveName);
+			//ImGui::Text(curveName.get().c_str());
+			ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+
+			if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
+				previousCurve();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
+				nextCurve();
+			}
+			//ImGui::Dummy(ImVec2(0.0f, 2.0f));
+
+			//-
+
+			ofxImGuiSurfing::AddParameter(curveType);
+			//ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+			////ofxImGuiSurfing::AddParameter(curveName);
+			//ImGui::Text(curveName.get().c_str());
+
+			ofxImGuiSurfing::AddParameter(repeatMode);
+			//ofxImGuiSurfing::AddParameter(repeatName);
+			ImGui::Text(repeatName.get().c_str());
+			if (repeatMode == 4 || repeatMode == 5)
+				ofxImGuiSurfing::AddParameter(repeatTimes);
+			ImGui::PopItemWidth();
+		}
+
+		//-
+
+		flagst = ImGuiTreeNodeFlags_None;
+		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		if (ImGui::CollapsingHeader("RANGE", flagst))
+		{
+			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+			ofxImGuiSurfing::AddParameter(valueStart);
+			ofxImGuiSurfing::AddParameter(valueEnd);
+			ImGui::PopItemWidth();
+		}
+
+		if (ImGui::CollapsingHeader("MONITOR", flagst))
+		{
+			//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+			ImGui::PushItemWidth(_w100 - 50);
+			ofxImGuiSurfing::AddParameter(animProgress);
+			ofxImGuiSurfing::AddParameter(value);
+			ImGui::PopItemWidth();
+			ImGui::Dummy(ImVec2(0.0f, 2.0f));
+		}
+
+		//--
+
+		//ofxImGuiSurfing::AddParameter(animProgress);
+
+		ImGui::Dummy(ImVec2(0.0f, 2.0f));
+		ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+		//ofxImGuiSurfing::AddParameter(reset);
+		//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
+
+		////bundle
+		//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
+		//ofxImGuiSurfing::AddGroup(params, flagst);
+		//ImGui::PopItemWidth();
+
+		//-
+
+		flagst = ImGuiTreeNodeFlags_None;
+		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		ImGui::Dummy(ImVec2(0.0f, 5.0f));
+		ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+		if (guiManager.bExtra)
+			//if (ImGui::CollapsingHeader("EXTRA", flagst))
+		{
+			ImGui::Indent();
+
+			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+
+			ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+			ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
+			//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+
+			//-
+
+			ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
+			if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+
+			ImGui::Unindent();
+		}
+
+		//--
+
+		// plot fbo
+
+		if (SHOW_Plot)
+		{
+			widthGuiLayout = ImGui::GetWindowWidth();
+			float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
+			ImGui::Indent(_spacing);
+			ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+			ImGui::Image(textureID, plotShape);
+			ImGui::Unindent;
+		}
+		guiManager.endWindow();
+	}
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::drawImGuiWidgets() {
+	{
+		drawImGuiWidgetsBegin();
+		drawImGuiWidgetsExtra();
+		float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+		float _h = ofxImGuiSurfing::getWidgetsHeight();
+		ImGui::Button("TEST", ImVec2(_w100, 2 * _h));
+		drawImGuiWidgetsEnd();
+	}
+}
+
+/*
 //--------------------------------------------------------------
 void FloatAnimator::drawImGuiWidgets() {
 	{
@@ -645,6 +946,7 @@ void FloatAnimator::drawImGuiWidgets() {
 		}
 	}
 }
+*/
 
 //--------------------------------------------------------------
 void FloatAnimator::drawCurve(glm::vec2 &p)

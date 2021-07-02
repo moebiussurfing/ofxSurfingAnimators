@@ -1,0 +1,8 @@
+ofxAnimatable
+ofxGui
+ofxHistoryPlot
+ofxImGui
+ofxSurfingAnimators
+ofxSurfingHelpers
+ofxSurfingImGui
+ofxSurfingPresets
