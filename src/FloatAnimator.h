@@ -33,6 +33,13 @@ class FloatAnimator
 	//----
 
 public:
+	// fixing
+	//--------------------------------------------------------------
+	void setMinimized(bool b)
+	{
+	}
+
+public:
 #ifdef USE_SURFING_PRESETS
 	ofxSurfingPresets presets;
 #endif
@@ -102,8 +109,8 @@ public:
 
 private:
 	ofFbo fboPlot;
-	void drawPlot();
 	ImVec2 plotShape;
+	void drawPlot();
 
 	float widthGuiLayout;
 	float heightGuiLayout;
@@ -497,19 +504,23 @@ public:
 		ModeBrowse = b;
 	}
 
+	ofParameter<int> bpmBeatDuration;
+
 private:
 	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
 	ofParameter<bool> bpmSlow;
-	ofParameter<int> bpmBeatDuration;
 	ofParameter<int> bpmBeatDelay;
 
 	//-
 
 	ofParameter<bool> ModeBrowse;
 
+	public:
 	ofParameter<float> duration;
+
+	private:
 	ofParameter<float> animDelay;
 	ofParameter<int> repeatMode;
 	ofParameter<string> repeatName;

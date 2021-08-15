@@ -63,6 +63,9 @@ void FloatAnimator::previousCurve(bool bAutoTrig)
 //--------------------------------------------------------------
 void FloatAnimator::setup()
 {
+	//TODO:
+	guiManager.bAutoResize = false;
+
 	//	ofxSurfingHelpers::setThemeDark_ofxGui;
 	//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
 
@@ -390,12 +393,11 @@ void FloatAnimator::drawPlot() {
 	ofPopStyle();
 }
 
-
 //--------------------------------------------------------------
 void FloatAnimator::drawImGuiWidgetsExtra() {
 
 	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
-	float _h = ofxImGuiSurfing::getWidgetsHeight();
+	float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
 	ImGui::Button("TEST_ExtraF", ImVec2(_w100, 2 * _h));
 }
 
@@ -423,6 +425,11 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		//name = "ANIMATOR";
 		name = "PANEL " + label;
 		panelName = name;
+
+		ImGuiCond flagCond = ImGuiCond_FirstUseEver;
+		ImGui::SetNextWindowPos(ImVec2(100, 100), flagCond);
+		ImGui::SetNextWindowSize(ImVec2(200, 600), flagCond);
+
 		guiManager.beginWindow(name.c_str(), NULL, _flagsw);
 		{
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
@@ -432,7 +439,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 			//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 			flagst |= ImGuiTreeNodeFlags_Framed;
 
-			if (ImGui::Button("START", ImVec2(_w100, _h))) {
+			if (ImGui::Button("START", ImVec2(_w100, 4*_h))) {
 				start();
 			}
 
@@ -491,7 +498,6 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		{
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 			if (!bpmMode) {
 				ofxImGuiSurfing::AddParameter(duration);
 				ofxImGuiSurfing::AddParameter(animDelay);
@@ -501,9 +507,8 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 				ofxImGuiSurfing::AddDragFloatSlider(duration);
 				ofxImGuiSurfing::AddDragFloatSlider(animDelay);
 			}
-			ImGui::PopItemWidth();
 
-			ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
+			ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
 
 			if (bpmMode) {
 
@@ -519,27 +524,25 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 				//ofxImGuiSurfing::AddParameter(bpmSpeed);
 				//ImGui::PopID();
 
-				if (ImGui::Button("HALF", ImVec2(_w50, _h / 2))) {
+				if (ImGui::Button("HALF", ImVec2(_w50, _h))) {
 					bpmSpeed = bpmSpeed / 2.0f;
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("DOUBLE", ImVec2(_w50, _h / 2))) {
+				if (ImGui::Button("DOUBLE", ImVec2(_w50, _h))) {
 					bpmSpeed = bpmSpeed * 2.0f;
 				}
 
-				ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h / 2);
+				ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h);
 				//ofxImGuiSurfing::AddParameter(bpmSlow);
 
-				ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 				ofxImGuiSurfing::AddParameter(bpmBeatDuration);
 				ofxImGuiSurfing::AddParameter(bpmBeatDelay);
-				ImGui::PopItemWidth();
 			}
 			//else {
 			//	ofxImGuiSurfing::AddParameter(animDelay);
 			//	ofxImGuiSurfing::AddParameter(duration);
 			//}
-			if (ImGui::Button("Reset Time", ImVec2(_w100, _h / 2))) {
+			if (ImGui::Button("Reset Time", ImVec2(_w100, _h))) {
 				bpmSpeed = 120;
 				animDelay = 0.f;
 				duration = 1.f;
@@ -569,18 +572,19 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		if (ImGui::CollapsingHeader("CURVE", flagst))
 		{
-			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-
+			ImGui::PushItemWidth(_w100 - 55);
+			//ImGui::PushItemWidth(WIDGET_PARAM_PADDING);
 			//ImGui::Text("CURVE:");
 			//ofxImGuiSurfing::AddParameter(curveName);
 			//ImGui::Text(curveName.get().c_str());
 			ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+			ImGui::PopItemWidth();
 
-			if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
+			if (ImGui::Button("<", ImVec2(_w50, _h))) {
 				previousCurve();
 			}
 			ImGui::SameLine();
-			if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
+			if (ImGui::Button(">", ImVec2(_w50, _h))) {
 				nextCurve();
 			}
 			//ImGui::Dummy(ImVec2(0.0f, 2.0f));
@@ -597,7 +601,6 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			ImGui::Text(repeatName.get().c_str());
 			if (repeatMode == 4 || repeatMode == 5)
 				ofxImGuiSurfing::AddParameter(repeatTimes);
-			ImGui::PopItemWidth();
 		}
 
 		//-
@@ -608,19 +611,14 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		if (ImGui::CollapsingHeader("RANGE", flagst))
 		{
-			ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 			ofxImGuiSurfing::AddParameter(valueStart);
 			ofxImGuiSurfing::AddParameter(valueEnd);
-			ImGui::PopItemWidth();
 		}
 
 		if (ImGui::CollapsingHeader("MONITOR", flagst))
 		{
-			//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
-			ImGui::PushItemWidth(_w100 - 50);
 			ofxImGuiSurfing::AddParameter(animProgress);
 			ofxImGuiSurfing::AddParameter(value);
-			ImGui::PopItemWidth();
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 		}
 
@@ -629,14 +627,30 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		//ofxImGuiSurfing::AddParameter(animProgress);
 
 		ImGui::Dummy(ImVec2(0.0f, 2.0f));
-		ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+		ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
 		//ofxImGuiSurfing::AddParameter(reset);
-		//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
+		//ofxSurfingHelpers::AddBigButton(reset, _w100, _h);
 
 		////bundle
 		//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 		//ofxImGuiSurfing::AddGroup(params, flagst);
 		//ImGui::PopItemWidth();
+
+		ImGui::Spacing();
+
+		//--
+
+		// plot fbo
+
+		if (SHOW_Plot)
+		{
+			widthGuiLayout = ImGui::GetWindowWidth();
+			float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
+			ImGui::Indent(_spacing);
+			ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+			ImGui::Image(textureID, plotShape);
+			ImGui::Unindent;
+		}
 
 		//-
 
@@ -653,9 +667,9 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-			ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-			ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-			//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+			ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
+			ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h, false);
+			//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
 
 			//-
 
@@ -665,19 +679,6 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			ImGui::Unindent();
 		}
 
-		//--
-
-		// plot fbo
-
-		if (SHOW_Plot)
-		{
-			widthGuiLayout = ImGui::GetWindowWidth();
-			float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
-			ImGui::Indent(_spacing);
-			ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
-			ImGui::Image(textureID, plotShape);
-			ImGui::Unindent;
-		}
 		guiManager.endWindow();
 	}
 }
@@ -772,7 +773,7 @@ void FloatAnimator::drawImGuiWidgets() {
 					}
 					ImGui::PopItemWidth();
 
-					ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h / 2);
+					ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
 
 					if (bpmMode) {
 
@@ -788,15 +789,15 @@ void FloatAnimator::drawImGuiWidgets() {
 						//ofxImGuiSurfing::AddParameter(bpmSpeed);
 						//ImGui::PopID();
 
-						if (ImGui::Button("HALF", ImVec2(_w50, _h / 2))) {
+						if (ImGui::Button("HALF", ImVec2(_w50, _h))) {
 							bpmSpeed = bpmSpeed / 2.0f;
 						}
 						ImGui::SameLine();
-						if (ImGui::Button("DOUBLE", ImVec2(_w50, _h / 2))) {
+						if (ImGui::Button("DOUBLE", ImVec2(_w50, _h))) {
 							bpmSpeed = bpmSpeed * 2.0f;
 						}
 
-						ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h / 2);
+						ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h);
 						//ofxImGuiSurfing::AddParameter(bpmSlow);
 
 						ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
@@ -808,7 +809,7 @@ void FloatAnimator::drawImGuiWidgets() {
 					//	ofxImGuiSurfing::AddParameter(animDelay);
 					//	ofxImGuiSurfing::AddParameter(duration);
 					//}
-					if (ImGui::Button("Reset Time", ImVec2(_w100, _h / 2))) {
+					if (ImGui::Button("Reset Time", ImVec2(_w100, _h))) {
 						bpmSpeed = 120;
 						animDelay = 0.f;
 						duration = 1.f;
@@ -845,11 +846,11 @@ void FloatAnimator::drawImGuiWidgets() {
 					//ImGui::Text(curveName.get().c_str());
 					ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
 
-					if (ImGui::Button("<", ImVec2(_w50, _h / 2))) {
+					if (ImGui::Button("<", ImVec2(_w50, _h))) {
 						previousCurve();
 					}
 					ImGui::SameLine();
-					if (ImGui::Button(">", ImVec2(_w50, _h / 2))) {
+					if (ImGui::Button(">", ImVec2(_w50, _h))) {
 						nextCurve();
 					}
 					//ImGui::Dummy(ImVec2(0.0f, 2.0f));
@@ -898,9 +899,9 @@ void FloatAnimator::drawImGuiWidgets() {
 				//ofxImGuiSurfing::AddParameter(animProgress);
 
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
-				ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+				ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
 				//ofxImGuiSurfing::AddParameter(reset);
-				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h / 2);
+				//ofxSurfingHelpers::AddBigButton(reset, _w100, _h);
 
 				////bundle
 				//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
@@ -922,9 +923,9 @@ void FloatAnimator::drawImGuiWidgets() {
 
 					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
-					ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h / 2, false);
-					//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h / 2, false);
+					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
+					ofxImGuiSurfing::AddBigToggle(ModeBrowse, _w100, _h, false);
+					//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
 
 					//-
 

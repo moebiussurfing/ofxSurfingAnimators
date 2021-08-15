@@ -1,4 +1,305 @@
 #include "NoiseAnimator.h"
+//--------------------------------------------------------------
+void NoiseAnimator::drawPlot() {
+	{
+		ofPushStyle();
+		ofPushMatrix();
+		ofFill();
+
+		int x, y, size, px;
+		size = 80;//boxes sizes
+		int pad = 4;//space between plot boxes
+		bool stateColor;
+		string str;
+		ofColor c;
+
+		//// a.
+		//bCustomPositionPlot = !SHOW_Gui;
+		//if (bCustomPositionPlot) {
+		//	x = positionPlot.x;
+		//	y = positionPlot.y;
+		//}
+		//else {
+		//	//x = gui.getPosition().x + 16;
+		//	//y = gui.getPosition().y + gui.getHeight() + 15;
+
+		//	x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
+		//	y = positionGuiLayout.get().y + heightGuiLayout + pad;
+		//}
+
+		// b.
+		x = 0;
+		y = 20;
+
+		//--
+
+		int xPos;
+		int yPos;
+
+		//define color state
+
+		if (!ENABLE_Noise) {//ENABLE_Noise = false
+			stateColor = false;
+		}
+		else {//ENABLE_Noise = true
+			if (ENABLE_Modulator)
+			{
+				//cout << ofToString(noisePos) << endl;
+				if (abs(noisePos.x) > 0.001 || abs(noisePos.y) > 0.001) stateColor = true;
+				else stateColor = false;
+
+				//cout << ofToString(LPFpoint.value()) << endl;
+				//if ((LPFpoint.value() != ofVec2f(0, 0)))
+
+				//if ((faderValue > 0)) {
+				//	stateColor = true;
+				//}
+				//else if (ENABLE_NoiseModulatorFilter || ENABLE_NoisePointFilter) {
+				//	if (queue.isPlaying() || (LPFmodulator.value() > 0) || (LPFpoint.value() != ofVec2f(0, 0)))
+				//		stateColor = true;
+				//	else
+				//		stateColor = false;
+				//}
+				//else {
+				//	stateColor = queue.isPlaying() && (faderValue > 0);
+				//}
+			}
+			else { //ENABLE_Noise = true & ENABLE_Modulator = false
+				stateColor = true;
+			}
+		}
+
+		//--
+
+//#ifdef INCLUDE_PLOTS
+		////1. mod ASR plot
+		//if (ENABLE_Modulator)
+		//{
+		//	//live ASR value plot
+		//	plot->draw(x + 1 * (size + pad), y, size, size);
+		//	//plot->draw(x + 3 * (size + pad), y, size, size);
+		//}
+//#endif
+
+		if (stateColor) c = ofColor(255, 225);
+		else c = ofColor(255, 64);
+
+		//--
+
+		//moved bc black
+		//2. boxes noise x/y plots
+		{
+			xPos = x + 2 * (size + pad);
+			yPos = y;//upper line
+
+
+#ifdef INCLUDE_PLOTS
+			plot_NoiseX->setColor(c);
+			plot_NoiseY->setColor(c);
+#endif
+			////TODO: try to flip..
+			//ofPushMatrix();
+			//ofTranslate(x, yPos);
+			//ofRotateZDeg(90);
+			//plot_NoiseX->draw(0,0, size, size);
+			//ofPopMatrix();
+
+#ifdef INCLUDE_PLOTS
+			//ofPushStyle();
+			//ofSetColor(c);
+			plot_NoiseX->draw(x, yPos, size, size);
+			plot_NoiseY->draw(x + (size + pad), yPos, size, size);
+			//ofPopStyle();
+#endif
+			////labels
+			//ofSetColor(255);
+			//int labPad = 20;
+			//string strLab;
+			//strLab = "noiseX:"+ofToString(noiseX);
+			//ofDrawBitmapString(strLab, glm::vec2(xPos, yPos-2*labPad));
+			//strLab = "noiseY:"+ofToString(noiseY);
+			//ofDrawBitmapString(strLab, glm::vec2(xPos, yPos-labPad));
+		}
+
+		//-
+
+		//3. box point circle plot
+		{
+			ofPushStyle();
+			ofFill();
+			ofSetColor(ofColor(0, 230));//black
+
+			xPos = x;
+#ifdef INCLUDE_PLOTS
+			yPos = y + size + pad;
+#else
+			yPos = y + pad;
+#endif
+			//3.1. bg box
+			ofDrawRectangle(ofRectangle(xPos, yPos, size, size));
+
+			//string strDebug;
+			//strDebug += "x:" + ofToString(noisePos.x);
+			//strDebug += "\ny:" + ofToString(noisePos.y);
+			//ofSetColor(255);
+			//ofDrawBitmapString(strDebug, glm::vec2(xPos, yPos - 30));
+
+			float halfSize = size * 0.5f;
+			float ratio_PlotSize_noisePosX, ratio_PlotSize_noisePosY;
+
+			//3.2. axis
+			ofSetColor(ofColor(255, 32));
+			ofDrawLine(xPos + halfSize, yPos, xPos + halfSize, yPos + size);//vertical
+			ofDrawLine(xPos, yPos + halfSize, xPos + size, yPos + halfSize);//horizontal
+
+			//A. scaling to final movement
+			//ratio_PlotSize_noisePosX = halfSize / (noiseSizeMax * 5);
+			//ratio_PlotSize_noisePosY = halfSize / (noiseSizeMax * 5);
+
+			//B. scaling from raw modifier not with power aplied
+			ratio_PlotSize_noisePosX = halfSize / (noisePowerX * 5);
+			ratio_PlotSize_noisePosY = halfSize / (noisePowerY * 5);
+			float nx, ny;
+
+			//nx = noisePos.x * ratio_PlotSize_noisePosX;
+			//hflip
+			nx = noisePos.x * ratio_PlotSize_noisePosX;
+			//ny = noisePos.y * ratio_PlotSize_noisePosY;
+			//vflip
+			ny = -noisePos.y * ratio_PlotSize_noisePosY;
+
+			//cout << "nx:" << ofToString(nx);
+			//cout << " ny:" << ofToString(ny) << endl;
+			//strDebug += "nx:" + ofToString(nx);
+			//strDebug += "\";
+			//strDebug += "ny:" + ofToString(ny);
+			//ofSetColor(255);
+			//ofDrawBitmapString(strDebug, glm::vec2(xPos, yPos - 70));
+
+			//3.3 plot circle point
+			//clamp plot into box
+			float pxx, pyy;
+			pxx = ofClamp(nx + xPos + halfSize, nx + xPos - halfSize, nx + xPos + halfSize);
+			pyy = ofClamp(ny + yPos + halfSize, ny + yPos - halfSize, ny + yPos + halfSize);
+
+			//draw point
+			if (stateColor) c = ofColor(255, 0, 0, 225);
+			else c = ofColor(255, 64);
+			ofSetColor(c);
+
+
+			float nz = abs(noisePos.z);
+			float r = ofMap(nz, 0, 100, 1, 7, true);
+			ofDrawCircle(pxx, pyy, r);
+			//ofDrawCircle(pxx, pyy, 3);
+			//ofDrawCircle(nx + xPos + halfSize, ny + yPos + halfSize, 3);
+			ofPopStyle();
+		}
+
+		//-
+
+		//if (ENABLE_Modulator && faderValue == faderMax) 
+		{
+			//1. modulator envelope plot
+			{
+				{
+					xPos = x + size + pad;
+
+#ifdef INCLUDE_PLOTS
+					//live modulator value plot
+					if (stateColor && ENABLE_Modulator) c = ofColor(255, 225);
+					else c = ofColor(255, 64);
+
+					plot->setColor(c);
+					plot->draw(xPos, yPos, size, size);
+					//plot->draw(x + 3 * (size + pad), y, size, size);
+#endif
+				}
+
+				//--
+
+				////5. label
+				////stateColor = queue.isPlaying();
+				//rx = x;
+				////rx = x + 1 * (size + pad);
+				////stateColor = queue.isPlaying() && (faderValue > 0);
+				//str = label;
+				////str = "5 NOISE";
+				//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
+				//	stateColor ? ofColor::white : ofColor::black,
+				//	!stateColor ? ofColor::white : ofColor::black);
+			}
+
+			//-
+
+			//4. progress bar
+			if (ENABLE_Modulator && isAnimating())
+			{
+				int rx, ry, rw, rh;
+				rh = 10;
+#ifdef INCLUDE_PLOTS
+				rx = x + size + pad;
+#else
+				rx = x;
+#endif
+				ry = yPos + size - rh;
+				rw = ofMap(animProgress, 0, 100, 0, size, true);
+				ofRectangle r(rx, ry, rw, rh);
+
+				ofFill();
+				ofSetColor(255, 255);
+				ofDrawRectangle(r);
+				//ofDrawLine(px, y, px, y + size);
+		}
+	}
+
+		//--
+
+		//4. curve type
+		//hide curve plot when attack/release are 0
+		if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator)
+		{
+			if (curveShow)
+			{
+				xPos = x + size + pad;
+#ifdef INCLUDE_PLOTS
+				yPos += size + pad;
+#endif
+				curvePlotable.drawCurve(xPos, yPos, size, true, ofColor(255));
+
+				//curvePlotable.drawCurve(x + 2 * (size + pad), y - (size + pad) - 20, size, true, ofColor(255));
+
+				//-
+
+				/*
+				//TODO
+				//add monitor red line in attack/release
+				//SOLUTION: can measure frames nums not times!
+				//if (queue.isPlaying())
+				//{
+				//    //fps = 1/dt;
+				//
+				//    float tt = (ofGetElapsedTimeMillis() - lastStart) / 1000.f;
+				//    float ttPrc = ofMap(tt, 0, totalTime, 0, 100);
+				//    cout << "ttPrc:" << ttPrc << " dt:"<<dt<<endl;
+				//}
+				//totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
+				//queue.
+				//lastStart = ofGetElapsedTimeMillis();
+				//
+				////vertical line
+				//px = ofMap(colorAnim.getPercentDone(), 0, 1, x, x + size);
+				//ofSetColor(ofColor::red, 200);
+				//ofSetLineWidth(2.0);
+				//ofDrawLine(px, y, px, y + size);
+				*/
+			}
+		}
+
+		ofPopStyle();
+		ofPopMatrix();
+}
+}
 
 //--------------------------------------------------------------
 void NoiseAnimator::Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &)
@@ -73,7 +374,8 @@ void NoiseAnimator::setup()
 
 	//fc = 0.05;
 
-	ENABLE_Noise.set("Enable Noise Animator", true);
+	ENABLE_Noise.set("Enable Noise", true);
+
 	ENABLE_NoiseX.set("ENABLE", true);
 	ENABLE_NoiseY.set("ENABLE", true);
 	ENABLE_NoiseZ.set("ENABLE", true);
@@ -109,7 +411,7 @@ void NoiseAnimator::setup()
 
 	//-
 
-	ENABLE_Modulator.set("MODE MODULATOR Noise", false);
+	ENABLE_Modulator.set("Modulator", false);
 
 	//filters
 	ENABLE_NoiseModulatorFilter.set("FILTER MODULATOR", true);
@@ -238,14 +540,47 @@ void NoiseAnimator::setup()
 	//g2.minimize();
 	//g1.getGroup(params_filters.getName()).minimize();
 
+	//--
+
+	// plot
+	plotShape = ImVec2(210, 315);
+	ofFbo::Settings fboSettings;
+	fboSettings.width = plotShape.x;
+	fboSettings.height = plotShape.y;
+	fboSettings.internalformat = GL_RGBA;
+	fboSettings.textureTarget = GL_TEXTURE_2D;
+	fboPlot.allocate(fboSettings);
+
 	//-
 
 	// gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	//guiManager.setImGuiAutodraw(true);
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
 	guiManager.setup();//initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
 #endif
+
+	//-
+
+	// styles
+
+	//guiManager.AddGroupStyle(params, OFX_IM_GROUP_HIDDEN_HEADER);
+
+	guiManager.AddGroupStyle(params_filters, OFX_IM_GROUP_COLLAPSED);
+	guiManager.AddGroupStyle(params_Modulator, OFX_IM_GROUP_COLLAPSED);
+	guiManager.AddGroupStyle(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
+
+	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
+	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
+
+	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_BIG);
+
+	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseX, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseY, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseZ, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 
 	//-
 
@@ -283,7 +618,7 @@ void NoiseAnimator::setupPlot()
 {
 #ifdef INCLUDE_PLOTS
 	plot = new ofxHistoryPlot(NULL, "fader", 100, false);
-	plot->setBackgroundColor(ofColor(0, 230));
+	plot->setBackgroundColor(ofColor(0));
 	plot->setShowNumericalInfo(false);
 	plot->setRange(0, 1);
 	plot->setRespectBorders(true);
@@ -304,13 +639,13 @@ void NoiseAnimator::setupPlot_Noise()
 {
 #ifdef INCLUDE_PLOTS
 	plot_NoiseX = new ofxHistoryPlot(NULL, "x:", 100, false);
-	plot_NoiseX->setBackgroundColor(ofColor(0, 230));
+	plot_NoiseX->setBackgroundColor(ofColor(0));
 	plot_NoiseX->setShowNumericalInfo(false);
 	//plot_NoiseX->setDrawGuideValues(true);
 	plot_NoiseX->setRange(-1, 1);
 	plot_NoiseX->setRespectBorders(true);
 	plot_NoiseX->setLineWidth(1);
-	plot_NoiseX->setCropToRect(true);
+	plot_NoiseX->setCropToRect(0);
 	plot_NoiseX->setDrawGrid(false);
 	plot_NoiseX->setShowSmoothedCurve(false);
 	plot_NoiseX->setColor(255);
@@ -320,12 +655,12 @@ void NoiseAnimator::setupPlot_Noise()
 	plot_NoiseX->setGridColor(ofColor(255, 255));
 
 	plot_NoiseY = new ofxHistoryPlot(NULL, "y:", 100, false);
-	plot_NoiseY->setBackgroundColor(ofColor(0, 230));
+	plot_NoiseY->setBackgroundColor(ofColor(0));
 	plot_NoiseY->setShowNumericalInfo(false);
 	plot_NoiseY->setRange(-1, 1);
 	plot_NoiseY->setRespectBorders(true);
 	plot_NoiseY->setLineWidth(1);
-	plot_NoiseY->setCropToRect(true);
+	plot_NoiseY->setCropToRect(0);
 	plot_NoiseY->setDrawGrid(false);
 	plot_NoiseY->setShowSmoothedCurve(false);
 	plot_NoiseY->setColor(255);
@@ -358,6 +693,20 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	if (ENABLE_Noise)
 	{
+		//-
+
+		if (SHOW_Plot && SHOW_Gui)
+		{
+			fboPlot.begin();
+			{
+				ofClear(0, 0);
+				drawPlot();
+			}
+			fboPlot.end();
+		}
+
+		//-
+
 		if (ENABLE_NoiseX)
 		{
 			noiseCountX += dt * noiseSpeedX;
@@ -595,295 +944,8 @@ void NoiseAnimator::draw(ofEventArgs & args)
 
 	//-
 
-	if (SHOW_Plot)// && ENABLE_Noise)
-	{
-		ofPushStyle();
-		ofPushMatrix();
-		ofFill();
-
-		int x, y, size, px;
-		size = 80;//boxes sizes
-		int pad = 4;//space between plot boxes
-		bool stateColor;
-		string str;
-		ofColor c;
-
-		bCustomPositionPlot = !SHOW_Gui;
-		if (bCustomPositionPlot) {
-			x = positionPlot.x;
-			y = positionPlot.y;
-		}
-		else {
-			//x = gui.getPosition().x + 16;
-			//y = gui.getPosition().y + gui.getHeight() + 15;
-
-			x = positionGuiLayout.get().x + widthGuiLayout / 2 - (size + 19) / 2;
-			y = positionGuiLayout.get().y + heightGuiLayout + pad;
-		}
-
-		int xPos;
-		int yPos;
-
-		//--
-
-		//define color state
-
-		if (!ENABLE_Noise) {//ENABLE_Noise = false
-			stateColor = false;
-		}
-		else {//ENABLE_Noise = true
-			if (ENABLE_Modulator)
-			{
-				//cout << ofToString(noisePos) << endl;
-				if (abs(noisePos.x) > 0.001 || abs(noisePos.y) > 0.001) stateColor = true;
-				else stateColor = false;
-
-				//cout << ofToString(LPFpoint.value()) << endl;
-				//if ((LPFpoint.value() != ofVec2f(0, 0)))
-
-				//if ((faderValue > 0)) {
-				//	stateColor = true;
-				//}
-				//else if (ENABLE_NoiseModulatorFilter || ENABLE_NoisePointFilter) {
-				//	if (queue.isPlaying() || (LPFmodulator.value() > 0) || (LPFpoint.value() != ofVec2f(0, 0)))
-				//		stateColor = true;
-				//	else
-				//		stateColor = false;
-				//}
-				//else {
-				//	stateColor = queue.isPlaying() && (faderValue > 0);
-				//}
-			}
-			else { //ENABLE_Noise = true & ENABLE_Modulator = false
-				stateColor = true;
-			}
-		}
-
-		//--
-
-//#ifdef INCLUDE_PLOTS
-		////1. mod ASR plot
-		//if (ENABLE_Modulator)
-		//{
-		//	//live ASR value plot
-		//	plot->draw(x + 1 * (size + pad), y, size, size);
-		//	//plot->draw(x + 3 * (size + pad), y, size, size);
-		//}
-//#endif
-
-		if (stateColor) c = ofColor(255, 225);
-		else c = ofColor(255, 64);
-
-		//--
-
-		//2. boxes noise x/y plots
-		{
-			xPos = x + 2 * (size + pad);
-			yPos = y;//upper line
-
-#ifdef INCLUDE_PLOTS
-			plot_NoiseX->setColor(c);
-			plot_NoiseY->setColor(c);
-#endif
-			////TODO: try to flip..
-			//ofPushMatrix();
-			//ofTranslate(x, yPos);
-			//ofRotateZDeg(90);
-			//plot_NoiseX->draw(0,0, size, size);
-			//ofPopMatrix();
-
-#ifdef INCLUDE_PLOTS
-			plot_NoiseX->draw(x, yPos, size, size);
-			plot_NoiseY->draw(x + (size + pad), yPos, size, size);
-#endif
-			////labels
-			//ofSetColor(255);
-			//int labPad = 20;
-			//string strLab;
-			//strLab = "noiseX:"+ofToString(noiseX);
-			//ofDrawBitmapString(strLab, glm::vec2(xPos, yPos-2*labPad));
-			//strLab = "noiseY:"+ofToString(noiseY);
-			//ofDrawBitmapString(strLab, glm::vec2(xPos, yPos-labPad));
-		}
-
-		//-
-
-		//3. box point circle plot
-		{
-			ofPushStyle();
-			ofFill();
-			ofSetColor(ofColor(0, 230));//black
-
-			xPos = x;
-#ifdef INCLUDE_PLOTS
-			yPos = y + size + pad;
-#else
-			yPos = y + pad;
-#endif
-			//3.1. bg box
-			ofDrawRectangle(ofRectangle(xPos, yPos, size, size));
-
-			//string strDebug;
-			//strDebug += "x:" + ofToString(noisePos.x);
-			//strDebug += "\ny:" + ofToString(noisePos.y);
-			//ofSetColor(255);
-			//ofDrawBitmapString(strDebug, glm::vec2(xPos, yPos - 30));
-
-			float halfSize = size * 0.5f;
-			float ratio_PlotSize_noisePosX, ratio_PlotSize_noisePosY;
-
-			//3.2. axis
-			ofSetColor(ofColor(255, 32));
-			ofDrawLine(xPos + halfSize, yPos, xPos + halfSize, yPos + size);//vertical
-			ofDrawLine(xPos, yPos + halfSize, xPos + size, yPos + halfSize);//horizontal
-
-			//A. scaling to final movement
-			//ratio_PlotSize_noisePosX = halfSize / (noiseSizeMax * 5);
-			//ratio_PlotSize_noisePosY = halfSize / (noiseSizeMax * 5);
-
-			//B. scaling from raw modifier not with power aplied
-			ratio_PlotSize_noisePosX = halfSize / (noisePowerX * 5);
-			ratio_PlotSize_noisePosY = halfSize / (noisePowerY * 5);
-			float nx, ny;
-
-			//nx = noisePos.x * ratio_PlotSize_noisePosX;
-			//hflip
-			nx = noisePos.x * ratio_PlotSize_noisePosX;
-			//ny = noisePos.y * ratio_PlotSize_noisePosY;
-			//vflip
-			ny = -noisePos.y * ratio_PlotSize_noisePosY;
-
-			//cout << "nx:" << ofToString(nx);
-			//cout << " ny:" << ofToString(ny) << endl;
-			//strDebug += "nx:" + ofToString(nx);
-			//strDebug += "\";
-			//strDebug += "ny:" + ofToString(ny);
-			//ofSetColor(255);
-			//ofDrawBitmapString(strDebug, glm::vec2(xPos, yPos - 70));
-
-			//3.3 plot circle point
-			//clamp plot into box
-			float pxx, pyy;
-			pxx = ofClamp(nx + xPos + halfSize, nx + xPos - halfSize, nx + xPos + halfSize);
-			pyy = ofClamp(ny + yPos + halfSize, ny + yPos - halfSize, ny + yPos + halfSize);
-
-			//draw point
-			if (stateColor) c = ofColor(255, 0, 0, 225);
-			else c = ofColor(255, 64);
-			ofSetColor(c);
-
-
-			float nz = abs(noisePos.z);
-			float r = ofMap(nz, 0, 100, 1, 7, true);
-			ofDrawCircle(pxx, pyy, r);
-			//ofDrawCircle(pxx, pyy, 3);
-			//ofDrawCircle(nx + xPos + halfSize, ny + yPos + halfSize, 3);
-			ofPopStyle();
-		}
-
-		//-
-
-		//if (ENABLE_Modulator && faderValue == faderMax) 
-		{
-			//1. modulator envelope plot
-			{
-				{
-					xPos = x + size + pad;
-
-#ifdef INCLUDE_PLOTS
-					//live modulator value plot
-					if (stateColor && ENABLE_Modulator) c = ofColor(255, 225);
-					else c = ofColor(255, 64);
-
-					plot->setColor(c);
-					plot->draw(xPos, yPos, size, size);
-					//plot->draw(x + 3 * (size + pad), y, size, size);
-#endif
-				}
-
-				//--
-
-				////5. label
-				////stateColor = queue.isPlaying();
-				//rx = x;
-				////rx = x + 1 * (size + pad);
-				////stateColor = queue.isPlaying() && (faderValue > 0);
-				//str = label;
-				////str = "5 NOISE";
-				//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
-				//	stateColor ? ofColor::white : ofColor::black,
-				//	!stateColor ? ofColor::white : ofColor::black);
-			}
-
-			//-
-
-			//4. progress bar
-			if (ENABLE_Modulator && isAnimating())
-			{
-				int rx, ry, rw, rh;
-				rh = 10;
-#ifdef INCLUDE_PLOTS
-				rx = x + size + pad;
-#else
-				rx = x;
-#endif
-				ry = yPos + size - rh;
-				rw = ofMap(animProgress, 0, 100, 0, size, true);
-				ofRectangle r(rx, ry, rw, rh);
-
-				ofFill();
-				ofSetColor(255, 255);
-				ofDrawRectangle(r);
-				//ofDrawLine(px, y, px, y + size);
-			}
-		}
-
-		//--
-
-		//4. curve type
-		//hide curve plot when attack/release are 0
-		if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator)
-		{
-			if (curveShow)
-			{
-				xPos = x + size + pad;
-#ifdef INCLUDE_PLOTS
-				yPos += size + pad;
-#endif
-				curvePlotable.drawCurve(xPos, yPos, size, true, ofColor(255));
-
-				//curvePlotable.drawCurve(x + 2 * (size + pad), y - (size + pad) - 20, size, true, ofColor(255));
-
-				//-
-
-				/*
-				//TODO
-				//add monitor red line in attack/release
-				//SOLUTION: can measure frames nums not times!
-				//if (queue.isPlaying())
-				//{
-				//    //fps = 1/dt;
-				//
-				//    float tt = (ofGetElapsedTimeMillis() - lastStart) / 1000.f;
-				//    float ttPrc = ofMap(tt, 0, totalTime, 0, 100);
-				//    cout << "ttPrc:" << ttPrc << " dt:"<<dt<<endl;
-				//}
-				//totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-				//queue.
-				//lastStart = ofGetElapsedTimeMillis();
-				//
-				////vertical line
-				//px = ofMap(colorAnim.getPercentDone(), 0, 1, x, x + size);
-				//ofSetColor(ofColor::red, 200);
-				//ofSetLineWidth(2.0);
-				//ofDrawLine(px, y, px, y + size);
-				*/
-			}
-		}
-
-		ofPopStyle();
-		ofPopMatrix();
-	}
+	//if (SHOW_Plot)// && ENABLE_Noise)
+	//	drawPlot();
 }
 
 //--------------------------------------------------------------
@@ -926,13 +988,19 @@ void NoiseAnimator::drawImGuiWidgets() {
 				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
 				flags |= ImGuiTreeNodeFlags_Framed;
 
-				if (ImGui::Button("START", ImVec2(_w100, _h))) {
-					start();
-				}
+				if (ENABLE_Modulator)
+					if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
+						start();
+					}
+
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-				ofxImGuiSurfing::AddGroup(params, flags);
-				ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h / 2, false);
+				//ofxImGuiSurfing::AddGroup(params, flags);
+
+				guiManager.AddGroup(params);
+				//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, SurfingImGuiTypesGroups::OFX_IM_GROUP_HIDDEN_HEADER);
+
+				ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
 
 				//-
 
@@ -940,14 +1008,25 @@ void NoiseAnimator::drawImGuiWidgets() {
 				guiManager.drawAdvancedSubPanel();
 #endif
 
-				//get window position for advanced layout paired position
-				auto posx = ImGui::GetWindowPos().x;
-				auto posy = ImGui::GetWindowPos().y;
-				widthGuiLayout = ImGui::GetWindowWidth();
-				heightGuiLayout = ImGui::GetWindowHeight();
-				positionGuiLayout = glm::vec2(posx, posy);
-				//positionGuiLayout = glm::vec2(posx + w, posy);
+				////get window position for advanced layout paired position
+				//auto posx = ImGui::GetWindowPos().x;
+				//auto posy = ImGui::GetWindowPos().y;
+				//widthGuiLayout = ImGui::GetWindowWidth();
+				//heightGuiLayout = ImGui::GetWindowHeight();
+				//positionGuiLayout = glm::vec2(posx, posy);
+				////positionGuiLayout = glm::vec2(posx + w, posy);
 			}
+
+			//--
+
+			// plot fbo
+
+			if (SHOW_Plot)
+			{
+				ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+				ImGui::Image(textureID, plotShape);
+			}
+
 			guiManager.endWindow();
 		}
 #endif
@@ -1094,21 +1173,21 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == "Curve Type")
+	else if (name == curveType.getName())
 	{
 		curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
 		AnimCurve curve = (AnimCurve)(curveType.get());
 		curvePlotable.setCurve(curve);
 	}
-	else if (name == "Reset Noise")
+	else if (name == Reset_Noise.getName())
 	{
 		if (Reset_Noise)
 		{
 			Reset_Noise = false;
 
 			ENABLE_Noise = true;
-			ENABLE_NoiseX = false;
-			ENABLE_NoiseY = false;
+			ENABLE_NoiseX = true;
+			ENABLE_NoiseY = true;
 			ENABLE_NoiseZ = false;
 			noisePowerX = 20;
 			noisePowerY = 20;
@@ -1125,7 +1204,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_Modulator = false;
 		}
 	}
-	else if (name == "Reset Modulator")
+	else if (name == Reset_Modulator.getName())
 	{
 		if (Reset_Modulator)
 		{
@@ -1165,7 +1244,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			(*float_BACK) = faderValue.get();
 		}
 	}
-	else if (name == "MODE MODULATOR Noise")
+	else if (name == ENABLE_Modulator.getName())
 	{
 		if (!ENABLE_Modulator)
 		{

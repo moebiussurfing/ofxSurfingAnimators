@@ -5,12 +5,11 @@ void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofSetCircleResolution(200);
 	
-	animatorFloat.setNameLabel("Radius");
+	animatorFloat.setNameLabel("FloatRadius");
 	animatorFloat.setup(1, 2);
 
-	animatorNoise.setNameLabel("Position");
+	animatorNoise.setNameLabel("NoisePosition");
 	animatorNoise.setup();
-
 
 	startTween();
 }

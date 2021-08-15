@@ -6,8 +6,8 @@ void ofApp::setup() {
 	ofSetCircleResolution(200);
 
 	animatorFloat1.setNameLabel("radius"); // optional: set a name
-	animatorFloat1.setup(); // default is 0 to 1
-	//animatorFloat1.setup(1, 2); // customize
+	animatorFloat1.setup(); // Default limits are 0 to 1
+	//animatorFloat1.setup(1, 2); // But you can be customized too
 
 	myParamFloat2.setName("yPos");
 	animatorFloat2.setup(myParamFloat2); // ofParam, autoUpdate

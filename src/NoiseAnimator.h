@@ -42,6 +42,11 @@ public:
 		glm::vec2(ofGetWidth(), ofGetHeight())
 	};
 
+private:
+	ofFbo fboPlot;
+	ImVec2 plotShape;
+	void drawPlot();
+
 	//-
 
 public:
@@ -123,7 +128,11 @@ public:
 	//--------------------------------------------------------------
 	glm::vec3 getNoisePoint()
 	{
-		return noisePos;
+		//flip y
+		auto p = glm::vec3(noisePos.x, -noisePos.y, noisePos.z);
+		return p;
+
+		//return noisePos;
 		//return glm::vec2(noiseX, noiseY);
 	}
 
