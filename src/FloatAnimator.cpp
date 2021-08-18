@@ -439,7 +439,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 			//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 			flagst |= ImGuiTreeNodeFlags_Framed;
 
-			if (ImGui::Button("START", ImVec2(_w100, 4*_h))) {
+			if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
 				start();
 			}
 
@@ -498,9 +498,12 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		{
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-			if (!bpmMode) {
-				ofxImGuiSurfing::AddParameter(duration);
-				ofxImGuiSurfing::AddParameter(animDelay);
+			if (!bpmMode)
+			{
+				guiManager.Add(duration);
+				guiManager.Add(animDelay);
+				//ofxImGuiSurfing::AddParameter(duration);
+				//ofxImGuiSurfing::AddParameter(animDelay);
 			}
 			else
 			{
@@ -535,8 +538,10 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 				ofxImGuiSurfing::AddBigToggle(bpmSlow, _w100, _h);
 				//ofxImGuiSurfing::AddParameter(bpmSlow);
 
-				ofxImGuiSurfing::AddParameter(bpmBeatDuration);
-				ofxImGuiSurfing::AddParameter(bpmBeatDelay);
+				guiManager.Add(bpmBeatDuration);
+				guiManager.Add(bpmBeatDelay);
+				//ofxImGuiSurfing::AddParameter(bpmBeatDuration);
+				//ofxImGuiSurfing::AddParameter(bpmBeatDelay);
 			}
 			//else {
 			//	ofxImGuiSurfing::AddParameter(animDelay);
@@ -572,11 +577,11 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		if (ImGui::CollapsingHeader("CURVE", flagst))
 		{
-			ImGui::PushItemWidth(_w100 - 55);
 			//ImGui::PushItemWidth(WIDGET_PARAM_PADDING);
 			//ImGui::Text("CURVE:");
 			//ofxImGuiSurfing::AddParameter(curveName);
 			//ImGui::Text(curveName.get().c_str());
+			ImGui::PushItemWidth(_w100 - 80);
 			ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
 			ImGui::PopItemWidth();
 
@@ -591,12 +596,12 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 			//-
 
-			ofxImGuiSurfing::AddParameter(curveType);
-			//ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
+			guiManager.Add(curveType);
 			////ofxImGuiSurfing::AddParameter(curveName);
 			//ImGui::Text(curveName.get().c_str());
 
-			ofxImGuiSurfing::AddParameter(repeatMode);
+			guiManager.Add(repeatMode);
+			//ofxImGuiSurfing::AddParameter(repeatMode);
 			//ofxImGuiSurfing::AddParameter(repeatName);
 			ImGui::Text(repeatName.get().c_str());
 			if (repeatMode == 4 || repeatMode == 5)
@@ -611,14 +616,18 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		if (ImGui::CollapsingHeader("RANGE", flagst))
 		{
-			ofxImGuiSurfing::AddParameter(valueStart);
-			ofxImGuiSurfing::AddParameter(valueEnd);
+			guiManager.Add(valueStart);
+			guiManager.Add(valueEnd);
+			//ofxImGuiSurfing::AddParameter(valueStart);
+			//ofxImGuiSurfing::AddParameter(valueEnd);
 		}
 
 		if (ImGui::CollapsingHeader("MONITOR", flagst))
 		{
-			ofxImGuiSurfing::AddParameter(animProgress);
-			ofxImGuiSurfing::AddParameter(value);
+			guiManager.Add(animProgress);
+			guiManager.Add(value);
+			//ofxImGuiSurfing::AddParameter(animProgress);
+			//ofxImGuiSurfing::AddParameter(value);
 			ImGui::Dummy(ImVec2(0.0f, 2.0f));
 		}
 
@@ -687,12 +696,12 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 void FloatAnimator::drawImGuiWidgets() {
 	{
 		drawImGuiWidgetsBegin();
-	
+
 		// NOTE:
 		// this splitted section is to insert custom widget for different animator types
 		// that we will derive from this float class
 		drawImGuiWidgetsExtra();
-		
+
 		drawImGuiWidgetsEnd();
 	}
 }
@@ -1150,17 +1159,21 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 		//else gui.getGroup(params.getName()).getGroup(params_Bpm.getName()).maximize();
 	}
 
-	else if (name == "Curve Type")
+	else if (name == curveType.getName())
 	{
 		floatAnimator.setCurve(AnimCurve(curveType.get()));
 		curveName = floatAnimator.getCurveName(AnimCurve(curveType.get()));
+
+		if (ModeBrowse) {
+			start();
+		}
 	}
-	else if (name == "Repeat Mode")
+	else if (name == repeatMode.getName())
 	{
 		repeatName = AnimRepeat_ToStr(repeatMode.get());
 		floatAnimator.setRepeatType(AnimRepeat(repeatMode.get()));
 	}
-	else if (name == "Times")
+	else if (name == repeatTimes.getName())
 	{
 		floatAnimator.setRepeatTimes(repeatTimes.get());
 	}

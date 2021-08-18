@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 
+#include "ofxWindowApp.h"
+
 #include "PositionAnimator.h"
 
 class ofApp : public ofBaseApp {
@@ -16,4 +18,6 @@ public:
 
 	void startTween();
 	void stopTween();
+
+	ofxWindowApp windowApp;
 };

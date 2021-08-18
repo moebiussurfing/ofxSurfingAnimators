@@ -20,27 +20,27 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	//scene
+	// scene
 	{
-		//get position animator
+		// get position animator
 		float x = posAnim.getCurrentPosition().x;
 		float y = posAnim.getCurrentPosition().y;
 
 		ofPushStyle();
 
-		//start/end points connected
+		// start/end points connected
 		ofSetColor(255, 0, 0);
 		ofFill();
 		ofDrawCircle(posAnim.getPositionStart().x, posAnim.getPositionStart().y, 5);
 		ofDrawCircle(posAnim.getPositionEnd().x, posAnim.getPositionEnd().y, 5);
 		ofDrawLine(posAnim.getPositionStart(), posAnim.getPositionEnd());
 
-		//get color animator
+		// get color animator
 		ofSetColor(255);
 		ofFill();
-		//big circle
+		// big circle
 		ofDrawCircle(x, y, 100);
-		//border
+		// border
 		ofSetColor(0);
 		ofNoFill();
 		ofDrawCircle(x, y, 100);
@@ -50,7 +50,7 @@ void ofApp::draw() {
 
 	//-
 
-	//help
+	// help
 	string s = "PRESS SPACE TO TRIG ANIMATOR. \nRETURN TO RANDOMIZE POSITIONS";
 	ofDrawBitmapStringHighlight(s, 10, 20);
 }
