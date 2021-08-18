@@ -64,7 +64,7 @@ void FloatAnimator::previousCurve(bool bAutoTrig)
 void FloatAnimator::setup()
 {
 	//TODO:
-	guiManager.bAutoResize = false;
+	//guiManager.bAutoResize = false;
 
 	//	ofxSurfingHelpers::setThemeDark_ofxGui;
 	//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
@@ -697,10 +697,14 @@ void FloatAnimator::drawImGuiWidgets() {
 	{
 		drawImGuiWidgetsBegin();
 
+#ifdef TEST_HERITAGE_FUNCTIONS 
 		// NOTE:
 		// this splitted section is to insert custom widget for different animator types
 		// that we will derive from this float class
+		// It's an attempt to call methods from parent scope
+		// That's to to add other widgets
 		drawImGuiWidgetsExtra();
+#endif
 
 		drawImGuiWidgetsEnd();
 	}

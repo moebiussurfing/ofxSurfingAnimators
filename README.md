@@ -14,7 +14,7 @@ Some classes to faster integration into your OF Apps/Add-ons:
 ![gif](/docs/readme_images/2_example_FloatNoised.gif?raw=true "gif")  
 
 #### 3_Point (PositionAnimator)
-![image](/docs/readme_images/_.PNG?raw=true "image")
+![image](/docs/readme_images/3_Point.gif?raw=true "gif")
 
 #### 4_PointColored (EnvelopeAnimator)
 ![image](/docs/readme_images/3_example_PointColored.PNG?raw=true "image")

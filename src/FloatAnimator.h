@@ -19,6 +19,8 @@ TODO:
 
 #define USE_SURFING_PRESETS
 
+//#define TEST_HERITAGE_FUNCTIONS 
+
 //#include "ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
