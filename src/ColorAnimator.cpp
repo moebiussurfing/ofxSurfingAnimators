@@ -1,7 +1,7 @@
+
 #include "ColorAnimator.h"
 
-
-
+//--------------------------------------------------------------
 void ColorAnimator::setup() {
 	FloatAnimator::setup();
 
@@ -34,11 +34,13 @@ void ColorAnimator::setup() {
 
 }
 
+//--------------------------------------------------------------
 void ColorAnimator::exit() {
 	ofRemoveListener(ofEvents().update, this, &ColorAnimator::update);
 	//ofRemoveListener(ofEvents().draw, this, &ColorAnimator::draw);
 };
 
+//--------------------------------------------------------------
 void ColorAnimator::update(ofEventArgs & args) {
 	FloatAnimator::update(args);
 
@@ -50,23 +52,31 @@ void ColorAnimator::update(ofEventArgs & args) {
 	colorCurrent.set(ofColor(r, g, b, a));
 }
 
-
+//--------------------------------------------------------------
 //void ColorAnimator::draw() 
 //{
 //	FloatAnimator::draw();
 //
 //}
 
-//void ColorAnimator::draw(ofEventArgs & args) {
-//	FloatAnimator::draw(args);
-//
-//	//-
-//
-//#ifdef USE_IMGUI__COLORANIMATOR
-//	//TODO:
-//	return; // skip
-//
-//	// insert into same floatanimator window
+//--------------------------------------------------------------
+//void ColorAnimator::draw(ofEventArgs & args)
+void ColorAnimator::drawImGui() 
+{
+	//FloatAnimator::draw(args);
+
+	//-
+
+#ifdef USE_IMGUI__COLORANIMATOR
+
+	//TODO:
+	//return; // skip
+
+	//-
+
+	// a.
+
+//	// insert into same float animator window
 //#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //	string name = getNamePanel();
 //	ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
@@ -88,38 +98,41 @@ void ColorAnimator::update(ofEventArgs & args) {
 //	}
 //	guiManager.endWindow();
 //#endif
-//
-//
-//#ifndef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-//	gui.begin();
-//	{
-//		string name = "COLORS";
-//		//string name = getNamePanel(); // -> trying to insert on floatAnim
-//		ImGui::Begin(name.c_str());
-//		{
-//			//bool bOpen = true;
-//			//ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
-//			//_flagt |= ImGuiTreeNodeFlags_Framed;
-//			//if (ImGui::TreeNodeEx("COLOR", _flagt))
-//			//{
-//			ofxImGuiSurfing::AddParameter(colorCurrent);
-//			ImGui::Dummy(ImVec2(0, 5));
-//			ofxImGuiSurfing::AddParameter(colorStart);
-//			ofxImGuiSurfing::AddParameter(colorEnd);
-//			//ImGui::TreePop();
-//		//}
-//		}
-//		ImGui::End();
-//	}
-//	gui.end();
-//#endif
-//
-//#endif
-//	//-
-//}
 
+	//-
 
-//
+	// b.
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
+	gui.begin();
+	{
+		string name = "COLORS";
+		//string name = getNamePanel(); // -> trying to insert on floatAnim
+
+		ImGui::Begin(name.c_str());
+		{
+			//bool bOpen = true;
+			//ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
+			//_flagt |= ImGuiTreeNodeFlags_Framed;
+			//if (ImGui::TreeNodeEx("COLOR", _flagt))
+			//{
+			ofxImGuiSurfing::AddParameter(colorCurrent);
+			ImGui::Dummy(ImVec2(0, 5));
+			ofxImGuiSurfing::AddParameter(colorStart);
+			ofxImGuiSurfing::AddParameter(colorEnd);
+			//ImGui::TreePop();
+			//}
+		}
+		ImGui::End();
+	}
+	gui.end();
+#endif
+
+#endif
+
+	//-
+}
+
 ////--------------------------------------------------------------
 //ColorAnimator::ColorAnimator()
 //{

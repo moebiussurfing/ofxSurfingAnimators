@@ -2,8 +2,17 @@
 
 #include "ofMain.h"
 
-//#define USE_IMGUI__COLORANIMATOR
-#define USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
+/*
+
+add color widgets but into main class..
+save settings, presets 
+
+*/
+
+
+//TODO:
+#define USE_IMGUI__COLORANIMATOR // -> global enabler
+//#define USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR // -> select this mode
 
 //----
 
@@ -19,7 +28,7 @@
 
 class ColorAnimator : public FloatAnimator
 {
-	//-
+	//--
 
 public:
 
@@ -33,23 +42,32 @@ public:
 #endif
 #endif
 
-	//-
+	void drawImGui();
+
+	//--
 
 	//ColorAnimator();
 	//~ColorAnimator();
 
 	void setup();
-	void exit();
 
 	virtual void update(ofEventArgs & args);
+
 	//void draw();
 	//virtual void draw(ofEventArgs & args);
+	 
+	void exit();
 
+	//--
+
+	//--------------------------------------------------------------
 	ofColor getColorCurrent() {
 		return colorCurrent;
 	}
 	ofColor *color_BACK;
+
 	ofParameter<ofColor> colorCurrent;
+
 	ofParameter<ofColor> colorStart;
 	ofParameter<ofColor> colorEnd;
 
@@ -70,7 +88,8 @@ public:
 		colorEnd.set(c);
 	}
 
-	//   
+	//--
+
 	//ofParameterGroup params;
 	//string label = "Color Animator";
 

@@ -1,7 +1,8 @@
 #include "PositionAnimator.h"
 
 void PositionAnimator::setup() {
-	setNameLabel("posAnim");
+	//setNameLabel("posAnim");
+	//label
 
 	FloatAnimator::setup();
 

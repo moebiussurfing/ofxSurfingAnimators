@@ -35,20 +35,29 @@ class FloatAnimator
 	//----
 
 public:
+
 	// fixing
 	//--------------------------------------------------------------
 	void setMinimized(bool b)
 	{
 	}
 
+	//-
+
 public:
+
 #ifdef USE_SURFING_PRESETS
 	ofxSurfingPresets presets;
 #endif
 
+	//-
+
 public:
+
 	FloatAnimator();
 	~FloatAnimator();
+
+	//-
 
 	//TODO://use &
 	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) { // only use to set min/max range but not auto update the param value!
@@ -84,6 +93,7 @@ public:
 	//--
 
 private:
+
 	//TODO: use a pointer to allow autoUpdate..
 	//ofParameter<float> * paramRef = NULL;
 	//bool bAutoUpdate = false;
@@ -94,14 +104,18 @@ private:
 
 //private:
 public:
+
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
 	string panelName;
+
 public:
+
 	string getNamePanel() { return panelName; }
 
 public:
+
 	void drawImGuiWidgets();
 
 	void drawImGuiWidgetsExtra();
@@ -110,6 +124,7 @@ public:
 	bool bParams = true;
 
 private:
+
 	ofFbo fboPlot;
 	ImVec2 plotShape;
 	void drawPlot();
@@ -130,10 +145,12 @@ private:
 	//-
 
 private:
+
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 	std::string path_Settings;
 
 public:
+
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(string folder)
 	{
@@ -147,6 +164,7 @@ public:
 	// api
 
 public:
+
 	void start();
 	void stop();
 
@@ -154,11 +172,13 @@ public:
 	void previousCurve(bool bAutoTrig = true);
 
 private:
+
 	float size = 100;
 	void drawCurve(glm::vec2 &p);
 
 
 public:
+
 	//--------------------------------------------------------------
 	void setValueTarget(float &v)
 	{
@@ -367,15 +387,18 @@ public:
 	//-
 
 public:
+
 	//bool bCustomPositionPlot = false;
 	//glm::vec2 positionPlot{ 50, 50 };
 	float pad = 15;
+
 private:
 	string label = "FloatAnim";
 
 	std::vector<std::string> curveNamesList;
 
 public:
+
 	//--------------------------------------------------------------
 	void setNameLabel(string s)//to label gui panel
 	{
@@ -388,6 +411,7 @@ public:
 	}
 
 public:
+
 	std::vector<std::string> getAllCurveNames() {
 		return floatAnimator.getAllCurveNames();
 	}
@@ -398,10 +422,14 @@ public:
 	{
 		return params_Control;
 	}
+
 private:
+
 	//bpm engine
 	ofParameterGroup _params_Bpm{ "BPM ENGINE" };
+
 public:
+
 	//--------------------------------------------------------------
 	ofParameterGroup getControlsBpm()
 	{
@@ -424,12 +452,14 @@ public:
 	ofParameter<bool> ENABLE_valueAnim;
 
 private:
+
 	ofParameterGroup params_Control;
 	ofParameterGroup params_Helpers;
 	bool autoSettings;
 	ofParameter<bool> SHOW_Plot{ "Show Plot", true };
 
 public:
+
 	//--------------------------------------------------------------
 	void AutoSettings(bool b)
 	{
@@ -458,6 +488,7 @@ public:
 
 //private:
 public:
+
 	ofParameter<float> value;
 	ofParameter<float> valueStart;
 	ofParameter<float> valueEnd;
@@ -480,10 +511,11 @@ private:
 	//public:
 	//	ofxPanel gui;
 
-		//-
+	//-
 
-		// bpm engine
+	// bpm engine
 public:
+
 	//--------------------------------------------------------------
 	void setDelayBeatMax(int maxBeats) {
 		bpmBeatDelay.setMax(maxBeats);
@@ -494,6 +526,7 @@ public:
 	}
 
 public:
+
 	//--------------------------------------------------------------
 	void setBpm(float _bpm) {
 		bpmSpeed = _bpm;
@@ -509,6 +542,7 @@ public:
 	ofParameter<int> bpmBeatDuration;
 
 private:
+
 	ofParameterGroup params_Time;
 	ofParameterGroup params_Bpm;
 	ofParameter<bool> bpmMode;
@@ -519,10 +553,12 @@ private:
 
 	ofParameter<bool> ModeBrowse;
 
-	public:
+public:
+
 	ofParameter<float> duration;
 
-	private:
+private:
+
 	ofParameter<float> animDelay;
 	ofParameter<int> repeatMode;
 	ofParameter<string> repeatName;
@@ -583,5 +619,6 @@ private:
 	//--
 
 public:
+
 	ofParameter<bool> SHOW_Gui{ "SHOW ANIMATOR", true };
 };

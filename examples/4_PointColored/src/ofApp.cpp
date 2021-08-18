@@ -58,6 +58,7 @@ void ofApp::draw() {
 	//-
 
 	//colorAnim.draw();
+	colorAnim.drawImGui();
 
 	//-
 
@@ -85,23 +86,29 @@ void ofApp::stopTween() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-	ofLogNotice() << "key: " << key;
+	//return;
 
-	if (key == ' ') startTween();
-	if (key == OF_KEY_BACKSPACE) stopTween();
-	if (key == OF_KEY_F1) // randomize start/end position
-	{
-		randomPositions();
-	}
-	if (key == OF_KEY_F2) // randomize start/end colors
-	{
-		randomColors();
-	}
-	if (key == OF_KEY_F3) { // randomize both
+	//ofLogNotice() << "key: " << key;
 
-		randomPositions();
-		randomColors();
-	}
+	//if (key == ' ') startTween();
+
+	//if (key == OF_KEY_BACKSPACE) stopTween();
+
+	//if (key == OF_KEY_F1) // randomize start/end position
+	//{
+	//	randomPositions();
+	//}
+
+	//if (key == OF_KEY_F2) // randomize start/end colors
+	//{
+	//	randomColors();
+	//}
+
+	//if (key == OF_KEY_F3) { // randomize both
+
+	//	randomPositions();
+	//	randomColors();
+	//}
 }
 
 //--------------------------------------------------------------
@@ -113,13 +120,13 @@ void ofApp::randomPositions() {
 
 //--------------------------------------------------------------
 void ofApp::randomColors() {
-	ofColor c1;
-	ofColor c2;
-	int hue = ofRandom(255);
-	c1.setHsb(hue, 255, 255);
-	c2.setHsb(255-hue, 255, 255);
+	//ofColor c1;
+	//ofColor c2;
+	//int hue = ofRandom(255);
+	//c1.setHsb(hue, 255, 255);
+	//c2.setHsb(255-hue, 255, 255);
 
-	colorAnim.setColorStart(c1);
-	colorAnim.setColorEnd(c2);
-	colorAnim.start();
+	//colorAnim.setColorStart(c1);
+	//colorAnim.setColorEnd(c2);
+	//colorAnim.start();
 }

@@ -221,7 +221,7 @@ void FloatAnimator::setup()
 	//--
 
 #ifdef USE_SURFING_PRESETS
-	presets.setPathPresets(path_GLOBAL_Folder + "/presets/" + params.getName());
+	presets.setPathPresets(path_GLOBAL_Folder + "/Presets/" + params.getName());
 	presets.addGroup(params);
 	//presets.addGroup(getParameters());
 #endif
