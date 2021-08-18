@@ -1,5 +1,6 @@
 #include "PositionAnimator.h"
 
+//--------------------------------------------------------------
 void PositionAnimator::setup() {
 	//setNameLabel("posAnim");
 	//label
@@ -15,6 +16,7 @@ void PositionAnimator::setup() {
 	guiManager.setup();
 }
 
+//--------------------------------------------------------------
 void PositionAnimator::exit() {
 	ofRemoveListener(ofEvents().update, this, &PositionAnimator::update);
 };

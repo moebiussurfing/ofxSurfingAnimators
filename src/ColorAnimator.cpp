@@ -12,7 +12,7 @@ void ColorAnimator::setup() {
 	colorStart.set("Start", ofColor(55, 55, 55, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 	colorEnd.set("End", ofColor(200, 200, 200, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 
-	//-
+	//--
 
 	// gui
 
@@ -44,10 +44,10 @@ void ColorAnimator::exit() {
 void ColorAnimator::update(ofEventArgs & args) {
 	FloatAnimator::update(args);
 
-	float r = ofMap(getValue(), 0, 1, colorStart.get().r, colorEnd.get().r);
-	float g = ofMap(getValue(), 0, 1, colorStart.get().g, colorEnd.get().g);
-	float b = ofMap(getValue(), 0, 1, colorStart.get().b, colorEnd.get().b);
-	float a = ofMap(getValue(), 0, 1, colorStart.get().a, colorEnd.get().a);
+	float r = ofMap(getValue(), 0, 1, colorStart.get().r, colorEnd.get().r, true);
+	float g = ofMap(getValue(), 0, 1, colorStart.get().g, colorEnd.get().g, true);
+	float b = ofMap(getValue(), 0, 1, colorStart.get().b, colorEnd.get().b, true);
+	float a = ofMap(getValue(), 0, 1, colorStart.get().a, colorEnd.get().a, true);
 
 	colorCurrent.set(ofColor(r, g, b, a));
 }

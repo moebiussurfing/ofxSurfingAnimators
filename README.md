@@ -16,22 +16,23 @@ Some classes to faster integration into your OF Apps/Add-ons:
 #### 3_Point (PositionAnimator)
 ![image](/docs/readme_images/3_Point.gif?raw=true "gif")
 
-#### 4_PointColored (EnvelopeAnimator)
-![image](/docs/readme_images/3_example_PointColored.PNG?raw=true "image")
+#### 4_PointColored (PointAnimator + ColorAnimator)
+![image](/docs/readme_images/4_PointColored.gif?raw=true "gif")
 
-#### 4_Envelope (Point + Color animators)
-![image](/docs/readme_images/4_example_Envelope.PNG?raw=true "image")
+<!--#### 4_Envelope (Point + Color animators)
+![image](/docs/readme_images/4_example_Envelope.PNG?raw=true "image") -->
  	
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
 * Classes:
    * FloatAnimator.h
-   * EnvelopeAnimator.h (ASR envelope for a Float. Double independent curve types for Input/Output.)
    * PositionAnimator.h
    * NoiseAnimator.h (Envelope Modulated 2D Noise point + Filters)
    * ColorAnimator.h
+   * EnvelopeAnimator.h (ASR envelope for a Float. Double independent curve types for Input/Output.)
    * ToggleAnimator.h
 * Added **ImGui** based **GUI**:  
+
 Setters for Start/End, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
 * Handle Settings: Auto store-recall.
 * Musical **BPM** based or absolute **time scale**.
