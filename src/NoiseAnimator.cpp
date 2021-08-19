@@ -127,7 +127,7 @@ void NoiseAnimator::drawPlot() {
 		{
 			ofPushStyle();
 			ofFill();
-			ofSetColor(ofColor(0, 230));//black
+			ofSetColor(ofColor(0, 255));//black
 
 			xPos = x;
 #ifdef INCLUDE_PLOTS

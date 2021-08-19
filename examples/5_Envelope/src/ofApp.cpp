@@ -7,7 +7,7 @@ void ofApp::setup() {
 	ofSetCircleResolution(200);
 	
     envelope.setPath_GlobalFolder("Animators_Settings/");
-    envelope.setNameLabel("Envelope_ADSR");
+    envelope.setNameLabel("EnvelopeAnim");
     envelope.setAutoSaveLoad(true);
     envelope.setFps(fps);
     envelope.setup();

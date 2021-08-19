@@ -147,6 +147,7 @@ void ColorAnimator::drawImGui()
 //	path_Settings = "ColorAnimator_Settings.xml";
 //	autoSettings = false;
 //}
+//
 ////--------------------------------------------------------------
 //void ColorAnimator::start()
 //{

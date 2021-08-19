@@ -28,6 +28,10 @@ void EnvelopeAnimator::drawImGuiWidgets()
 		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 		flagst |= ImGuiTreeNodeFlags_Framed;
 
+		if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
+			start();
+		}
+
 		ofxImGuiSurfing::AddGroup(params, flagst);
 		ofxImGuiSurfing::AddParameter(SHOW_Plot);
 
@@ -44,6 +48,10 @@ void EnvelopeAnimator::drawImGuiWidgets()
 			ImGui::Image(textureID, plotShape);
 			ImGui::Unindent;
 		}
+
+		//-
+
+		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 	}
 	guiManager.endWindow();
 
@@ -100,9 +108,9 @@ void EnvelopeAnimator::setup()
 
 	reset.set("Reset", false);
 
-	curveTypeIn.set("Curve In", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
+	curveTypeIn.set("CurveIn", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
 	curveNameIn.set("", "");
-	curveTypeOut.set("Curve Out", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
+	curveTypeOut.set("CurveOut", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
 	curveNameOut.set("", "");
 
 	curveShow.set("Show Curve", true);
@@ -148,10 +156,10 @@ void EnvelopeAnimator::setup()
 	//bpm engine
 	bpmMode.set("BPM Mode", false);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
-	bpmBeatDelay.set("PreDelay Beat", 1, 0, 8);
-	bpmBeatAttack.set("Attack Beat", 2, 0, 8);
-	bpmBeatSustain.set("Sustain Beat", 4, 0, 8);
-	bpmBeatRelease.set("Release Beat", 2, 0, 8);
+	bpmBeatDelay.set("PreDelayB", 1, 0, 8);
+	bpmBeatAttack.set("AttackB", 2, 0, 8);
+	bpmBeatSustain.set("SustainB", 4, 0, 8);
+	bpmBeatRelease.set("ReleaseB", 2, 0, 8);
 
 	params_Bpm.setName("BPM ENGINE");
 	params_Bpm.add(bpmMode);
@@ -187,7 +195,13 @@ void EnvelopeAnimator::setup()
 	//--
 
 	// plot
+#ifdef FIX_WORKAROUND_FBO_PLOT
+	plotShape = ImVec2(210, 100);
+#endif
+#ifndef FIX_WORKAROUND_FBO_PLOT
 	plotShape = ImVec2(210, 210);
+#endif
+
 	ofFbo::Settings fboSettings;
 	fboSettings.width = plotShape.x;
 	fboSettings.height = plotShape.y;
@@ -195,10 +209,18 @@ void EnvelopeAnimator::setup()
 	fboSettings.textureTarget = GL_TEXTURE_2D;
 	fboPlot.allocate(fboSettings);
 
+	int size = 92;
+	ofFbo::Settings fboSettings2;
+	fboSettings2.width = size;
+	fboSettings2.height = size;
+	fboSettings2.internalformat = GL_RGBA;
+	fboSettings2.textureTarget = GL_TEXTURE_2D;
+	fboCurve.allocate(fboSettings2);
+
 	//--
 
 	//gui.setup(label);
-	//gui.add(params);
+	//gui.add(params);curve
 	//gui.add(SHOW_Plot);
 	//gui.setPosition(guiPos.x, guiPos.y);
 
@@ -272,7 +294,7 @@ void EnvelopeAnimator::setupAnimator()
 void EnvelopeAnimator::setupPlot()
 {
 	plot = new ofxHistoryPlot(NULL, "fader", 100, false);
-	plot->setBackgroundColor(ofColor(0, 230));
+	plot->setBackgroundColor(ofColor(0));
 	plot->setShowNumericalInfo(false);
 	plot->setRange(0, 1);
 	plot->setRespectBorders(true);
@@ -307,6 +329,159 @@ void EnvelopeAnimator::update()
 }
 
 //--------------------------------------------------------------
+void EnvelopeAnimator::drawPlot()
+{
+	ofPushStyle();
+	ofPushMatrix();
+	ofFill();
+
+	int x, y, size, px;
+	size = 92;
+	int pad = 2;
+	bool stateColor;
+	string str;
+	int wplot = 200;
+	//int wplot = gui.getShape().getWidth() - 18;
+	int padPlots = 5;
+	//int padPlots = 20;//when using curve labels
+	x = y = 0;
+	//x = gui.getPosition().x + pad;
+	//y = gui.getPosition().y + gui.getHeight() + 15;
+
+	//-
+
+	//1. two curves
+	//hide curve plot when attack/release are 0
+	if (faderRelease != 0 || faderAttack != 0)
+	{
+		//curve type
+		if (curveShow)
+		{
+			curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);
+			//curvePlotableOut.drawCurve(x + size + 12, y, size, true, ofColor(255), false);
+
+			float xx = x + size + 12;
+			float yy = y;
+			fboCurve.begin();
+			ofClear(0, 0);
+			curvePlotableOut.setAutoFlipCurve(true);
+			curvePlotableOut.drawCurve(0, 0, size, true, ofColor(255), false);
+			fboCurve.end();
+			fboCurve.draw(xx, yy);
+			//fboCurve.draw(xx + size, yy, -size, size);//flip
+			//fboCurve.draw(xx + size, yy + size, -size, -size);//flip
+		}
+	}
+
+	//-
+
+	////2. live value enveloped plot
+	//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
+	////plot->draw(x + size + pad, y + size + pad + padPlots, size, size);//right
+
+	int rx, ry, rw, rh;
+	rx = x + pad;//left
+	//rx = x + size + pad;//right
+
+#ifndef FIX_WORKAROUND_FBO_PLOT
+	ry = y + 2 * size - rh + padPlots;
+	rh = 8;
+#endif
+#ifdef FIX_WORKAROUND_FBO_PLOT
+	rh = 5;
+	ry = y + 1 * size + 0;
+#endif
+
+	//ry = y + size - rh;
+
+	if (isAnimating())
+	{
+		// 2.1 progress bar
+		px = ofMap(animProgress, 0, 100, 0, wplot, true);
+		rw = px;
+		ofRectangle r(rx, ry + pad, rw, rh);
+
+		ofFill();
+		ofSetColor(ofColor::white, 255);
+		ofDrawRectangle(r);
+		//ofDrawLine(px, y, px, y + size);
+	}
+
+	//-
+
+	//TODO:
+	//// vertical line time
+	//float h;//display delay wait progress
+	//if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
+	//else h = size;
+	//px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
+	//ofSetColor(ofColor::red, 200);
+	//ofSetLineWidth(2.0);
+	//ofDrawLine(px, y + size, px, y + size - h);
+
+	//-
+
+	// 2.2 vertical red bar value
+	float vb = ofMap(faderValue.get(), faderMin.get(), faderMax.get(), 0.f, 1.f, true);
+	int w = 10;
+	rx += wplot + 3;
+#ifndef FIX_WORKAROUND_FBO_PLOT
+	ry += rh + pad;
+#endif
+	ofFill();
+
+	// black bg
+	ofSetColor(0, 255);
+	pad = 2;//make black outspace
+	ofRectangle r2;
+	r2 = ofRectangle(rx, ry, w, -size);
+	ofDrawRectangle(r2);
+
+	//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left 
+
+	// red vert bar
+	ofSetColor(ofColor::red, 225);
+	r2 = ofRectangle(rx + 0.5*pad, ry - 0.5*pad, w - pad, pad - MAX(vb*size, 1));
+	ofDrawRectangle(r2);
+
+	//-
+
+	//// label
+	////stateColor = queue.isPlaying();
+	//stateColor = queue.isPlaying() && (faderValue > 0);
+	//str = label;
+	////str = "2 ALPHA";
+	//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
+	//	stateColor ? ofColor::white : ofColor::black,
+	//	!stateColor ? ofColor::white : ofColor::black);
+
+#ifdef FIX_WORKAROUND_FBO_PLOT
+	if (0)
+#endif
+	{
+		int x = 0;
+		int y = 2;
+		int pad = 5;
+		int padPlots = 5;
+		int wplot = plotShape.x - 16;
+		//int wplot = plotShape.x;
+		//int wplot = 500; 
+		int size = 92;
+		ofNoFill();
+		ofColor c = ofColor(255, 255);
+		//ofSetColor(c);
+		//plot->setBackgroundColor(0);
+		//plot->setDrawBackground(true);
+		plot->setColor(c);
+		plot->draw(x, y + size + pad + padPlots, wplot, size);//left
+		//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
+	}
+
+	ofPopMatrix();
+	ofPopStyle();
+}
+
+//--------------------------------------------------------------
 void EnvelopeAnimator::draw()
 {
 	if (SHOW_gui)
@@ -316,121 +491,7 @@ void EnvelopeAnimator::draw()
 			fboPlot.begin();
 			{
 				ofClear(0, 0);
-				ofPushStyle();
-
-				int x, y, size, px;
-				size = 92;
-				int pad = 2;
-				bool stateColor;
-				string str;
-				int wplot = 200;
-				//int wplot = gui.getShape().getWidth() - 18;
-				int padPlots = 5;
-				//int padPlots = 20;//when using curve labels
-				x = y = 0;
-				//x = gui.getPosition().x + pad;
-				//y = gui.getPosition().y + gui.getHeight() + 15;
-
-				//-
-
-				//1. two curves
-				//hide curve plot when attack/release are 0
-				if (faderRelease != 0 || faderAttack != 0)
-				{
-					//curve type
-					if (curveShow)
-					{
-						curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);
-						curvePlotableOut.drawCurve(x + size + 12, y, size, true, ofColor(255), false);
-					}
-				}
-
-				//-
-
-				////2. live value enveloped plot
-				//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
-				////plot->draw(x + size + pad, y + size + pad + padPlots, size, size);//right
-
-				int rx, ry, rw, rh;
-				rh = 8;
-				rx = x + pad;//left
-				//rx = x + size + pad;//right
-				ry = y + 2 * size - rh + padPlots;
-				//ry = y + size - rh;
-
-				if (isAnimating())
-				{
-					//2.1 progress bar
-					px = ofMap(animProgress, 0, 100, 0, wplot, true);
-					rw = px;
-					ofRectangle r(rx, ry + pad, rw, rh);
-
-					ofFill();
-					ofSetColor(ofColor::white, 255);
-					ofDrawRectangle(r);
-					//ofDrawLine(px, y, px, y + size);
-				}
-
-				//-
-
-				//TODO:
-				////vertical line time
-				//float h;//display delay wait progress
-				//if (floatAnimator.isWaitingForAnimationToStart()) h = floatAnimator.waitTimeLeftPercent() * size;
-				//else h = size;
-				//px = ofMap(floatAnimator.getPercentDone(), 0, 1, x, x + size, true);
-				//ofSetColor(ofColor::red, 200);
-				//ofSetLineWidth(2.0);
-				//ofDrawLine(px, y + size, px, y + size - h);
-
-				//-
-
-				//2.2 vertical red bar value
-				float vb = ofMap(faderValue.get(), faderMin.get(), faderMax.get(), 0.f, 1.f, true);
-				int w = 10;
-				rx += wplot + 3;
-				ry += rh + pad;
-				ofFill();
-
-				//bg
-				ofSetColor(0, 255);
-				pad = 2;//make black outspace
-				ofRectangle r2;
-				r2 = ofRectangle(rx, ry, w, -size);
-				ofDrawRectangle(r2);
-				
-				
-				//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left 
-
-
-				//bar
-				ofSetColor(ofColor::red, 225);
-				r2 = ofRectangle(rx + 0.5*pad, ry - 0.5*pad, w - pad, pad - MAX(vb*size, 1));
-				ofDrawRectangle(r2);
-
-				//-
-
-				////label
-				////stateColor = queue.isPlaying();
-				//stateColor = queue.isPlaying() && (faderValue > 0);
-				//str = label;
-				////str = "2 ALPHA";
-				//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
-				//	stateColor ? ofColor::white : ofColor::black,
-				//	!stateColor ? ofColor::white : ofColor::black);
-				
-				//{
-				//	int x = 0;
-				//	int y = 0;
-				//	int pad = 5;
-				//	int padPlots = 5;
-				//	int wplot = plotShape.x;
-				//	//int wplot = 500; 
-				//	int size = 92;
-				//	plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
-				//}
-
-				ofPopStyle();
+				drawPlot();
 			}
 			fboPlot.end();
 		}
@@ -448,16 +509,23 @@ void EnvelopeAnimator::draw()
 		//gui.draw();
 	}
 
+	//-
+
+	//TDOO:
+	//extra bc fbo fails going black
+#ifdef FIX_WORKAROUND_FBO_PLOT
+	if (SHOW_Plot)
 	{
-		int x = 100;
-		int y = 500;
-		int pad = 5;
+		int padx = 20;
+		int pady = 5;
+		int x = rectPlot.getBottomLeft().x + padx;
+		int y = rectPlot.getBottomLeft().y + pady;
 		int padPlots = 5;
 		int wplot = plotShape.x;
-		//int wplot = 500;
 		int size = 92;
-		plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
+		plot->draw(x, y, wplot, size);//left
 	}
+#endif
 }
 
 //--------------------------------------------------------------

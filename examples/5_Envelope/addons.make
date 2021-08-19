@@ -6,3 +6,4 @@ ofxSurfingAnimators
 ofxSurfingHelpers
 ofxSurfingImGui
 ofxSurfingPresets
+ofxWindowApp

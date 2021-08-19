@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "EnvelopeAnimator.h"
+#include "ofxWindowApp.h"
 
 class ofApp : public ofBaseApp {
 
@@ -16,4 +17,6 @@ public:
 
 	void startTween();
 	void stopTween();
+
+	ofxWindowApp windowApp;
 };

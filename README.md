@@ -16,18 +16,18 @@ Some classes to faster integration into your OF Apps/Add-ons:
 #### 3_Point (PositionAnimator)
 ![image](/docs/readme_images/3_Point.gif?raw=true "gif")
 
-#### 4_PointColored (PointAnimator + ColorAnimator)
+#### 4_PointColored (PositionAnimator + ColorAnimator)
 ![image](/docs/readme_images/4_PointColored.gif?raw=true "gif")
 
-<!--#### 4_Envelope (Point + Color animators)
-![image](/docs/readme_images/4_example_Envelope.PNG?raw=true "image") -->
+#### 5_Envelope (EnvelopeAnimator)
+![image](/docs/readme_images/5_Envelope.gif?raw=true "gif")
  	
 ## Overview
 **openFrameworks** helper addon for ```ofxAnimatable```:
 * Classes:
    * FloatAnimator.h
    * PositionAnimator.h
-   * NoiseAnimator.h (Envelope Modulated 2D Noise point + Filters)
+   * NoiseAnimator.h (Envelope Modulated 3D Noise point + Filters)
    * ColorAnimator.h
    * EnvelopeAnimator.h (ASR envelope for a Float. Double independent curve types for Input/Output.)
    * ToggleAnimator.h

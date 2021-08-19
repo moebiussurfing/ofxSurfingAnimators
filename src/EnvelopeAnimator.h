@@ -1,12 +1,14 @@
 #pragma once
 
 #include "ofMain.h"
+
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
 #include "ofxHistoryPlot.h"
 #include "ofxSurfingHelpers.h"
 
 #define USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
+#define FIX_WORKAROUND_FBO_PLOT
 
 //#include "ofxGui.h"
 #include "ofxSurfingImGui.h"
@@ -17,6 +19,7 @@ class EnvelopeAnimator
 {
 
 public:
+
 	EnvelopeAnimator();
 	~EnvelopeAnimator();
 
@@ -25,6 +28,9 @@ public:
 #endif
 
 private:
+
+	ofFbo fboCurve;
+
 	ofFbo fboPlot;
 	void drawPlot();
 	ImVec2 plotShape;
@@ -32,17 +38,20 @@ private:
 	float widthGuiLayout;
 	float heightGuiLayout;
 	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	//--------------------------------------------------------------
 	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
 		glm::vec2(0,0),
 		glm::vec2(ofGetWidth(), ofGetHeight())
 	};
 
 public:
+
 	void drawImGuiWidgets();
 
 	void setup();
 	void update();
 
+	//--------------------------------------------------------------
 	void update(float _dt)
 	{
 		dt = _dt;
@@ -56,6 +65,7 @@ public:
 	void stop();
 
 	bool bPaused = false;
+	//--------------------------------------------------------------
 	void setPause(bool b) {
 		bPaused = b;
 		if(b) queue.pausePlayback();
@@ -67,6 +77,7 @@ public:
 	void startOn();
 	void startOff();
 	ofParameter<bool> MODE_NoteOff;
+	//--------------------------------------------------------------
 	void setModeOff(bool b) {
 		MODE_NoteOff = b;
 	}
@@ -258,6 +269,7 @@ public:
 	//}
 
 	//tricky workaround to check if object class is created
+	//--------------------------------------------------------------
 	bool isInstantiated()
 	{
 		return doneInstantiated;
@@ -276,10 +288,14 @@ public:
 //        path = path_GLOBAL_Folder + label + ".xml";
         path = path_GLOBAL_Folder + label + ".xml";
     }
+
 private:
+
     std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 //    std::string path_Settings;
+
 public:
+
     //--------------------------------------------------------------
     void setPath_GlobalFolder(string folder)
     {
@@ -315,12 +331,14 @@ private:
 	void Changed_params(ofAbstractParameter &e);
 
 public:
+
 	ofParameter<bool> ENABLE_Envelope;
 	float getValue() {
 		return faderValue.get();
 	}
 
 private:
+
 	ofParameterGroup params_Modulator;
 
 	ofParameter<bool> faderLoop;
@@ -339,13 +357,17 @@ private:
 	//-
 
 	//bpm engine
+
 public:
+
 	void setBpm(float _bpm) {
 		bpmSpeed = _bpm;
 		//if (!bpmMode) bpmMode = true;
 	}
 	ofParameter<float> bpmSpeed;
+
 private:
+
 	ofParameterGroup params_Timers;
 	ofParameterGroup params_Bpm;
 	//void Changed_params_Bpm(ofAbstractParameter &e);
@@ -385,6 +407,8 @@ private:
 	void setupAnimator();
 
 	void setupPlot();
+
+	ofRectangle rectPlot;
 
     void refreshGui(){
 //        auto &g1 = gui.getGroup(label);//1st level
