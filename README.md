@@ -11,7 +11,7 @@ Some classes to faster integration into your OF Apps/Add-ons:
 ![gif](/docs/readme_images/1_example_Float.gif?raw=true "gif")  
 
 #### 2_FloatNoised (FloatAnimator + NoiseAnimator)
-![gif](/docs/readme_images/2_example_FloatNoised.gif?raw=true "gif")  
+![gif](/docs/readme_images/2_FloatNoised.gif?raw=true "gif")  
 
 #### 3_Point (PositionAnimator)
 ![image](/docs/readme_images/3_Point.gif?raw=true "gif")

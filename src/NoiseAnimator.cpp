@@ -543,7 +543,8 @@ void NoiseAnimator::setup()
 	//--
 
 	// plot
-	plotShape = ImVec2(210, 315);
+	plotShape = ImVec2(210, 200);
+	//plotShape = ImVec2(210, 315);
 	ofFbo::Settings fboSettings;
 	fboSettings.width = plotShape.x;
 	fboSettings.height = plotShape.y;
