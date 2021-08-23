@@ -3,44 +3,44 @@
 //--------------------------------------------------------------
 void ToggleAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
 {
-    //cout << "ToggleAnimator FINISHED" << endl;
+	ofLogNotice(__FUNCTION__) << "ToggleAnimator FINISHED" << endl;
 
-    faderValue = faderMin.get();
-    if (float_BACK != nullptr)
-    {
-        (*float_BACK) = faderValue;
-    }
+	faderValue = faderMin.get();
+	if (float_BACK != nullptr)
+	{
+		(*float_BACK) = faderValue;
+	}
 
-    animProgress = 100;
+	animProgress = 100;
 
-    if (faderLoop)
-    {
-        stop();
-        start();
-    }
+	if (faderLoop)
+	{
+		stop();
+		start();
+	}
 }
 
 //--------------------------------------------------------------
 ToggleAnimator::ToggleAnimator()
 {
-    ofSetLogLevel(OF_LOG_SILENT);
-    doneInstantiated = true;
-    setFps(60);
-    SHOW_gui = true;
-    guiPos = glm::vec2(700, 500);
+	//ofSetLogLevel(OF_LOG_SILENT);
+	doneInstantiated = true;
+	setFps(60);
+	SHOW_gui = true;
+	guiPos = glm::vec2(20, 100);
 	bitThreshold = 0.5f;
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::setup()
 {
-    ENABLE_ToggleModulator.set("ENABLE TOGGLER", true);
-    faderLoop.set("LOOP", false);
-    STATE_ToggleTarget.set("TARGET TOGGLE", false);
-    
+	ENABLE_ToggleModulator.set("ENABLE TOGGLER", true);
+	faderLoop.set("LOOP", false);
+	STATE_ToggleTarget.set("TARGET TOGGLE", false);
+
 	faderValue.set("STATE VALUE", 0, 0, 1);
-    faderMin.set("Min", 0, 0, 1);
-    faderMax.set("Max", 1, 0, 1);
+	faderMin.set("Min", 0, 0, 1);
+	faderMax.set("Max", 1, 0, 1);
 
 	faderDelay.set("PreDelay", 0.25f, 0, 2);
 	faderAttack.set("Attack", 0.5f, 0, 2);
@@ -57,40 +57,40 @@ void ToggleAnimator::setup()
 
 	//-
 
-    reset.set("Reset", false);
-    curveType.set("Curve", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
+	reset.set("Reset", false);
+	curveType.set("Curve", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
 
-    //3 selected curves that blink on/off to avoid "float curved" ones
-    blinkCurvesList[0] = 11;
-    blinkCurvesList[1] = 10;
-    blinkCurvesList[2] = 9;
-    curveBlinkerType.set("Curve Blink", 0, 0, 2);
+	//3 selected curves that blink on/off to avoid "float curved" ones
+	blinkCurvesList[0] = 11;
+	blinkCurvesList[1] = 10;
+	blinkCurvesList[2] = 9;
+	curveBlinkerType.set("Curve Blink", 0, 0, 2);
 
-    curveName.set("", "");
-    curveShow.set("Show Curve", true);
-    animProgress.set("%", 0, 0, 100);
+	curveName.set("", "");
+	curveShow.set("Show Curve", true);
+	animProgress.set("%", 0, 0, 100);
 
-    //disable for xml serialize (not required)
-    STATE_ToggleTarget.setSerializable(false);
-    faderLoop.setSerializable(false);
-    curveType.setSerializable(false);
-    curveName.setSerializable(false);
-    animProgress.setSerializable(false);
-    reset.setSerializable(false);
-    curveShow.setSerializable(false);
-    faderValue.setSerializable(false);
+	//disable for xml serialize (not required)
+	STATE_ToggleTarget.setSerializable(false);
+	faderLoop.setSerializable(false);
+	curveType.setSerializable(false);
+	curveName.setSerializable(false);
+	animProgress.setSerializable(false);
+	reset.setSerializable(false);
+	curveShow.setSerializable(false);
+	faderValue.setSerializable(false);
 
 	//-
 
-    params.setName(label);
-    //params.setName("FX MODULATOR");
+	params.setName(label);
+	//params.setName("FX MODULATOR");
 	params.add(ENABLE_ToggleModulator);
-    //params.add(faderLoop);
-    params.add(STATE_ToggleTarget);
-    params.add(faderValue);
-    //params.add(faderMax);
-    //params.add(faderMin);
-	
+	//params.add(faderLoop);
+	params.add(STATE_ToggleTarget);
+	params.add(faderValue);
+	//params.add(faderMax);
+	//params.add(faderMin);
+
 	//params_Modulator.setName("MODULATOR");
 	params_Timers.setName("TIMERS");
 	params_Timers.add(faderDelay);
@@ -110,37 +110,37 @@ void ToggleAnimator::setup()
 	params.add(params_Bpm);
 	//params_Modulator.add(params_Bpm);
 
-    params.add(curveBlinkerType);
-    params.add(curveType);
-    params.add(curveName);
-    //params.add(curveShow);
-    params.add(reset);
-    params.add(animProgress);
+	params.add(curveBlinkerType);
+	params.add(curveType);
+	params.add(curveName);
+	//params.add(curveShow);
+	params.add(reset);
+	params.add(animProgress);
 
 	//-
 
-    gui.setup(label);
-    //gui.setup("5 TOGGLE FX");
-    gui.setPosition(guiPos.x, guiPos.y);
-    gui.add(params);
-    gui.add(SHOW_Plot);
+	gui.setup(label);
+	//gui.setup("5 TOGGLE FX");
+	gui.setPosition(guiPos.x, guiPos.y);
+	gui.add(params);
+	gui.add(SHOW_Plot);
 
-    ofAddListener(params.parameterChangedE(), this, &ToggleAnimator::Changed_params);
+	ofAddListener(params.parameterChangedE(), this, &ToggleAnimator::Changed_params);
 
-    //-
+	//-
 
-    path = "settings_ToggleAnimator.xml";
-    if (autoSettings)
-        load_GroupSettings(params, path);
+	path = "settings_ToggleAnimator.xml";
+	if (autoSettings)
+		load_GroupSettings(params, path);
 
-    curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-    AnimCurve curve = (AnimCurve) (curveType.get());
-    curvePlotable.setCurve(curve);
+	curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
+	AnimCurve curve = (AnimCurve)(curveType.get());
+	curvePlotable.setCurve(curve);
 
-    setupFader();
-    ofAddListener(queue.eventQueueDone, this, &ToggleAnimator::onAnimQueueDone);
+	setupFader();
+	ofAddListener(queue.eventQueueDone, this, &ToggleAnimator::onAnimQueueDone);
 
-    setupPlot();
+	setupPlot();
 
 	//startup
 	stop();
@@ -149,110 +149,112 @@ void ToggleAnimator::setup()
 //--------------------------------------------------------------
 void ToggleAnimator::setupFader()
 {
-    faderAnim = AnimCurve(curveType.get());
+	faderAnim = AnimCurve(curveType.get());
 
-    queue.clearQueue();
-    queue.setInitialValue(faderMin.get());
-    queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);
-    queue.addTransition(faderMax.get(), faderAttack.get(), faderAnim);
-    queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
-    queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
+	queue.clearQueue();
+	queue.setInitialValue(faderMin.get());
+	queue.addTransition(faderMin.get(), faderDelay.get(), LINEAR);
+	queue.addTransition(faderMax.get(), faderAttack.get(), faderAnim);
+	queue.addTransition(faderMax.get(), faderSustain.get(), LINEAR);
+	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
 
-    totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-    //cout << "totalTime: " << totalTime << endl;
+	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
+	//cout << "totalTime: " << totalTime << endl;
 
-    //cout << "setupFader()" << endl;
-    //cout << "totalTime   : " << totalTime << endl;
-    //cout << "faderDelay  : " << faderDelay << endl;
-    //cout << "faderAttack : " << faderAttack << endl;
-    //cout << "faderSustain: " << faderSustain << endl;
-    //cout << "faderRelease: " << faderRelease << endl;
+	//cout << "setupFader()" << endl;
+	//cout << "totalTime   : " << totalTime << endl;
+	//cout << "faderDelay  : " << faderDelay << endl;
+	//cout << "faderAttack : " << faderAttack << endl;
+	//cout << "faderSustain: " << faderSustain << endl;
+	//cout << "faderRelease: " << faderRelease << endl;
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::setupPlot()
 {
-    plot = new ofxHistoryPlot(NULL, "toggler", 100, false);
-    plot->setBackgroundColor(ofColor(0, 230));
-    plot->setShowNumericalInfo(false);
-    plot->setRange(0, 1);
-    plot->setRespectBorders(true);
-    plot->setLineWidth(2);
-    plot->setCropToRect(true);
-    plot->setDrawGrid(false);
-    plot->setShowSmoothedCurve(false);
-    plot->setColor(255);
-    plot->setPrecision(1);
-    plot->setDrawTitle(false);
-    //plot->setGridUnit(16);
-    //plot->setGridColor(ofColor(22, 255));
+	plot = new ofxHistoryPlot(NULL, "toggler", 100, false);
+	plot->setBackgroundColor(ofColor(0, 230));
+	plot->setShowNumericalInfo(false);
+	plot->setRange(0, 1);
+	plot->setRespectBorders(true);
+	plot->setLineWidth(2);
+	plot->setCropToRect(true);
+	plot->setDrawGrid(false);
+	plot->setShowSmoothedCurve(false);
+	plot->setColor(255);
+	plot->setPrecision(1);
+	plot->setDrawTitle(false);
+	//plot->setGridUnit(16);
+	//plot->setGridColor(ofColor(22, 255));
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::update()
 {
-    queue.update(dt);
-    if (queue.isPlaying())
-    {
-        uint64_t time = ofGetElapsedTimeMillis() - lastStart;
-        faderValue = queue.getCurrentValue();
-        animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100, true);
-        //cout << "faderValue:" << faderValue << endl;
+	queue.update(dt);
+	if (queue.isPlaying())
+	{
+		uint64_t time = ofGetElapsedTimeMillis() - lastStart;
+		faderValue = queue.getCurrentValue();
+		animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100, true);
+		//cout << "faderValue:" << faderValue << endl;
 
-        //---
+		//---
 
-        if (faderValue < 0.25f)
-        {
-            STATE_ToggleTarget = false;
-        }
-        else if (faderValue >= 0.25f)
-        {
-            STATE_ToggleTarget = true;
-        }
-    }
+		if (faderValue < 0.25f)
+		{
+			STATE_ToggleTarget = false;
+		}
+		else if (faderValue >= 0.25f)
+		{
+			STATE_ToggleTarget = true;
+		}
+	}
 
-    plot->update(faderValue.get());
+	plot->update(faderValue.get());
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::draw()
 {
-    if (SHOW_gui)
+	update();
+
+	if (SHOW_gui)
 	{
 		gui.draw();
-     
-		if (SHOW_Plot && ENABLE_ToggleModulator)
-        {
-            ofPushStyle();
 
-            int x, y, size, px;
-            size = 90;
-            string str;
-            int pad = 6;
-			
-            bool stateColor;
+		if (SHOW_Plot && ENABLE_ToggleModulator)
+		{
+			ofPushStyle();
+
+			int x, y, size, px;
+			size = 90;
+			string str;
+			int pad = 6;
+
+			bool stateColor;
 			ofColor c;
 			stateColor = (queue.isPlaying()) && (faderValue > bitThreshold);
 			c = (stateColor ? ofColor(255) : ofColor(64));
 
-            //x = guiPos.x;
-            //y = ofGetHeight() - size - 20;
+			//x = guiPos.x;
+			//y = ofGetHeight() - size - 20;
 			x = gui.getPosition().x;
 			y = gui.getPosition().y + gui.getHeight() + 15;
 
-            //1.1 live alpha plot
-            plot->draw(x, y, size, size);
-			
+			//1.1 live alpha plot
+			plot->draw(x, y, size, size);
+
 			//1.2 axis
 			ofSetColor(ofColor(255, 32));
-			ofDrawLine(x, y + size/2, x + size, y + size/2);//horizontal
+			ofDrawLine(x, y + size / 2, x + size, y + size / 2);//horizontal
 
-            //2. hide curve plot when attack/release are 0
-            if (faderRelease != 0 || faderAttack != 0)
-            {
-                //curve type for attack/release
-                if (curveShow) curvePlotable.drawCurve(x + 1*(size + pad), y, size, true, c);
-            }
+			//2. hide curve plot when attack/release are 0
+			if (faderRelease != 0 || faderAttack != 0)
+			{
+				//curve type for attack/release
+				if (curveShow) curvePlotable.drawCurve(x + 1 * (size + pad), y, size, true, c);
+			}
 
 			//-
 
@@ -272,131 +274,134 @@ void ToggleAnimator::draw()
 				//ofDrawLine(px, y, px, y + size);
 			}
 
-            //-
+			//-
 
 			//4. label
 			//str = label;
 			//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
-		    //          stateColor ? ofColor::white : ofColor::black,
-		    //          !stateColor ? ofColor::white : ofColor::black);
+			//          stateColor ? ofColor::white : ofColor::black,
+			//          !stateColor ? ofColor::white : ofColor::black);
 
-            ofPopStyle();
-        }
-    }
+			ofPopStyle();
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::start()
 {
-    //cout << "start()" << endl;
-    if (ENABLE_ToggleModulator)
-    {
-        //cout << "ToggleAnimator START" << endl;
+	ofLogNotice(__FUNCTION__);
+	//cout << "start()" << endl;
+	if (ENABLE_ToggleModulator)
+	{
+		//cout << "ToggleAnimator START" << endl;
 
-        //mark
-        //plot->update(1);
+		//mark
+		//plot->update(1);
 
-        //TODO: rebuild every start
-        setupFader();
-        //stop();
+		//TODO: rebuild every start
+		setupFader();
+		//stop();
 
-        lastStart = ofGetElapsedTimeMillis();
+		lastStart = ofGetElapsedTimeMillis();
 
-        queue.setInitialValue(faderMin.get());
-        queue.startPlaying(); //start the animation
-    }
-    else
-    {
-        faderValue = faderMax;
-    }
+		queue.setInitialValue(faderMin.get());
+		queue.startPlaying(); //start the animation
+	}
+	else
+	{
+		faderValue = faderMax;
+	}
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::stop()
 {
-    //cout << "stop()" << endl;
-    if (ENABLE_ToggleModulator)
-    {
-        faderValue = faderMin.get();
-        queue.setInitialValue(faderMin.get());
-        queue.pausePlayback(); //start the animation
-        animProgress = 0;
-    }
-    else
-    {
-        faderValue = faderMax;
-    }
+	ofLogNotice(__FUNCTION__);
+
+	//cout << "stop()" << endl;
+	if (ENABLE_ToggleModulator)
+	{
+		faderValue = faderMin.get();
+		queue.setInitialValue(faderMin.get());
+		queue.pausePlayback(); //start the animation
+		animProgress = 0;
+	}
+	else
+	{
+		faderValue = faderMax;
+	}
 }
 
 //--------------------------------------------------------------
 ToggleAnimator::~ToggleAnimator()
 {
-    ofRemoveListener(queue.eventQueueDone, this, &ToggleAnimator::onAnimQueueDone);
+	ofRemoveListener(queue.eventQueueDone, this, &ToggleAnimator::onAnimQueueDone);
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::exit()
 {
-    if (autoSettings)
-        save_GroupSettings(params, path);
+	if (autoSettings)
+		save_GroupSettings(params, path);
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::load_GroupSettings(ofParameterGroup &g, string path)
 {
-    ofLogNotice("ToggleAnimator") << "load_GroupSettings " << path;
-    ofXml settings;
-    settings.load(path);
-    ofDeserialize(settings, g);
+	ofLogNotice("ToggleAnimator") << "load_GroupSettings " << path;
+	ofXml settings;
+	settings.load(path);
+	ofDeserialize(settings, g);
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::save_GroupSettings(ofParameterGroup &g, string path)
 {
-    ofLogNotice("ToggleAnimator") << "save_GroupSettings " << path;
-    ofXml settings;
-    ofSerialize(settings, g);
-    settings.save(path);
+	ofLogNotice("ToggleAnimator") << "save_GroupSettings " << path;
+	ofXml settings;
+	ofSerialize(settings, g);
+	settings.save(path);
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::nextCurve()
 {
-    curveType++;
-    curveType = curveType % NUM_ANIM_CURVES;
+	curveType++;
+	curveType = curveType % NUM_ANIM_CURVES;
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::previousCurve()
 {
-    curveType--;
-    if (curveType < 0)
-        curveType = NUM_ANIM_CURVES - 1;
+	curveType--;
+	if (curveType < 0)
+		curveType = NUM_ANIM_CURVES - 1;
 }
 
 //--------------------------------------------------------------
 void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 {
-    string name = e.getName();
-    if (name != "%"
-        //&& name != "ENABLE TOGGLER"
-        && name != "TARGET TOGGLE"
-        && name != "STATE VALUE")
-        ofLogVerbose("ToggleAnimator") << "> '" << name << "': " << e;
+	string name = e.getName();
+	if (name != "%"
+		//&& name != "ENABLE TOGGLER"
+		&& name != "TARGET TOGGLE"
+		&& name != "STATE VALUE")
+		ofLogNotice(__FUNCTION__) << "> '" << name << "': " << e;
 
-    //-
+	//-
 
-    if (name == "Min" ||
-        name == "Max" ||
-        name == "Delay" ||
-        name == "Attack" ||
-        name == "Sustain" ||
-        name == "Release")
-    {
-        totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-        //setupFader();
-        //stop();
-    }
+	if (name == "Min" ||
+		name == "Max" ||
+		name == "Delay" ||
+		name == "Attack" ||
+		name == "Sustain" ||
+		name == "Release")
+	{
+		totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
+		//setupFader();
+		//stop();
+	}
 
 
 	//bpm engine
@@ -433,44 +438,44 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 			}
 		}
 	}
-	
+
 	else if (name == "Curve Blink")
-    {
-        int i = curveBlinkerType.get();
-        if (i >= 0 && i < 3)
-            curveType = blinkCurvesList[i];
-    }
-    else if (name == "Curve")
-    {
-        curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
-        AnimCurve curve = (AnimCurve) (curveType.get());
-        curvePlotable.setCurve(curve);
-    }
+	{
+		int i = curveBlinkerType.get();
+		if (i >= 0 && i < 3)
+			curveType = blinkCurvesList[i];
+	}
+	else if (name == "Curve")
+	{
+		curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
+		AnimCurve curve = (AnimCurve)(curveType.get());
+		curvePlotable.setCurve(curve);
+	}
 
-    else if (name == "Reset")
-    {
-        if (reset)
-        {
-            reset = false;
+	else if (name == "Reset")
+	{
+		if (reset)
+		{
+			reset = false;
 
-            faderValue = faderMax;
-            STATE_ToggleTarget = false;
-			
+			faderValue = faderMax;
+			STATE_ToggleTarget = false;
+
 			faderDelay = 0.25f;
 			faderAttack = 0.5f;
 			faderSustain = 1.f;
 			faderRelease = 0.5f;
 
-            faderMin = 0;
-            faderMax = 1;
-            curveType = 3;
-            //curveType = 10;//blink 3
-        }
-    }
+			faderMin = 0;
+			faderMax = 1;
+			curveType = 3;
+			//curveType = 10;//blink 3
+		}
+	}
 
-    else if (name == "TARGET TOGGLE")
-    {
-        if (bool_BACK != nullptr) (*bool_BACK) = STATE_ToggleTarget;
+	else if (name == "TARGET TOGGLE")
+	{
+		if (bool_BACK != nullptr) (*bool_BACK) = STATE_ToggleTarget;
 
 
 		bool stateColor;
@@ -479,34 +484,34 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 		c = (stateColor ? ofColor(255) : ofColor(64));
 
 		plot->setColor(c);
-    }
+	}
 
-    else if (name == "STATE VALUE")
-    {
-        if (float_BACK != nullptr)
-        {
-            (*float_BACK) = faderValue;
-        }
+	else if (name == "STATE VALUE")
+	{
+		if (float_BACK != nullptr)
+		{
+			(*float_BACK) = faderValue;
+		}
 
-        //if (bool_BACK != nullptr)
-        //{
-        //    if (faderValue < 0.1)
-        //    {
-        //        (*bool_BACK) = false;
-        //    }
-        //    else if (faderValue > 0.9)
-        //    {
-        //        (*bool_BACK) = true;
-        //    }
-        //}
-    }
+		//if (bool_BACK != nullptr)
+		//{
+		//    if (faderValue < 0.1)
+		//    {
+		//        (*bool_BACK) = false;
+		//    }
+		//    else if (faderValue > 0.9)
+		//    {
+		//        (*bool_BACK) = true;
+		//    }
+		//}
+	}
 
-    else if (name == "ENABLE TOGGLER")
-    {
-        if (!ENABLE_ToggleModulator)
-        {
-            faderValue = faderMax;
-        }
-    }
+	else if (name == "ENABLE TOGGLER")
+	{
+		if (!ENABLE_ToggleModulator)
+		{
+			faderValue = faderMax;
+		}
+	}
 
 }

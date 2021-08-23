@@ -46,6 +46,11 @@ public:
 	}
 
 	//--------------------------------------------------------------
+	bool getState() {
+		return STATE_ToggleTarget.get();
+	}
+
+	//--------------------------------------------------------------
 	void setFps(float _fps)
 	{
 		dt = 1.0f / _fps;
@@ -173,7 +178,7 @@ public:
 		gui.setPosition(guiPos.x, guiPos.y);
 	}
 
-	string label = " ";
+	string label = "ToggleAnimator";
 	//--------------------------------------------------------------
 	void setNameLabel(string s)
 	{
@@ -277,7 +282,8 @@ private:
 
 	//-
 
-	//bpm engine
+	// bpm engine
+
 public:
 	void setBpm(float _bpm) {
 		bpmSpeed = _bpm;
