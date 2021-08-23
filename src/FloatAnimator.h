@@ -17,7 +17,7 @@ TODO:
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
 
-#define USE_SURFING_PRESETS
+//----
 
 //#define TEST_HERITAGE_FUNCTIONS 
 
@@ -25,6 +25,11 @@ TODO:
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
+
+//#define USE_SURFING_PRESETS
+
+//----
+
 
 #ifdef USE_SURFING_PRESETS
 #include "ofxSurfingPresets.h"

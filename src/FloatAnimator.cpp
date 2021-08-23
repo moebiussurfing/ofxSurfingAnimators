@@ -475,13 +475,14 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		//-
 
+			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+
 #ifdef USE_SURFING_PRESETS
 				//bool bOpen = true;
 				//ImGuiTreeNodeFlags _flagt2 = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
 				//_flagt2 |= ImGuiTreeNodeFlags_Framed;
 				//if (ImGui::TreeNodeEx("PRESETS", _flagt2))
 		{
-			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 			presets.draw_ImGui_Minimal();
 			//ImGui::TreePop();
 		}
