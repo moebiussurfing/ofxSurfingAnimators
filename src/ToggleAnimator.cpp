@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ToggleAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
 {
-	ofLogNotice(__FUNCTION__) << "ToggleAnimator FINISHED" << endl;
+	ofLogNotice(__FUNCTION__) << "ToggleAnimator FINISHED";
 
 	faderValue = faderMin.get();
 	if (float_BACK != nullptr)

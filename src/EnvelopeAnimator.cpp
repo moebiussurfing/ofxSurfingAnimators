@@ -211,7 +211,7 @@ void EnvelopeAnimator::setup()
 
 	int size = 92;
 	ofFbo::Settings fboSettings2;
-	fboSettings2.width = size + 10 + size;
+	fboSettings2.width = size;
 	fboSettings2.height = size;
 	fboSettings2.internalformat = GL_RGBA;
 	fboSettings2.textureTarget = GL_TEXTURE_2D;
