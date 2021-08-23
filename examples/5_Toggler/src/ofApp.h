@@ -10,7 +10,6 @@
 
 	USAGE
 	+ press space key to trig start 
-
 */
 
 class ofApp : public ofBaseApp 

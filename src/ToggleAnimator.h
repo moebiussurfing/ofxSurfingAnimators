@@ -2,10 +2,27 @@
 
 #include "ofMain.h"
 
+//--
+
+
+#define USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+
+
+//--
+
+
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
 #include "ofxHistoryPlot.h"
+
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 #include "ofxGui.h"
+#endif
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+#include "ofxSurfingImGui.h"
+#endif
 
 class ToggleAnimator
 {
@@ -61,13 +78,15 @@ public:
 	{
 		SHOW_gui = b;
 	}
-	
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	//--------------------------------------------------------------
 	void setPosition(glm::vec2 p)
 	{
 		guiPos = glm::vec2(p.x, p.y);
 		gui.setPosition(guiPos.x, guiPos.y);
 	}
+#endif
 
 	//--------------------------------------------------------------
 	void setEnabled(bool b)
@@ -93,6 +112,7 @@ public:
 		faderLoop = b;
 	}
 
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	//--------------------------------------------------------------
 	void disableHeader()
 	{
@@ -117,6 +137,7 @@ public:
 	{
 		return gui.isMinimized();
 	}
+#endif
 
 	//--------------------------------------------------------------
 	void setDebug(bool b)
@@ -171,24 +192,26 @@ public:
 
 	//-
 
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	//--------------------------------------------------------------
 	void setGuiPosition(glm::vec2 _p)
 	{
 		guiPos = _p;
 		gui.setPosition(guiPos.x, guiPos.y);
 	}
+	//--------------------------------------------------------------
+	glm::vec2 getGuiPosition()
+	{
+		return guiPos;
+	}
+
+#endif
 
 	string label = "ToggleAnimator";
 	//--------------------------------------------------------------
 	void setNameLabel(string s)
 	{
 		label = s;
-	}
-
-	//--------------------------------------------------------------
-	glm::vec2 getGuiPosition()
-	{
-		return guiPos;
 	}
 
 	//--------------------------------------------------------------
@@ -262,8 +285,16 @@ private:
 	ofxAnimatableQueue queue;
 	void onAnimQueueDone(ofxAnimatableQueue::EventArg &);
 
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+	ofxSurfing_ImGui_Manager guiManager;
+	void drawImGuiWidgets();
+#endif
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	ofxPanel gui;
 	glm::vec2 guiPos;
+#endif
+
 	void Changed_params(ofAbstractParameter &e);
 
 	ofParameter<bool> faderLoop;
@@ -336,4 +367,9 @@ private:
 	void setupPlot();
 
 	float bitThreshold;
+
+	void drawPlot();
+	ofRectangle rectPlot;
+	ofFbo fboPlot;
+
 };

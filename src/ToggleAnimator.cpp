@@ -27,7 +27,11 @@ ToggleAnimator::ToggleAnimator()
 	doneInstantiated = true;
 	setFps(60);
 	SHOW_gui = true;
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	guiPos = glm::vec2(20, 100);
+#endif
+
 	bitThreshold = 0.5f;
 }
 
@@ -47,7 +51,7 @@ void ToggleAnimator::setup()
 	faderSustain.set("Sustain", 1.f, 0, 2);
 	faderRelease.set("Release", 0.5f, 0, 2);
 
-	//bpm engine
+	// bpm engine
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
 	bpmBeatDelay.set("PreDelay Beat", 1, 0, 8);
@@ -60,7 +64,7 @@ void ToggleAnimator::setup()
 	reset.set("Reset", false);
 	curveType.set("Curve", AnimCurve(16), 0, NUM_ANIM_CURVES - 1);
 
-	//3 selected curves that blink on/off to avoid "float curved" ones
+	// 3 selected curves that blink on/off to avoid "float curved" ones
 	blinkCurvesList[0] = 11;
 	blinkCurvesList[1] = 10;
 	blinkCurvesList[2] = 9;
@@ -70,7 +74,7 @@ void ToggleAnimator::setup()
 	curveShow.set("Show Curve", true);
 	animProgress.set("%", 0, 0, 100);
 
-	//disable for xml serialize (not required)
+	// disable for xml serialize (not required)
 	STATE_ToggleTarget.setSerializable(false);
 	faderLoop.setSerializable(false);
 	curveType.setSerializable(false);
@@ -119,11 +123,27 @@ void ToggleAnimator::setup()
 
 	//-
 
+	// gui
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 	gui.setup(label);
 	//gui.setup("5 TOGGLE FX");
 	gui.setPosition(guiPos.x, guiPos.y);
 	gui.add(params);
 	gui.add(SHOW_Plot);
+#endif
+	//-
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+	guiManager.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
+	guiManager.setup(); // initiate ImGui
+
+	//guiManager.setUseAdvancedSubPanel(true);
+	//guiManager.bAutoResize = false;
+#endif
+
+
+	//-
 
 	ofAddListener(params.parameterChangedE(), this, &ToggleAnimator::Changed_params);
 
@@ -142,7 +162,25 @@ void ToggleAnimator::setup()
 
 	setupPlot();
 
-	//startup
+	//--
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+	int size = 92;
+	ofFbo::Settings fboSettings2;
+	fboSettings2.width = size + 10 + size;
+	fboSettings2.height = size;
+	fboSettings2.internalformat = GL_RGBA;
+	fboSettings2.textureTarget = GL_TEXTURE_2D;
+	fboPlot.allocate(fboSettings2);
+
+	fboPlot.begin();
+	ofClear(0, 0);
+	fboPlot.end();
+#endif
+
+	//-
+
+	// startup
 	stop();
 }
 
@@ -173,7 +211,7 @@ void ToggleAnimator::setupFader()
 void ToggleAnimator::setupPlot()
 {
 	plot = new ofxHistoryPlot(NULL, "toggler", 100, false);
-	plot->setBackgroundColor(ofColor(0, 230));
+	plot->setBackgroundColor(ofColor(0, 255));
 	plot->setShowNumericalInfo(false);
 	plot->setRange(0, 1);
 	plot->setRespectBorders(true);
@@ -215,75 +253,111 @@ void ToggleAnimator::update()
 }
 
 //--------------------------------------------------------------
+void ToggleAnimator::drawPlot()
+{
+	if (SHOW_Plot && ENABLE_ToggleModulator)
+	{
+		ofPushStyle();
+
+		int x, y, size, px;
+		size = 90;
+		string str;
+		int pad = 6;
+
+		bool stateColor;
+		ofColor c;
+		stateColor = (queue.isPlaying()) && (faderValue > bitThreshold);
+		c = (stateColor ? ofColor(255) : ofColor(64));
+
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+		//x = guiPos.x;
+		//y = ofGetHeight() - size - 20;
+		x = gui.getPosition().x;
+		y = gui.getPosition().y + gui.getHeight() + 15;
+#endif
+		x = 0;
+		y = 0;
+
+		//1.1 live alpha plot
+		plot->draw(x, y, size, size);
+
+		//1.2 axis
+		ofSetColor(ofColor(255, 32));
+		ofDrawLine(x, y + size / 2, x + size, y + size / 2);//horizontal
+
+		//2. hide curve plot when attack/release are 0
+		if (faderRelease != 0 || faderAttack != 0)
+		{
+			//curve type for attack/release
+			if (curveShow) curvePlotable.drawCurve(x + 1 * (size + pad), y, size, true, c);
+		}
+
+		//-
+
+		if (isAnimating()) {
+			//3. progress bar
+			int rx, ry, rw, rh;
+			rh = 10;
+			rx = x + 0 * (size + pad);
+			ry = y + size - rh;
+			px = ofMap(animProgress, 0, 100, 0, size, true);
+			rw = px;
+			ofRectangle r(rx, ry, rw, rh);
+			ofFill();
+			//ofSetColor(c);
+			ofSetColor(255, 225);
+			ofDrawRectangle(r);
+			//ofDrawLine(px, y, px, y + size);
+		}
+
+		//-
+
+		//4. label
+		//str = label;
+		//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
+		//          stateColor ? ofColor::white : ofColor::black,
+		//          !stateColor ? ofColor::white : ofColor::black);
+
+		ofPopStyle();
+	}
+}
+
+//--------------------------------------------------------------
 void ToggleAnimator::draw()
 {
 	update();
 
+	//-
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+	if (SHOW_Plot)
+	{
+		fboPlot.begin();
+		{
+			ofClear(0, 0);
+			drawPlot();
+		}
+		fboPlot.end();
+	}
+#endif
+
+	//--
+
 	if (SHOW_gui)
 	{
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 		gui.draw();
+#endif
+		//-
 
-		if (SHOW_Plot && ENABLE_ToggleModulator)
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+		guiManager.begin();
 		{
-			ofPushStyle();
-
-			int x, y, size, px;
-			size = 90;
-			string str;
-			int pad = 6;
-
-			bool stateColor;
-			ofColor c;
-			stateColor = (queue.isPlaying()) && (faderValue > bitThreshold);
-			c = (stateColor ? ofColor(255) : ofColor(64));
-
-			//x = guiPos.x;
-			//y = ofGetHeight() - size - 20;
-			x = gui.getPosition().x;
-			y = gui.getPosition().y + gui.getHeight() + 15;
-
-			//1.1 live alpha plot
-			plot->draw(x, y, size, size);
-
-			//1.2 axis
-			ofSetColor(ofColor(255, 32));
-			ofDrawLine(x, y + size / 2, x + size, y + size / 2);//horizontal
-
-			//2. hide curve plot when attack/release are 0
-			if (faderRelease != 0 || faderAttack != 0)
-			{
-				//curve type for attack/release
-				if (curveShow) curvePlotable.drawCurve(x + 1 * (size + pad), y, size, true, c);
-			}
-
-			//-
-
-			if (isAnimating()) {
-				//3. progress bar
-				int rx, ry, rw, rh;
-				rh = 10;
-				rx = x + 0 * (size + pad);
-				ry = y + size - rh;
-				px = ofMap(animProgress, 0, 100, 0, size, true);
-				rw = px;
-				ofRectangle r(rx, ry, rw, rh);
-				ofFill();
-				//ofSetColor(c);
-				ofSetColor(255, 225);
-				ofDrawRectangle(r);
-				//ofDrawLine(px, y, px, y + size);
-			}
-
-			//-
-
-			//4. label
-			//str = label;
-			//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
-			//          stateColor ? ofColor::white : ofColor::black,
-			//          !stateColor ? ofColor::white : ofColor::black);
-
-			ofPopStyle();
+			drawImGuiWidgets();
 		}
+		guiManager.end();
+#endif
 	}
 }
 
@@ -291,11 +365,9 @@ void ToggleAnimator::draw()
 void ToggleAnimator::start()
 {
 	ofLogNotice(__FUNCTION__);
-	//cout << "start()" << endl;
+
 	if (ENABLE_ToggleModulator)
 	{
-		//cout << "ToggleAnimator START" << endl;
-
 		//mark
 		//plot->update(1);
 
@@ -319,7 +391,6 @@ void ToggleAnimator::stop()
 {
 	ofLogNotice(__FUNCTION__);
 
-	//cout << "stop()" << endl;
 	if (ENABLE_ToggleModulator)
 	{
 		faderValue = faderMin.get();
@@ -420,6 +491,8 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 
 		if (name == bpmMode.getName())
 		{
+
+#ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
 			//workflow
 			auto &g2 = gui.getGroup(label);//1st level
 			//auto &g2 = g1.getGroup("MODULATOR");//2nd level
@@ -436,8 +509,9 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 				g3.maximize();
 				g4.minimize();
 			}
-		}
+#endif
 	}
+}
 
 	else if (name == "Curve Blink")
 	{
@@ -515,3 +589,68 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 	}
 
 }
+
+#ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
+//--------------------------------------------------------------
+void ToggleAnimator::drawImGuiWidgets()
+{
+
+	string name;
+
+	// widgets sizes
+	float _w100;
+	float _w99;
+	float _w50;
+	float _w33;
+	float _w25;
+	float _h;
+
+	ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
+	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+
+	name = "PANEL " + label;
+	if (guiManager.beginWindow(name.c_str(), NULL, _flagsw))
+	{
+		ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
+
+		static ImGuiTreeNodeFlags flagst;
+		flagst = ImGuiTreeNodeFlags_None;
+		//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+		flagst |= ImGuiTreeNodeFlags_Framed;
+
+		if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
+			start();
+		}
+
+		//TODO: fails
+		//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_DEFAULT);
+		//guiManager.AddGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
+		//guiManager.Add(SHOW_Plot);
+
+		ofxImGuiSurfing::AddGroup(params, flagst);
+		ofxImGuiSurfing::AddParameter(SHOW_Plot);
+
+		//--
+
+		// plot fbo
+
+		if (SHOW_Plot)
+		{
+			ImVec2 pos = ImVec2(rectPlot.getWidth() / 2 - fboPlot.getWidth() / 2, 10);
+			ImVec2 plotShape = ImVec2(fboPlot.getWidth(), fboPlot.getHeight());
+			float _spacing = pos.x;
+			ImGui::Dummy(ImVec2(0, pos.y));
+			ImGui::Indent(_spacing);
+			ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+			ImGui::Image(textureID, plotShape);
+			ImGui::Unindent;
+		}
+
+		//-
+
+		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+
+		guiManager.endWindow();
+	}
+}
+#endif

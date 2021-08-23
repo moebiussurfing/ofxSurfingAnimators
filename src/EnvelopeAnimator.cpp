@@ -211,7 +211,7 @@ void EnvelopeAnimator::setup()
 
 	int size = 92;
 	ofFbo::Settings fboSettings2;
-	fboSettings2.width = size;
+	fboSettings2.width = size + 10 + size;
 	fboSettings2.height = size;
 	fboSettings2.internalformat = GL_RGBA;
 	fboSettings2.textureTarget = GL_TEXTURE_2D;
@@ -367,6 +367,7 @@ void EnvelopeAnimator::drawPlot()
 			curvePlotableOut.setAutoFlipCurve(true);
 			curvePlotableOut.drawCurve(0, 0, size, true, ofColor(255), false);
 			fboCurve.end();
+			ofSetColor(255, 255);
 			fboCurve.draw(xx, yy);
 			//fboCurve.draw(xx + size, yy, -size, size);//flip
 			//fboCurve.draw(xx + size, yy + size, -size, -size);//flip
