@@ -3,16 +3,18 @@
 
 //--------------------------------------------------------------
 void ColorAnimator::setup() {
+	ofLogNotice(__FUNCTION__);
+
+	// from base class
 	FloatAnimator::setup();
 
 	ofAddListener(ofEvents().update, this, &ColorAnimator::update);
-	//ofAddListener(ofEvents().draw, this, &ColorAnimator::draw);
 
 	colorCurrent.set("Color", ofColor(255, 255, 255, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 	colorStart.set("Start", ofColor(55, 55, 55, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 	colorEnd.set("End", ofColor(200, 200, 200, 255), ofColor(0, 0, 0, 0), ofColor(255, 255, 255, 255));
 
-	//--
+	//----
 
 	// gui
 
@@ -32,6 +34,35 @@ void ColorAnimator::setup() {
 #endif
 #endif
 
+	//----
+
+	setupExtra();
+}
+
+//--------------------------------------------------------------
+void ColorAnimator::setupExtra()
+{
+	ofLogNotice(__FUNCTION__);
+
+	/*
+
+	Overrides FloatAnimator
+	You can define this into your heritated sub class to add parameters to the settings
+	that we want to handle and serialize to json.
+
+	*/
+
+	params_Colors.add(colorStart);
+	params_Colors.add(colorEnd);
+	params.add(params_Colors);
+
+	//--
+
+	// from base class
+	// we call again to load settings
+	//FloatAnimator::setupExtra();
+
+	FloatAnimator::startup();
 }
 
 //--------------------------------------------------------------
@@ -50,87 +81,26 @@ void ColorAnimator::update(ofEventArgs & args) {
 	float a = ofMap(getValue(), 0, 1, colorStart.get().a, colorEnd.get().a, true);
 
 	colorCurrent.set(ofColor(r, g, b, a));
+
+	if (isAnimating())
+		if (color_BACK != nullptr)
+		{
+			color_BACK->set(colorCurrent);
+		}
 }
 
 //--------------------------------------------------------------
-//void ColorAnimator::draw() 
-//{
-//	FloatAnimator::draw();
-//
-//}
+void ColorAnimator::drawImGuiWidgetsExtra() {
 
-//--------------------------------------------------------------
-//void ColorAnimator::draw(ofEventArgs & args)
-void ColorAnimator::drawImGui() 
-{
-	//FloatAnimator::draw(args);
+	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
+	float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
+	//ImGui::Button("TEST_ColorAnimator_ExtraF", ImVec2(_w100, 2 * _h));
 
-	//-
-
-#ifdef USE_IMGUI__COLORANIMATOR
-
-	//TODO:
-	//return; // skip
-
-	//-
-
-	// a.
-
-//	// insert into same float animator window
-//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-//	string name = getNamePanel();
-//	ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-//	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
-//
-//	guiManager.beginWindow(name.c_str(), NULL, _flagsw);
-//	{
-//		bool bOpen = true;
-//		ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
-//		_flagt |= ImGuiTreeNodeFlags_Framed;
-//		if (ImGui::TreeNodeEx("COLOR", _flagt))
-//		{
-//			ofxImGuiSurfing::AddParameter(colorCurrent);
-//			ImGui::Dummy(ImVec2(0, 5));
-//			ofxImGuiSurfing::AddParameter(colorStart);
-//			ofxImGuiSurfing::AddParameter(colorEnd);
-//			ImGui::TreePop();
-//		}
-//	}
-//	guiManager.endWindow();
-//#endif
-
-	//-
-
-	// b.
-
-#ifndef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-	gui.begin();
-	{
-		string name = "COLORS";
-		//string name = getNamePanel(); // -> trying to insert on floatAnim
-
-		ImGui::Begin(name.c_str());
-		{
-			//bool bOpen = true;
-			//ImGuiTreeNodeFlags _flagt = (bOpen ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_None);
-			//_flagt |= ImGuiTreeNodeFlags_Framed;
-			//if (ImGui::TreeNodeEx("COLOR", _flagt))
-			//{
-			ofxImGuiSurfing::AddParameter(colorCurrent);
-			ImGui::Dummy(ImVec2(0, 5));
-			ofxImGuiSurfing::AddParameter(colorStart);
-			ofxImGuiSurfing::AddParameter(colorEnd);
-			//ImGui::TreePop();
-			//}
-		}
-		ImGui::End();
-	}
-	gui.end();
-#endif
-
-#endif
-
-	//-
+	ofxImGuiSurfing::AddParameter(colorCurrent);
+	ImGui::Spacing();
+	//ImGui::Dummy(ImVec2(0, 5));
+	ofxImGuiSurfing::AddParameter(colorStart);
+	ofxImGuiSurfing::AddParameter(colorEnd);
 }
 
 ////--------------------------------------------------------------

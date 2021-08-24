@@ -2,13 +2,6 @@
 
 #include "ofMain.h"
 
-/*
-
-add color widgets but into main class..
-save settings, presets 
-
-*/
-
 
 //TODO:
 #define USE_IMGUI__COLORANIMATOR // -> global enabler
@@ -42,20 +35,13 @@ public:
 #endif
 #endif
 
-	void drawImGui();
-
 	//--
 
-	//ColorAnimator();
-	//~ColorAnimator();
+	void setup() override;
+	void setupExtra() override;
+	void update(ofEventArgs & args) override;
+	void drawImGuiWidgetsExtra() override;
 
-	void setup();
-
-	virtual void update(ofEventArgs & args);
-
-	//void draw();
-	//virtual void draw(ofEventArgs & args);
-	 
 	void exit();
 
 	//--
@@ -82,6 +68,7 @@ public:
 	{
 		colorStart.set(c);
 	}
+
 	//--------------------------------------------------------------
 	void setColorEnd(ofColor c)
 	{
@@ -89,6 +76,8 @@ public:
 	}
 
 	//--
+
+	ofParameterGroup params_Colors{ "Colors" };
 
 	//ofParameterGroup params;
 	//string label = "Color Animator";

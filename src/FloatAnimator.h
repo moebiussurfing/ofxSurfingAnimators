@@ -1,34 +1,27 @@
 #pragma once
 
-
-/*
-
-TODO:
-
-+ fbo plots inside ImGui panel
-+ combo presetsManager lite version
-
-*/
-
-
 #include "ofMain.h"
 
-#include "ofxAnimatableFloat.h"
-#include "ofxSurfingHelpers.h"
-#include "ofxSurfingImGui.h"
 
 //----
 
-//#define TEST_HERITAGE_FUNCTIONS 
+// OPTIONS
 
-//#include "ofxGui.h"
+//#define USE_SURFING_PRESETS
+
+#define TEST_HERITAGE_FUNCTIONS 
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
-//#define USE_SURFING_PRESETS
-
 //----
+
+
+#include "ofxAnimatableFloat.h"
+#include "ofxSurfingHelpers.h"
+#include "ofxSurfingImGui.h"
+//#include "ofxGui.h"
+
 
 
 #ifdef USE_SURFING_PRESETS
@@ -66,6 +59,7 @@ public:
 
 	//TODO://use &
 	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) { // only use to set min/max range but not auto update the param value!
+	
 	//--------------------------------------------------------------
 	void setup(ofParameter<float> &paramFloat) { // only use to set min/max range but not auto update the param value!
 		//bAutoUpdate = autoUpdate;
@@ -74,6 +68,10 @@ public:
 	}
 
 	virtual void setup();
+	virtual void setupExtra();
+	
+	void startup();
+
 	//--------------------------------------------------------------
 	void setup(float start, float end) {
 		setStart(start);
@@ -83,8 +81,6 @@ public:
 	}
 
 	virtual void update(ofEventArgs & args);
-	void draw(ofEventArgs & args);
-
 	//void update();
 	//void draw();
 	//void update(float _dt)
@@ -93,7 +89,9 @@ public:
 	//	update();
 	//}
 
-	void exit();
+	void draw(ofEventArgs & args);
+
+	void exit(); // not virtual. each class will have his own exit() function.
 
 	//--
 
@@ -123,9 +121,11 @@ public:
 
 	void drawImGuiWidgets();
 
-	void drawImGuiWidgetsExtra();
+	virtual void drawImGuiWidgetsExtra();
+
 	void drawImGuiWidgetsBegin();
 	void drawImGuiWidgetsEnd();
+	
 	bool bParams = true;
 
 private:
@@ -440,12 +440,14 @@ public:
 	{
 		return _params_Bpm;
 	}
+
 	//helpers
 	//--------------------------------------------------------------
 	ofParameterGroup getHelpers()
 	{
 		return params_Helpers;
 	}
+
 	//params
 	//--------------------------------------------------------------
 	ofParameterGroup getParameters()
@@ -483,7 +485,8 @@ public:
 	//	globalTimeScale = timeScale;
 	//}
 
-	//tricky workaround to check if object class is created
+	// A tricky workaround to check if object class is instantiated...
+	//--------------------------------------------------------------
 	bool isInstantiated()
 	{
 		return doneInstantiated;
@@ -502,7 +505,7 @@ public:
 
 private:
 
-	//tricky workaround to check if object class is created
+	//tricky workaround to check if object class is instantiated
 	bool doneInstantiated = false;
 
 	//float globalTimeScale = 1.0f;
@@ -537,6 +540,7 @@ public:
 		bpmSpeed = _bpm;
 		//if (!bpmMode) bpmMode = true;
 	}
+
 	ofParameter<float> bpmSpeed;
 
 	//--------------------------------------------------------------
@@ -619,7 +623,7 @@ private:
 
 	//glm::vec2 guiPos;
 	//string path;
-	float dt;
+	float dt; // -> should remove?
 
 	//--
 

@@ -5,6 +5,7 @@ FloatAnimator::FloatAnimator()
 {
 	path_GLOBAL_Folder = "FloatAnimator";
 	path_Settings = "settings_FloatAnimator.xml";
+
 	autoSettings = true;
 	//autoSettings = false;
 
@@ -60,9 +61,24 @@ void FloatAnimator::previousCurve(bool bAutoTrig)
 	}
 }
 
+////--------------------------------------------------------------
+//void FloatAnimator::setupExtra()
+//{
+//	ofLogNotice(__FUNCTION__);
+//
+//	/*
+//	
+//	You can define this into your heritated sub class to add parameters to the settings 
+//	that we want to handle and serialize to json.
+//	
+//	*/
+//}
+
 //--------------------------------------------------------------
 void FloatAnimator::setup()
 {
+	ofLogNotice(__FUNCTION__);
+
 	//TODO:
 	//guiManager.bAutoResize = false;
 
@@ -194,8 +210,8 @@ void FloatAnimator::setup()
 
 	//-
 
-	//autoSettings = true;
-	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+	////autoSettings = true;
+	//if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 
 	ofAddListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
 
@@ -225,6 +241,36 @@ void FloatAnimator::setup()
 	presets.addGroup(params);
 	//presets.addGroup(getParameters());
 #endif
+
+	//--
+
+	//setupExtra(); // -> sub classes can add more extra parameters to params here!
+	
+	//startup(); // -> load settings
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::setupExtra()
+{
+	ofLogNotice(__FUNCTION__);
+
+	/*
+
+	You can define this into your heritated sub class to add parameters to the settings
+	that we want to handle and serialize to json.
+
+	*/
+
+	startup();
+}
+
+//--------------------------------------------------------------
+void FloatAnimator::startup()
+{
+	ofLogNotice(__FUNCTION__);
+
+	loadSettings();
+	//if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
@@ -1060,20 +1106,21 @@ FloatAnimator::~FloatAnimator()
 //--------------------------------------------------------------
 void FloatAnimator::exit()
 {
+	ofLogNotice(__FUNCTION__);
 	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
 void FloatAnimator::saveSettings()
 {
-	ofLogVerbose(__FUNCTION__);
+	ofLogNotice(__FUNCTION__);
 	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
 void FloatAnimator::loadSettings()
 {
-	ofLogVerbose(__FUNCTION__);
+	ofLogNotice(__FUNCTION__);
 	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
