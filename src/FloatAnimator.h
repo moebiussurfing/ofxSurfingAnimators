@@ -9,9 +9,7 @@
 
 //#define USE_SURFING_PRESETS
 
-#define TEST_HERITAGE_FUNCTIONS 
-
-#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER // ?
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
 //----
@@ -19,9 +17,9 @@
 
 #include "ofxAnimatableFloat.h"
 #include "ofxSurfingHelpers.h"
+
 #include "ofxSurfingImGui.h"
 //#include "ofxGui.h"
-
 
 
 #ifdef USE_SURFING_PRESETS
@@ -120,9 +118,7 @@ public:
 public:
 
 	void drawImGuiWidgets();
-
 	virtual void drawImGuiWidgetsExtra();
-
 	void drawImGuiWidgetsBegin();
 	void drawImGuiWidgetsEnd();
 	

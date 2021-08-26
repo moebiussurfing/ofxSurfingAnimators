@@ -1,5 +1,15 @@
 #include "ofApp.h"
 
+/*
+
+WIP
+fixing derivate from base
+copy from colors class
+imgui not draws..
+
+*/
+
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 	float fps = 60;

@@ -202,11 +202,13 @@ void FloatAnimator::setup()
 	//-
 
 	// gui
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	guiManager.setup(); // initiate ImGui
+	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
+	//guiManager.setup(); // initiate ImGui
+	//guiManager.setup(); // initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
-#endif
+//#endif
 
 	//-
 
@@ -348,16 +350,16 @@ void FloatAnimator::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void FloatAnimator::draw(ofEventArgs & args)
 {
-	if (!SHOW_Gui) return;
+	//if (!SHOW_Gui) return;
 
 	{
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		guiManager.begin();
 		{
 			drawImGuiWidgets();
 		}
 		guiManager.end();
-#endif
+//#endif
 	}
 }
 
@@ -744,15 +746,13 @@ void FloatAnimator::drawImGuiWidgets() {
 	{
 		drawImGuiWidgetsBegin();
 
-		//TODO:
-#ifdef TEST_HERITAGE_FUNCTIONS 
 		// NOTE:
 		// this splitted section is to insert custom widget for different animator types
 		// that we will derive from this float class
 		// It's an attempt to call methods from parent scope
 		// That's to to add other widgets
+		
 		drawImGuiWidgetsExtra();
-#endif
 
 		drawImGuiWidgetsEnd();
 	}

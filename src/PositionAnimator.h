@@ -15,7 +15,7 @@ public:
 	void update(ofEventArgs & args);
 	//void draw(ofEventArgs & args);
 
-	void drawImGuiWidgetsExtra();
+	void drawImGuiWidgetsExtra() override;
 
 	ofParameter<glm::vec2> posStart, posEnd, pos;
 

@@ -12,8 +12,9 @@ void PositionAnimator::setup() {
 	posStart = glm::vec2(0, 0);
 	posEnd = glm::vec2(500, 500);
 
-	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	guiManager.setup();
+	//guiManager.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
+	//guiManager.setup();	
+	//guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 }
 
 //--------------------------------------------------------------
