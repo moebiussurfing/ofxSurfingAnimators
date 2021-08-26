@@ -75,15 +75,20 @@ void FloatAnimator::previousCurve(bool bAutoTrig)
 //}
 
 //--------------------------------------------------------------
-void FloatAnimator::setup()
+void FloatAnimator::setupGui()
 {
 	ofLogNotice(__FUNCTION__);
 
-	//TODO:
-	//guiManager.bAutoResize = false;
+	guiManager.setImGuiAutodraw(true);//TODO: required when only one instance ?
+	guiManager.setup(); // initiate ImGui
+	//guiManager.setup(iM_GUI_MODE_INSTANTIATED);
+	//guiManager.setUseAdvancedSubPanel(true);
+}
 
-	//	ofxSurfingHelpers::setThemeDark_ofxGui;
-	//	//ofxSurfingHelpers::setTheme_ofxGui("assets/fonts/iAWriterDuospace-Bold.ttf");
+//--------------------------------------------------------------
+void FloatAnimator::setup()
+{
+	ofLogNotice(__FUNCTION__);
 
 	ENABLE_valueAnim.set("Enable Animator", true);
 
@@ -200,15 +205,8 @@ void FloatAnimator::setup()
 	//gui.add(SHOW_Plot);
 
 	//-
-
-	// gui
-//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
-	//guiManager.setup(); // initiate ImGui
-	//guiManager.setup(); // initiate ImGui
-	//guiManager.setUseAdvancedSubPanel(true);
-//#endif
+	
+	setupGui();
 
 	//-
 
@@ -272,7 +270,6 @@ void FloatAnimator::startup()
 	ofLogNotice(__FUNCTION__);
 
 	loadSettings();
-	//if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
@@ -1107,7 +1104,8 @@ FloatAnimator::~FloatAnimator()
 void FloatAnimator::exit()
 {
 	ofLogNotice(__FUNCTION__);
-	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+	//if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
+	saveSettings();
 }
 
 //--------------------------------------------------------------

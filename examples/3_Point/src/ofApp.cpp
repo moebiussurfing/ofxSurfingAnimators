@@ -1,24 +1,17 @@
 #include "ofApp.h"
 
-/*
-
-WIP
-fixing derivate from base
-copy from colors class
-imgui not draws..
-
-*/
-
-
 //--------------------------------------------------------------
 void ofApp::setup() {
 	float fps = 60;
 	ofSetFrameRate(fps);
 	ofSetCircleResolution(200);
-
+	
+	posAnim.setPath_GlobalFolder("myAnimator"); // -> optional path settings customization
+	posAnim.setNameLabel("posAnim"); // -> optional name customization. Useful when using multiple instances
 	posAnim.setup();
-	posAnim.setPositionStart(glm::vec2(200, 200));
-	posAnim.setPositionEnd(glm::vec2(600, 600));
+
+	//posAnim.setPositionStart(glm::vec2(200, 200));
+	//posAnim.setPositionEnd(glm::vec2(600, 600));
 
 	startTween();
 }
@@ -81,7 +74,9 @@ void ofApp::keyPressed(int key) {
 	ofLogNotice() << "key: " << key;
 
 	if (key == ' ') startTween();
+
 	if (key == OF_KEY_BACKSPACE) stopTween();
+
 	// randomize start/end
 	if (key == OF_KEY_RETURN)
 	{

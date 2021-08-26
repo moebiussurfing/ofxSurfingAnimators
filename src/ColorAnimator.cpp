@@ -16,26 +16,6 @@ void ColorAnimator::setup() {
 
 	//----
 
-	// gui
-
-#ifdef USE_IMGUI__COLORANIMATOR
-#ifdef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-	guiManager.setImGuiAutodraw(true);
-	guiManager.setup(); // initiate ImGui
-	//guiManager.setUseAdvancedSubPanel(true);
-#endif
-
-#ifndef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-	ImGuiConfigFlags flags = ImGuiConfigFlags_DockingEnable;
-	bool bRestore = true;
-	bool bMouse = false;
-	bool bAutoDraw = false;
-	gui.setup(nullptr, bAutoDraw, flags, bRestore, bMouse);
-#endif
-#endif
-
-	//----
-
 	setupExtra();
 }
 
@@ -102,6 +82,8 @@ void ColorAnimator::drawImGuiWidgetsExtra() {
 	ofxImGuiSurfing::AddParameter(colorStart);
 	ofxImGuiSurfing::AddParameter(colorEnd);
 }
+
+
 
 ////--------------------------------------------------------------
 //ColorAnimator::ColorAnimator()

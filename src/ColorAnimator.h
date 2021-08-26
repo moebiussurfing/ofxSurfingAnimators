@@ -3,39 +3,19 @@
 #include "ofMain.h"
 
 
-//TODO:
-#define USE_IMGUI__COLORANIMATOR // -> global enabler
-//#define USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR // -> select this mode
-
 //----
 
 #include "ofxAnimatableOfColor.h"
 #include "ofxSurfingHelpers.h"
 #include "FloatAnimator.h"
 
-#ifdef USE_IMGUI__COLORANIMATOR
 #include "ofxSurfingImGui.h"
-#include "ofxImGui.h"
-#endif
-
 
 class ColorAnimator : public FloatAnimator
 {
 	//--
 
 public:
-
-#ifdef USE_IMGUI__COLORANIMATOR
-#ifdef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-	ofxSurfing_ImGui_Manager guiManager;
-#endif
-
-#ifndef USE_IMGUI_LAYOUT_MANAGER__COLORANIMATOR
-	ofxImGui::Gui gui;
-#endif
-#endif
-
-	//--
 
 	void setup() override;
 	void setupExtra() override;
@@ -78,6 +58,9 @@ public:
 	//--
 
 	ofParameterGroup params_Colors{ "Colors" };
+
+
+
 
 	//ofParameterGroup params;
 	//string label = "Color Animator";

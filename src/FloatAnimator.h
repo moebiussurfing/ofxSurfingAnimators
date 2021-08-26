@@ -70,6 +70,8 @@ public:
 	
 	void startup();
 
+	void setupGui();
+
 	//--------------------------------------------------------------
 	void setup(float start, float end) {
 		setStart(start);

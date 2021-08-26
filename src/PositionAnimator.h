@@ -4,20 +4,20 @@
 
 #include "FloatAnimator.h"
 
-//ofxSurfing_ImGui_Manager guiManager;
-
 class PositionAnimator : public FloatAnimator {
 
 public:
-
-	void setup();
-	void exit();
+	
+	void setup() override;
+	void setupExtra() override;
 	void update(ofEventArgs & args);
-	//void draw(ofEventArgs & args);
-
 	void drawImGuiWidgetsExtra() override;
+	
+	void exit();
 
 	ofParameter<glm::vec2> posStart, posEnd, pos;
+
+	ofParameterGroup params_Positions{ "Positions" };
 
 	//--------------------------------------------------------------
 	void setPosition(glm::vec2 p) {
