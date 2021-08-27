@@ -22,4 +22,6 @@ public:
 	void randomColors();
 
 	ofxWindowApp windowApp;
+
+	ofColor color2;
 };

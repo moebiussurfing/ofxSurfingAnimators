@@ -10,6 +10,8 @@ void ofApp::setup() {
 	colorAnim.setNameLabel("animColor"); // -> optional name customization. Useful when using multiple instances
 	colorAnim.setup();
 
+	colorAnim.setColorPtr(color2);
+
 	startTween();
 }
 
@@ -39,6 +41,14 @@ void ofApp::draw() {
 		ofSetColor(0);
 		ofNoFill();
 		ofDrawCircle(x, y, r);
+
+		//-
+
+		// color pointer auto-updated
+		ofSetColor(color2);
+		ofFill();
+		ofRectangle rect(ofGetWidth() - 25, 5, 20, 20);
+		ofDrawRectRounded(rect, 3);
 
 		ofPopStyle();
 	}

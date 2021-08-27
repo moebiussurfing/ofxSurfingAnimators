@@ -46,12 +46,6 @@ void ColorAnimator::setupExtra()
 }
 
 //--------------------------------------------------------------
-void ColorAnimator::exit() {
-	ofRemoveListener(ofEvents().update, this, &ColorAnimator::update);
-	//ofRemoveListener(ofEvents().draw, this, &ColorAnimator::draw);
-};
-
-//--------------------------------------------------------------
 void ColorAnimator::update(ofEventArgs & args) {
 	FloatAnimator::update(args);
 
@@ -83,59 +77,8 @@ void ColorAnimator::drawImGuiWidgetsExtra() {
 	ofxImGuiSurfing::AddParameter(colorEnd);
 }
 
-
-
-////--------------------------------------------------------------
-//ColorAnimator::ColorAnimator()
-//{
-//	//ofSetLogLevel(OF_LOG_NOTICE);
-//
-//	doneInstantiated = true;
-//	setFps(60);
-//	SHOW_gui = true;
-//	guiPos = glm::vec2(500, 500);
-//
-//	path_GLOBAL_Folder = "ColorAnimator";
-//	path_Settings = "ColorAnimator_Settings.xml";
-//	autoSettings = false;
-//}
-//
-////--------------------------------------------------------------
-//void ColorAnimator::start()
-//{
-//	if (ENABLE_ColorAnims)
-//	{
-//		colorAnim.setColor(colorStart);
-//		if (animDelay != 0) colorAnim.animateToAfterDelay(colorEnd, animDelay);
-//		else colorAnim.animateTo(colorEnd);
-//	}
-//}
-//
-////--------------------------------------------------------------
-//void ColorAnimator::stop()
-//{
-//	if (ENABLE_ColorAnims)
-//	{
-//		colorAnim.setColor(colorStart);
-//		//colorAnim.reset();
-//		animProgress = 0;
-//	}
-//}
-//
-////--------------------------------------------------------------
-//void ColorAnimator::update()
-//{
-//	colorAnim.update(dt);
-//	colorCurrent = colorAnim.getCurrentColor();
-//
-//	if (color_BACK != nullptr)
-//	{
-//		if (ENABLE_ColorAnims) color_BACK->set(colorAnim.getCurrentColor());
-//		else color_BACK->set(colorStart);
-//	}
-//
-//	if (colorAnim.isAnimating())
-//	{
-//		animProgress = colorAnim.getPercentDone() * 100;
-//	}
-//}
+//--------------------------------------------------------------
+void ColorAnimator::exit() {
+	ofRemoveListener(ofEvents().update, this, &ColorAnimator::update);
+	//ofRemoveListener(ofEvents().draw, this, &ColorAnimator::draw);
+}

@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 
-
 //----
 
 #include "ofxAnimatableOfColor.h"
@@ -13,7 +12,6 @@
 
 class ColorAnimator : public FloatAnimator
 {
-	//--
 
 public:
 
@@ -26,19 +24,32 @@ public:
 
 	//--
 
+public:
+
 	//--------------------------------------------------------------
 	ofColor getColorCurrent() {
 		return colorCurrent;
 	}
-	ofColor *color_BACK;
 
+private:
+	
 	ofParameter<ofColor> colorCurrent;
 
 	ofParameter<ofColor> colorStart;
 	ofParameter<ofColor> colorEnd;
+	
+	ofColor *color_BACK;
+
+public:
 
 	//--------------------------------------------------------------
-	void setColor_TARGET(ofColor &c)
+	void setColor_TARGET(ofColor &c)//legacy api
+	{
+		color_BACK = &c;
+	}
+
+	//--------------------------------------------------------------
+	void setColorPtr(ofColor &c)
 	{
 		color_BACK = &c;
 	}
@@ -57,56 +68,6 @@ public:
 
 	//--
 
+private:
 	ofParameterGroup params_Colors{ "Colors" };
-
-
-
-
-	//ofParameterGroup params;
-	//string label = "Color Animator";
-
-	////--------------------------------------------------------------
-	//ofParameterGroup getParameterGroup()
-	//{
-	//	return params;
-	//}
-
-	////--------------------------------------------------------------
-	//void setColor_Start()
-	//{
-	//	if (color_BACK != nullptr)
-	//	{
-	//		//if (ENABLE_ColorAnims) color_BACK->set(colorStart);
-	//		color_BACK->set(colorStart);
-	//	}
-	//}
-
-	////--------------------------------------------------------------
-	//void setColor_End()
-	//{
-	//	if (color_BACK != nullptr)
-	//	{
-	//		if (ENABLE_ColorAnims)
-	//		{
-	//			color_BACK->set(colorEnd);
-	//			colorAnim.setColor(colorEnd);
-	//		}
-	//	}
-	//}
-
-	////--------------------------------------------------------------
-	//void refresh_Labels()
-	//{
-	//	repeatName = AnimRepeat_ToStr(repeatMode.get());
-	//	curveName = colorAnim.getCurveName(AnimCurve(curveType.get()));
-	//}
-
-	////--------------------------------------------------------------
-	//void setNameLabel(string s)
-	//{
-	//	label = s;
-	//	path_Settings = label + ".xml";
-	//}
-
-	//---
 };

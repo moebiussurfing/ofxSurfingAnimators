@@ -15,9 +15,13 @@ public:
 	
 	void exit();
 
+private:
+
 	ofParameter<glm::vec2> posStart, posEnd, pos;
 
 	ofParameterGroup params_Positions{ "Positions" };
+
+public:
 
 	//--------------------------------------------------------------
 	void setPosition(glm::vec2 p) {

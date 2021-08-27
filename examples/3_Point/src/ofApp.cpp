@@ -10,9 +10,6 @@ void ofApp::setup() {
 	posAnim.setNameLabel("posAnim"); // -> optional name customization. Useful when using multiple instances
 	posAnim.setup();
 
-	//posAnim.setPositionStart(glm::vec2(200, 200));
-	//posAnim.setPositionEnd(glm::vec2(600, 600));
-
 	startTween();
 }
 

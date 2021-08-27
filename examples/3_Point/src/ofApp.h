@@ -2,13 +2,14 @@
 
 #include "ofMain.h"
 
-#include "ofxWindowApp.h"
-
 #include "PositionAnimator.h"
+
+#include "ofxWindowApp.h"
 
 class ofApp : public ofBaseApp {
 
 public:
+
 	void setup();
 	void update();
     void draw();

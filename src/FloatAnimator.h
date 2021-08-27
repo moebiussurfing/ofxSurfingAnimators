@@ -7,20 +7,19 @@
 
 // OPTIONS
 
-//#define USE_SURFING_PRESETS
+//#define USE_SURFING_PRESETS // -> To allow multiple presets
 
-#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER // ?
-//#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
 
 //----
 
+
+//#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 
 #include "ofxAnimatableFloat.h"
 #include "ofxSurfingHelpers.h"
 
 #include "ofxSurfingImGui.h"
 //#include "ofxGui.h"
-
 
 #ifdef USE_SURFING_PRESETS
 #include "ofxSurfingPresets.h"
@@ -81,6 +80,9 @@ public:
 	}
 
 	virtual void update(ofEventArgs & args);
+
+//private:
+
 	//void update();
 	//void draw();
 	//void update(float _dt)
@@ -91,6 +93,8 @@ public:
 
 	void draw(ofEventArgs & args);
 
+public:
+	
 	void exit(); // not virtual. each class will have his own exit() function.
 
 	//--
@@ -105,12 +109,13 @@ private:
 
 	//-
 
-//private:
-public:
+//public:
+private:
 
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfing_ImGui_Manager guiManager;
-#endif
+//#endif
+
 	string panelName;
 
 public:
@@ -124,6 +129,8 @@ public:
 	void drawImGuiWidgetsBegin();
 	void drawImGuiWidgetsEnd();
 	
+private:
+
 	bool bParams = true;
 
 private:
@@ -155,12 +162,14 @@ private:
 public:
 
 	//--------------------------------------------------------------
-	void setPath_GlobalFolder(string folder)
+	void setPath_GlobalFolder(string folder)//legacy api
 	{
 		ofLogNotice(__FUNCTION__) << folder;
 		path_GLOBAL_Folder = folder;
 		ofxSurfingHelpers::CheckFolder(folder);
 	}
+	//--------------------------------------------------------------
+	void setPathGlobalFolder(string folder) { setPath_GlobalFolder(folder); }
 
 	//--------------------------------------------------------------
 
@@ -171,19 +180,28 @@ public:
 	void start();
 	void stop();
 
+	//-
+
 	void nextCurve(bool bAutoTrig = true);
 	void previousCurve(bool bAutoTrig = true);
 
 private:
 
+	// plots
 	float size = 100;
 	void drawCurve(glm::vec2 &p);
 
+	//-
 
 public:
 
 	//--------------------------------------------------------------
-	void setValueTarget(float &v)
+	void setValueTarget(float &v)//legacy api
+	{
+		valueBack = &v;
+	}
+	//--------------------------------------------------------------
+	void setValuePtr(float &v)
 	{
 		valueBack = &v;
 	}
@@ -212,6 +230,7 @@ public:
 		ENABLE_valueAnim = b;
 	}
 
+	// settings
 	//--------------------------------------------------------------
 	void setAutoSaveLoad(bool b)
 	{
@@ -227,51 +246,7 @@ public:
 	//    anim_loop = b;
 	//}
 
-	////--------------------------------------------------------------
-	//void setGuiPosition(glm::vec2 _p)
-	//{
-	//	guiPos = _p;
-	//	gui.setPosition(guiPos.x, guiPos.y);
-	//}
-
-	////--------------------------------------------------------------
-	//glm::vec2 getGuiPosition()
-	//{
-	//	return guiPos;
-	//}
-
-	////--------------------------------------------------------------
-	//glm::vec2 getGuiShape()
-	//{
-	//	ofRectangle r = gui.getShape();
-	//	glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
-	//	return _shape;
-	//}
-
-	////--------------------------------------------------------------
-	//void setMinimized(bool b)
-	//{
-	//	if (b)
-	//	{
-	//		gui.minimizeAll();
-	//	}
-	//	else
-	//	{
-	//		gui.maximizeAll();
-	//	}
-	//}
-
-	////--------------------------------------------------------------
-	//bool isMinimized()
-	//{
-	//	return gui.isMinimized();
-	//}
-
-	////--------------------------------------------------------------
-	//void disableHeader()
-	//{
-	//	gui.disableHeader();
-	//}
+	//--
 
 	//--------------------------------------------------------------
 	bool isAnimating()
@@ -324,32 +299,6 @@ public:
 		setStartRange(a);
 		setEndRange(b);
 	}
-
-	////--------------------------------------------------------------
-	//void setValue_Start()
-	//{
-	//	if (valueBack != nullptr)
-	//	{
-	//		if (ENABLE_valueAnim)
-	//		{
-	//			//valueBack->set(valueStart);
-	//		}
-	//	}
-	//}
-
-	////--------------------------------------------------------------
-	//void setValue_End()
-	//{
-	//	if (valueBack != nullptr)
-	//	{
-	//		if (ENABLE_valueAnim)
-	//		{
-	//			//valueBack->set(valueEnd);
-	//			//floatAnimator.setColor(valueEnd);
-	//			//valueBack = (*float) valueEnd.get();
-	//		}
-	//	}
-	//}
 
 	//--------------------------------------------------------------
 	void refresh_Labels()
@@ -428,7 +377,7 @@ public:
 
 private:
 
-	//bpm engine
+	// bpm engine
 	ofParameterGroup _params_Bpm{ "BPM ENGINE" };
 
 public:
@@ -439,14 +388,14 @@ public:
 		return _params_Bpm;
 	}
 
-	//helpers
+	// helpers
 	//--------------------------------------------------------------
 	ofParameterGroup getHelpers()
 	{
 		return params_Helpers;
 	}
 
-	//params
+	// params
 	//--------------------------------------------------------------
 	ofParameterGroup getParameters()
 	{
@@ -628,4 +577,55 @@ private:
 public:
 
 	ofParameter<bool> SHOW_Gui{ "SHOW ANIMATOR", true };
+
+	//--
+
+	// deprecated
+	////--------------------------------------------------------------
+	//void setGuiPosition(glm::vec2 _p)
+	//{
+	//	guiPos = _p;
+	//	gui.setPosition(guiPos.x, guiPos.y);
+	//}
+
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiPosition()
+	//{
+	//	return guiPos;
+	//}
+
+	////--------------------------------------------------------------
+	//glm::vec2 getGuiShape()
+	//{
+	//	ofRectangle r = gui.getShape();
+	//	glm::vec2 _shape = glm::vec2(r.getWidth(), r.getHeight() + size + pad + 15);// lastone is text line height 
+	//	return _shape;
+	//}
+
+	////--------------------------------------------------------------
+	//void setMinimized(bool b)
+	//{
+	//	if (b)
+	//	{
+	//		gui.minimizeAll();
+	//	}
+	//	else
+	//	{
+	//		gui.maximizeAll();
+	//	}
+	//}
+
+	////--------------------------------------------------------------
+	//bool isMinimized()
+	//{
+	//	return gui.isMinimized();
+	//}
+
+	////--------------------------------------------------------------
+	//void disableHeader()
+	//{
+	//	gui.disableHeader();
+	//}
+
+	//--
 };
