@@ -4,7 +4,7 @@
  
 Some classes to faster integration into your _OF Apps / Add-ons_:  
 
-*ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
+*FloatAnimator, NoiseAnimator, PositionAnimator, ColorAnimator, EnvelopeAnimator* and *ToggleAnimator*.
 
 ## Screenshots
 
