@@ -1,8 +1,8 @@
 # ofxSurfingAnimators
 
-**openFrameworks** helper add-on for [ofxAnimatable](https://github.com/armadillu/ofxAnimatable) from **@armadillu**  
+**openFrameworks** helper add-on for the _AWESOME_ [ofxAnimatable](https://github.com/armadillu/ofxAnimatable) from **@armadillu**.  
  
-Some classes to faster integration into your OF Apps/Add-ons:  
+Some classes to faster integration into your _OF Apps / Add-ons_:  
 *ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
 ## Screenshots
@@ -41,20 +41,20 @@ Setters for Start/End, time mode, duration and pre pause, curve tween types, loo
 
 ## Dependencies
 * [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
+* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
-* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/) FORK
-* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets) [Recommended]  
-* ofxGui [ **OF** ]
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [FORK]
+* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets) [Optional]  
 
-Bundled into ```OF_ADDON/libs```. No need to add to the **PROJECT GENERATOR**!    
-(To Filter Noise point)  
+Bundled into ```OF_ADDON/libs```.  
+No need to add to the **PROJECT GENERATOR**!    
+(Used to Filter the Noise Point)  
 [ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)  
 [ofxOneEuroFilter](https://github.com/i-n-g-o/ofxOneEuroFilter)
 
 ## Usage
-- Look the examples.
+- Look the Examples.
 
 ### ofApp.h
 ```.c++
