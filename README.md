@@ -3,6 +3,7 @@
 **openFrameworks** helper add-on for the _AWESOME_ [ofxAnimatable](https://github.com/armadillu/ofxAnimatable) from **@armadillu**.  
  
 Some classes to faster integration into your _OF Apps / Add-ons_:  
+
 *ColorAnimator, EnvelopeAnimator, FloatAnimator, NoiseAnimator, PositionAnimator* and *ToggleAnimator*.
 
 ## Screenshots
@@ -30,14 +31,15 @@ Some classes to faster integration into your _OF Apps / Add-ons_:
    * NoiseAnimator.h (Envelope Modulated 3D Noise point + Filters)
    * ColorAnimator.h
    * EnvelopeAnimator.h (ASR envelope for a Float. Double independent curve types for Input/Output.)
-   * ToggleAnimator.h
-* Added **ImGui** based **GUI**:  
+   * ToggleAnimator.h  
 
-Setters for Start/End, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
-* Handle Settings: Auto store-recall.
+* Added **ImGui** based **GUI**.  
+
+* Internal settings handling: Auto **Store-Recall**.
 * Musical **BPM** based or absolute **time scale**.
 * **Plotting** realtime value curves.
 * **Curves Preview** drawing.
+* **Setters** for _Start/End_, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
 
 ## Dependencies
 * [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
