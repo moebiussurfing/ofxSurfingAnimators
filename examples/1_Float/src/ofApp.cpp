@@ -56,6 +56,7 @@ void ofApp::keyPressed(int key) {
 	ofLogNotice(__FUNCTION__) << "key: " << key;
 
 	if (key == ' ') startTween();
+
 	if (key == OF_KEY_RETURN) stopTween();
 }
 

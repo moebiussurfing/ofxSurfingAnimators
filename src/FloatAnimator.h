@@ -2,6 +2,11 @@
 
 #include "ofMain.h"
 
+/*
+
+This is a base class to other derivated like: position, color...etc. 
+
+*/
 
 //----
 

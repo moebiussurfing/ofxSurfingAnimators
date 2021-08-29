@@ -4,17 +4,21 @@
 
 #include "FloatAnimator.h"
 
+
 /*
 	OVERVIEW
+
 	This example shows how to use two animators float variables 
 	that will be applied to the y coord and the radius of a circle.
 	One of the animators is linked to an ofParameter.
 
 	USAGE
+	
 	+ press space key to trig start both animators
 	+ press start button of each panel to trig start each animator
 
 */
+
 
 class ofApp : public ofBaseApp 
 {

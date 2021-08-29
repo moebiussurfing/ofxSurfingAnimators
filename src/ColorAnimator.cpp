@@ -68,9 +68,16 @@ void ColorAnimator::drawImGuiWidgetsExtra() {
 
 	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
 	float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
-	//ImGui::Button("TEST_ColorAnimator_ExtraF", ImVec2(_w100, 2 * _h));
 
-	ofxImGuiSurfing::AddParameter(colorCurrent);
+	//ofxImGuiSurfing::AddParameter(colorCurrent);
+	ImGuiColorEditFlags flags = ImGuiColorEditFlags_None;
+	flags |= ImGuiColorEditFlags_NoInputs;
+	flags |= ImGuiColorEditFlags_NoLabel;
+	flags |= ImGuiColorEditFlags_NoTooltip;
+	//ImGui::PushItemWidth(_w100);
+	ImGui::ColorButton("", colorCurrent.get(), flags, ImVec2(_w100, _h));
+	//ImGui::PopItemWidth();
+
 	ImGui::Spacing();
 	//ImGui::Dummy(ImVec2(0, 5));
 	ofxImGuiSurfing::AddParameter(colorStart);

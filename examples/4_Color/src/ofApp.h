@@ -3,6 +3,7 @@
 #include "ofMain.h"
 
 #include "ColorAnimator.h"
+
 #include "ofxWindowApp.h"
 
 class ofApp : public ofBaseApp {
