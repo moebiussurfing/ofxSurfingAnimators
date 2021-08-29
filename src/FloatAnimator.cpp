@@ -157,6 +157,7 @@ void FloatAnimator::setup()
 	////params_Control.add(duration);
 
 	params_Helpers.setName("Animator Helpers");
+	params_Helpers.add(bGui);
 	params_Helpers.add(ModeBrowse.set("Mode Browser", true));
 	params_Helpers.add(SHOW_Plot);
 
@@ -352,7 +353,7 @@ void FloatAnimator::update(ofEventArgs & args)
 //--------------------------------------------------------------
 void FloatAnimator::draw(ofEventArgs & args)
 {
-	//if (!bGui) return;
+	if (!bGui) return;
 
 	{
 		//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER

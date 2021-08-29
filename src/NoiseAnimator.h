@@ -484,7 +484,7 @@ private:
 	uint64_t lastStart;
 
 	float dt;
-	ofParameter<bool> bGui{ "bGui", true };
+	ofParameter<bool> bGui{ "Show Animator", true };
 	string path;
 
 	AnimCurve faderAnim;

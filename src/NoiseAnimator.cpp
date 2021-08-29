@@ -289,7 +289,7 @@ void NoiseAnimator::drawPlot() {
 		if (stateColor && ENABLE_Modulator) c = ofColor(255, 255);
 		else c = ofColor(255, 64);
 		plot->setColor(c);
-		
+
 		if (ENABLE_Modulator)
 		{
 			fboPlot2.draw(xPos, yPos, PLOT_BOXES_SIZES, PLOT_BOXES_SIZES);
@@ -521,6 +521,7 @@ void NoiseAnimator::setup()
 
 	//helpers
 	params_Helpers.setName("Noise Helpers");
+	params_Helpers.add(bGui);
 	//params_Helpers.setName(label);
 	//params_Helpers.setName(label + " CONTROLS");
 	//params_Helpers.add(ENABLE_Noise);
@@ -565,7 +566,7 @@ void NoiseAnimator::setup()
 	fboPlot.begin();
 	ofClear(0, 0);
 	fboPlot.end();
-	
+
 	fboPlot2.begin();
 	ofClear(0, 0);
 	fboPlot2.end();
@@ -701,10 +702,11 @@ void NoiseAnimator::setupPlot_Noise()
 //void NoiseAnimator::update()
 void NoiseAnimator::update(ofEventArgs & args)
 {
-	//if (ofGetFrameNum() == rSeed)
-	//{
-	//	ENABLE_Noise = true;
-	//}
+	//workaround: to variate a the random seed
+	if (ofGetFrameNum() == rSeed)
+	{
+		ENABLE_Noise = true;
+	}
 
 	//--
 
@@ -716,15 +718,15 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//-
 
-		if (SHOW_Plot && bGui)
+	if (SHOW_Plot && bGui)
+	{
+		fboPlot.begin();
 		{
-			fboPlot.begin();
-			{
-				ofClear(0, 0);
-				drawPlot();
-			}
-			fboPlot.end();
+			ofClear(0, 0);
+			drawPlot();
 		}
+		fboPlot.end();
+	}
 
 	//--
 
@@ -732,7 +734,6 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	if (ENABLE_Noise)
 	{
-
 		//-
 
 		if (ENABLE_NoiseX)
@@ -820,8 +821,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	//2. filter
-	//point
+	// 2. filter point
 
 #ifdef INCLUDE_FILTER
 	if (ENABLE_NoisePointFilter)
@@ -846,7 +846,8 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	//3. process modulator envelope 
+	// 3. process modulator envelope 
+
 	if (ENABLE_Modulator)
 	{
 		queue.update(dt);
@@ -957,7 +958,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	//cout << "noisePos:" << ofToString(noisePos) << endl;
 
 	//TODO:
-	//pointer back
+	// pointer back
 	if (point_BACK != nullptr)
 	{
 		(*point_BACK) = noisePos;
@@ -974,7 +975,10 @@ void NoiseAnimator::update(ofEventArgs & args)
 //void NoiseAnimator::draw()
 void NoiseAnimator::draw(ofEventArgs & args)
 {
-	if (bGui)
+	if (!bGui) return;
+
+	//--
+
 	{
 		//gui.draw();
 
@@ -1028,7 +1032,9 @@ void NoiseAnimator::drawImGuiWidgets() {
 		if (bParams)
 		{
 			name = "PANEL " + label;
-			guiManager.beginWindow(name, &bOpen, _flagsw);
+
+			//guiManager.beginWindow(name, &bOpen, _flagsw);
+			if (guiManager.beginWindow(name, (bool*)&bGui.get(), _flagsw))
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
@@ -1063,19 +1069,22 @@ void NoiseAnimator::drawImGuiWidgets() {
 				//heightGuiLayout = ImGui::GetWindowHeight();
 				//positionGuiLayout = glm::vec2(posx, posy);
 				////positionGuiLayout = glm::vec2(posx + w, posy);
+
+				//--
+
+				// plot fbo
+
+				if (SHOW_Plot)
+				{
+					ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+					ImGui::Image(textureID, plotShape);
+				}
+
+
+				//--
+
+				guiManager.endWindow();
 			}
-
-			//--
-
-			// plot fbo
-
-			if (SHOW_Plot)
-			{
-				ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
-				ImGui::Image(textureID, plotShape);
-			}
-
-			guiManager.endWindow();
 		}
 #endif
 	}
