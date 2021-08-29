@@ -4,7 +4,8 @@
 
 ///-
 ///
-#define INCLUDE_PLOTS		//plotting can be disabled without affecting the functionality
+#define INCLUDE_PLOTS		// Plotting can be disabled without affecting the functionality
+//#define INCLUDE_FILTER	// Filter the point to avoid abrupt changes
 ///
 ///-
 
@@ -15,13 +16,18 @@
 #endif
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
+
+#ifdef INCLUDE_FILTER
 #include "ofxBiquadFilter.h"//TODO change to smoother bc could be more performant
+#endif
 
 //#include "ofxGui.h"
 //#include "ofxSurfing_ofxGui.h"
 
 #define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 //#define USE_RANDOMIZE_IMGUI_EXTERNAL // must be commented
+
+#define PLOT_BOXES_SIZES 80
 
 class NoiseAnimator : public ofBaseApp
 {
@@ -44,6 +50,7 @@ public:
 
 private:
 	ofFbo fboPlot;
+	ofFbo fboPlot2;
 	ImVec2 plotShape;
 	void drawPlot();
 
@@ -81,17 +88,20 @@ public:
 		ofxSurfingHelpers::CheckFolder(folder);
 	}
 
+#ifdef INCLUDE_FILTER
 public:
 	ofParameter<bool> ENABLE_NoiseModulatorFilter;
 	ofParameter<bool> ENABLE_NoisePointFilter;
 
 private:
+	
 	ofxBiquadFilter1f LPFmodulator;//we filter the modulator envelope to avoid abrupt jumps
 	ofxBiquadFilter3f LPFpoint;//we filter the modulator point to avoid abrupt jumps
 	//ofxBiquadFilter2f LPFpoint;//we filter the modulator point to avoid abrupt jumps
 	//float fc;
 	ofParameter<float> fc;
 	ofParameter<float> fcPoint;
+#endif
 
 private:
 	bool bCustomPositionPlot = false;
@@ -156,7 +166,7 @@ public:
 	//--------------------------------------------------------------
 	void setVisible(bool b)
 	{
-		SHOW_Gui = b;
+		bGui = b;
 	}
 
 	//--------------------------------------------------------------
@@ -474,7 +484,7 @@ private:
 	uint64_t lastStart;
 
 	float dt;
-	ofParameter<bool> SHOW_Gui{ "SHOW_Gui", true };
+	ofParameter<bool> bGui{ "bGui", true };
 	string path;
 
 	AnimCurve faderAnim;

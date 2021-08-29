@@ -112,7 +112,7 @@ void PositionAnimator::drawImGuiWidgetsExtra() {
 //
 //	doneInstantiated = true;
 //	setFps(60);
-//	SHOW_Gui = true;
+//	bGui = true;
 //	guiPos = glm::vec2(500, 500);
 //}
 //
@@ -359,7 +359,7 @@ void PositionAnimator::drawImGuiWidgetsExtra() {
 //
 //		//curve type plot
 //
-//		//bCustomPositionPlot = !SHOW_Gui;
+//		//bCustomPositionPlot = !bGui;
 //		//if (bCustomPositionPlot) {
 //		//	x = positionPlot.x;
 //		//	y = positionPlot.y;
@@ -415,7 +415,7 @@ void PositionAnimator::drawImGuiWidgetsExtra() {
 ////--------------------------------------------------------------
 //void PositionAnimator::draw()
 //{
-//	if (SHOW_Gui)
+//	if (bGui)
 //	{
 //		gui.draw();
 //	}
@@ -431,7 +431,7 @@ void PositionAnimator::drawImGuiWidgetsExtra() {
 //		string str;
 //
 //		//curve type plot
-//		bCustomPositionPlot = !SHOW_Gui;
+//		bCustomPositionPlot = !bGui;
 //		if (bCustomPositionPlot) {
 //			x = positionPlot.x;
 //			y = positionPlot.y;

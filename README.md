@@ -46,14 +46,12 @@ Some classes to faster integration into your _OF Apps / Add-ons_:
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [FORK]
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [Fork]
 * [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets) [Optional]  
 
 Bundled into ```OF_ADDON/libs```.  
-No need to add to the **PROJECT GENERATOR**!    
-(Used to Filter the Noise Point)  
-[ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)  
-[ofxOneEuroFilter](https://github.com/i-n-g-o/ofxOneEuroFilter)
+No need to add manually to the **PROJECT GENERATOR**!    
+[ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)[Optional] Used to Filter the Noise Point  
 
 ## Usage
 - Look the Examples.

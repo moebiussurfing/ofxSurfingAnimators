@@ -5,15 +5,21 @@
 /*
 
 	EXAMPLE OVERVIEW
-	Trigs a float to change a circle radius adding an enveloped noise point that modifies the circle position.
+
+	To test 2 animators from float and noise classes.
+	1. Trigs a float to animate the radius of a circle.
+	2. Trigs an enveloped noise point to modify the circle position.
 
 */
+
 
 #include "FloatAnimator.h"
 #include "NoiseAnimator.h"
 
 class ofApp : public ofBaseApp {
+
 public:
+
 	void setup();
 	void update();
 	void draw();
@@ -24,5 +30,4 @@ public:
 
 	void startTween();
 	void stopTween();
-
 };

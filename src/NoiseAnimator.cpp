@@ -1,20 +1,36 @@
 #include "NoiseAnimator.h"
 //--------------------------------------------------------------
 void NoiseAnimator::drawPlot() {
+
+	//workaround bc polot is not being drawed well..
+	if (ENABLE_Modulator)
+	{
+		fboPlot2.begin();
+		{
+			ofClear(0, 0);
+			plot->draw(0, 0, PLOT_BOXES_SIZES, PLOT_BOXES_SIZES);
+		}
+		fboPlot2.end();
+	}
+
+	//--
+
 	{
 		ofPushStyle();
 		ofPushMatrix();
 		ofFill();
 
-		int x, y, size, px;
-		size = 80;//boxes sizes
-		int pad = 4;//space between plot boxes
+		int x, y, size, px, pad;
+
+		size = PLOT_BOXES_SIZES;//boxes sizes
+		pad = 4;//space between plot boxes
+
 		bool stateColor;
 		string str;
 		ofColor c;
 
 		//// a.
-		//bCustomPositionPlot = !SHOW_Gui;
+		//bCustomPositionPlot = !bGui;
 		//if (bCustomPositionPlot) {
 		//	x = positionPlot.x;
 		//	y = positionPlot.y;
@@ -29,6 +45,7 @@ void NoiseAnimator::drawPlot() {
 
 		// b.
 		x = 0;
+		//y = 0;
 		y = 20;
 
 		//--
@@ -81,7 +98,7 @@ void NoiseAnimator::drawPlot() {
 		//}
 //#endif
 
-		if (stateColor) c = ofColor(255, 225);
+		if (stateColor) c = ofColor(255, 255);
 		else c = ofColor(255, 64);
 
 		//--
@@ -200,35 +217,6 @@ void NoiseAnimator::drawPlot() {
 
 		//if (ENABLE_Modulator && faderValue == faderMax) 
 		{
-			//1. modulator envelope plot
-			{
-				{
-					xPos = x + size + pad;
-
-#ifdef INCLUDE_PLOTS
-					//live modulator value plot
-					if (stateColor && ENABLE_Modulator) c = ofColor(255, 225);
-					else c = ofColor(255, 64);
-
-					plot->setColor(c);
-					plot->draw(xPos, yPos, size, size);
-					//plot->draw(x + 3 * (size + pad), y, size, size);
-#endif
-				}
-
-				//--
-
-				////5. label
-				////stateColor = queue.isPlaying();
-				//rx = x;
-				////rx = x + 1 * (size + pad);
-				////stateColor = queue.isPlaying() && (faderValue > 0);
-				//str = label;
-				////str = "5 NOISE";
-				//ofDrawBitmapStringHighlight(str, rx + 4, y - 10,
-				//	stateColor ? ofColor::white : ofColor::black,
-				//	!stateColor ? ofColor::white : ofColor::black);
-			}
 
 			//-
 
@@ -250,8 +238,8 @@ void NoiseAnimator::drawPlot() {
 				ofSetColor(255, 255);
 				ofDrawRectangle(r);
 				//ofDrawLine(px, y, px, y + size);
+			}
 		}
-	}
 
 		//--
 
@@ -296,9 +284,20 @@ void NoiseAnimator::drawPlot() {
 			}
 		}
 
+		//1. modulator envelope plot
+		xPos = x + size + pad;
+		if (stateColor && ENABLE_Modulator) c = ofColor(255, 255);
+		else c = ofColor(255, 64);
+		plot->setColor(c);
+		
+		if (ENABLE_Modulator)
+		{
+			fboPlot2.draw(xPos, yPos, PLOT_BOXES_SIZES, PLOT_BOXES_SIZES);
+		}
+
 		ofPopStyle();
 		ofPopMatrix();
-}
+	}
 }
 
 //--------------------------------------------------------------
@@ -337,7 +336,7 @@ NoiseAnimator::NoiseAnimator()
 	doneInstantiated = true;
 	fps = 60;
 	setFps(fps);
-	SHOW_Gui = true;
+	bGui = true;
 	//guiPos = glm::vec2(700, 500);
 
 	ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
@@ -413,11 +412,13 @@ void NoiseAnimator::setup()
 
 	ENABLE_Modulator.set("Modulator", false);
 
+#ifdef INCLUDE_FILTER
 	//filters
 	ENABLE_NoiseModulatorFilter.set("FILTER MODULATOR", true);
 	fc.set("LPF Modulator", 0.5f, 0.f, 1.f);
 	ENABLE_NoisePointFilter.set("FILTER POINT", true);
 	fcPoint.set("LPF Point", 0.5f, 0.f, 1.f);
+#endif
 
 	faderValue.set("VALUE", 0, 0, 1.f);
 	faderMin.set("Min", 0, 0, 1.f);
@@ -449,6 +450,8 @@ void NoiseAnimator::setup()
 	params.add(ENABLE_Noise);
 	params.add(ENABLE_Modulator);
 
+
+#ifdef INCLUDE_FILTER
 	//filters
 	ofParameterGroup params_filters{ "LOW PASS FILTERS" };
 	params_filters.add(ENABLE_NoisePointFilter);
@@ -456,6 +459,7 @@ void NoiseAnimator::setup()
 	params_filters.add(ENABLE_NoiseModulatorFilter);
 	params_filters.add(fc);
 	params.add(params_filters);
+#endif
 
 	//params.add(SHOW_Plot);
 	params.add(params_NoiseX);
@@ -543,8 +547,8 @@ void NoiseAnimator::setup()
 	//--
 
 	// plot
-	//plotShape = ImVec2(210, 200);
-	plotShape = ImVec2(210, 315);
+	//plotShape = ImVec2(210, 315);
+	plotShape = ImVec2(210, 200);
 	ofFbo::Settings fboSettings;
 	fboSettings.width = plotShape.x;
 	fboSettings.height = plotShape.y;
@@ -552,13 +556,29 @@ void NoiseAnimator::setup()
 	fboSettings.textureTarget = GL_TEXTURE_2D;
 	fboPlot.allocate(fboSettings);
 
+	fboSettings.width = PLOT_BOXES_SIZES;
+	fboSettings.height = PLOT_BOXES_SIZES;
+	fboSettings.internalformat = GL_RGBA;
+	fboSettings.textureTarget = GL_TEXTURE_2D;
+	fboPlot2.allocate(fboSettings);
+
+	fboPlot.begin();
+	ofClear(0, 0);
+	fboPlot.end();
+	
+	fboPlot2.begin();
+	ofClear(0, 0);
+	fboPlot2.end();
+
 	//-
 
 	// gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
+
+	//guiManager.setup();//initiate ImGui
 	//guiManager.setImGuiAutodraw(true);
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	guiManager.setup();//initiate ImGui
 	//guiManager.setUseAdvancedSubPanel(true);
 #endif
 
@@ -568,7 +588,9 @@ void NoiseAnimator::setup()
 
 	//guiManager.AddGroupStyle(params, OFX_IM_GROUP_HIDDEN_HEADER);
 
+#ifdef INCLUDE_FILTER
 	guiManager.AddGroupStyle(params_filters, OFX_IM_GROUP_COLLAPSED);
+#endif
 	guiManager.AddGroupStyle(params_Modulator, OFX_IM_GROUP_COLLAPSED);
 	guiManager.AddGroupStyle(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
 
@@ -577,8 +599,11 @@ void NoiseAnimator::setup()
 
 	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_BIG);
 
+#ifdef INCLUDE_FILTER
 	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+#endif
+
 	guiManager.AddStyle(ENABLE_NoiseX, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 	guiManager.AddStyle(ENABLE_NoiseY, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 	guiManager.AddStyle(ENABLE_NoiseZ, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
@@ -676,27 +701,22 @@ void NoiseAnimator::setupPlot_Noise()
 //void NoiseAnimator::update()
 void NoiseAnimator::update(ofEventArgs & args)
 {
-	if (ofGetFrameNum() == rSeed)
-	{
-		ENABLE_Noise = true;
-	}
+	//if (ofGetFrameNum() == rSeed)
+	//{
+	//	ENABLE_Noise = true;
+	//}
 
 	//--
 
 	//TODO
 	//could improve noise system dimensions...
 	//maybe can we use msaPerlinNoise classes...
-
 	//cout << "noiseCountX:"<<noiseCountX<<endl;
 	//cout << "noiseCountY:"<<noiseCountY<<endl;
 
-	//1. pre calcultate point x,y noise
+	//-
 
-	if (ENABLE_Noise)
-	{
-		//-
-
-		if (SHOW_Plot && SHOW_Gui)
+		if (SHOW_Plot && bGui)
 		{
 			fboPlot.begin();
 			{
@@ -705,6 +725,13 @@ void NoiseAnimator::update(ofEventArgs & args)
 			}
 			fboPlot.end();
 		}
+
+	//--
+
+	//1. pre calcultate point x,y noise
+
+	if (ENABLE_Noise)
+	{
 
 		//-
 
@@ -796,6 +823,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	//2. filter
 	//point
 
+#ifdef INCLUDE_FILTER
 	if (ENABLE_NoisePointFilter)
 	{
 		LPFpoint.setFc(ofMap(fcPoint, 0.f, 1.f, 0.001f, 0.05f, true));
@@ -807,7 +835,9 @@ void NoiseAnimator::update(ofEventArgs & args)
 		plot_NoiseY->update(LPFpoint.value().y);
 #endif
 	}
-	else {
+	else
+#endif
+	{
 #ifdef INCLUDE_PLOTS
 		plot_NoiseX->update(-noiseX);
 		plot_NoiseY->update(noiseY);
@@ -817,43 +847,57 @@ void NoiseAnimator::update(ofEventArgs & args)
 	//--
 
 	//3. process modulator envelope 
-
-	queue.update(dt);
-	if (queue.isPlaying())
+	if (ENABLE_Modulator)
 	{
-		faderValue = queue.getCurrentValue();
-		uint64_t time = ofGetElapsedTimeMillis() - lastStart;
-		totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-		animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
-		//animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100, true);
-		//cout << "faderValue:" << faderValue << endl;
+		queue.update(dt);
+		if (queue.isPlaying())
+		{
+			faderValue = queue.getCurrentValue();
+			uint64_t time = ofGetElapsedTimeMillis() - lastStart;
+			totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
+			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
+			//animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100, true);
+			//cout << "faderValue:" << faderValue << endl;
+		}
+	}
+	if (!ENABLE_Modulator)
+	{
+		faderValue = faderMax.get();
 	}
 
 	//--
 
-	//4. filter
+	// 4. filter
 
-	//modulator
+	// modulator
 
+#ifdef INCLUDE_FILTER
 	if (ENABLE_NoiseModulatorFilter)
 	{
 		LPFmodulator.setFc(ofMap(fc, 0.f, 1.f, 0.005f, 0.15f, true));
 		LPFmodulator.update(faderValue);
 	}
-
-	//--
-
-	//modulator envelope plot
-
-#ifdef INCLUDE_PLOTS
-	if (ENABLE_NoiseModulatorFilter) plot->update(LPFmodulator.value());
-	else plot->update(faderValue.get());
 #endif
 
 	//--
 
-	//5. final apply
+	// modulator envelope plot
 
+#ifdef INCLUDE_PLOTS
+#ifdef INCLUDE_FILTER
+	if (ENABLE_NoiseModulatorFilter) plot->update(LPFmodulator.value());
+	else
+#endif
+	{
+		plot->update(faderValue.get());
+	}
+#endif
+
+	//--
+
+	// 5. final apply
+
+#ifdef INCLUDE_FILTER
 	if (ENABLE_NoiseModulatorFilter)
 	{
 		if (!ENABLE_NoisePointFilter)
@@ -880,19 +924,10 @@ void NoiseAnimator::update(ofEventArgs & args)
 		}
 	}
 	else
+#endif
 	{
-		if (!ENABLE_NoisePointFilter)
-		{
-			noisePos = glm::vec3(
-				(faderValue * noiseX) * (noisePowerX * 5),
-				(faderValue * noiseY) * (noisePowerY * 5),
-				(faderValue * noiseZ) * (noisePowerZ * 5));
-
-			//noisePos = glm::vec2(
-			//	(faderValue * noiseX) * (noisePowerX * 5),
-			//	(faderValue * noiseY) * (noisePowerY * 5));
-		}
-		else
+#ifdef INCLUDE_FILTER
+		if (ENABLE_NoisePointFilter)
 		{
 			noisePos = glm::vec3(
 				(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
@@ -902,6 +937,18 @@ void NoiseAnimator::update(ofEventArgs & args)
 			//noisePos = glm::vec2(
 			//	(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
 			//	(faderValue * LPFpoint.value().y) * (noisePowerY * 5));
+		}
+		else
+#endif
+		{
+			noisePos = glm::vec3(
+				(faderValue * noiseX) * (noisePowerX * 5),
+				(faderValue * noiseY) * (noisePowerY * 5),
+				(faderValue * noiseZ) * (noisePowerZ * 5));
+
+			//noisePos = glm::vec2(
+			//	(faderValue * noiseX) * (noisePowerX * 5),
+			//	(faderValue * noiseY) * (noisePowerY * 5));
 		}
 	}
 
@@ -927,7 +974,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 //void NoiseAnimator::draw()
 void NoiseAnimator::draw(ofEventArgs & args)
 {
-	if (SHOW_Gui)
+	if (bGui)
 	{
 		//gui.draw();
 
@@ -946,7 +993,7 @@ void NoiseAnimator::draw(ofEventArgs & args)
 	//-
 
 	//if (SHOW_Plot)// && ENABLE_Noise)
-	//	drawPlot();
+		//drawPlot();
 }
 
 //--------------------------------------------------------------
@@ -1063,7 +1110,7 @@ void NoiseAnimator::start()
 	}
 	else
 	{
-		faderValue = faderMax;
+		faderValue = faderMax.get();
 	}
 }
 
@@ -1080,7 +1127,7 @@ void NoiseAnimator::stop()
 	}
 	else
 	{
-		faderValue = faderMax;
+		faderValue = faderMax.get();
 	}
 }
 
@@ -1180,6 +1227,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		AnimCurve curve = (AnimCurve)(curveType.get());
 		curvePlotable.setCurve(curve);
 	}
+
 	else if (name == Reset_Noise.getName())
 	{
 		if (Reset_Noise)
@@ -1205,6 +1253,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_Modulator = false;
 		}
 	}
+
 	else if (name == Reset_Modulator.getName())
 	{
 		if (Reset_Modulator)
@@ -1213,10 +1262,13 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_Modulator = false;
 
 			faderValue = faderMin;
+
+#ifdef INCLUDE_FILTER
 			ENABLE_NoisePointFilter = false;
 			ENABLE_NoiseModulatorFilter = false;
 			fc = 0.5f;
 			fcPoint = 0.5f;
+#endif
 
 			faderDelay = 0.25f;
 			faderAttack = 0.5f;
@@ -1245,11 +1297,27 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			(*float_BACK) = faderValue.get();
 		}
 	}
+
+	//-
+
+	// main enablers
+
+	else if (name == ENABLE_Noise.getName())
+	{
+		// workflow
+		if (!ENABLE_Noise)
+		{
+			//ENABLE_Modulator = false;
+			stop();
+		}
+	}
+
 	else if (name == ENABLE_Modulator.getName())
 	{
+		// workflow
 		if (!ENABLE_Modulator)
 		{
-			faderValue = faderMax;
+			faderValue = faderMax.get();
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").minimize();
 		}
 		else
@@ -1261,15 +1329,6 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			//// workflow
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").minimize();//avoid add-empty-space bug
 			//gui.getGroup("Noise Animator").getGroup("MODULATOR").maximize();
-		}
-	}
-	else if (name == ENABLE_Noise.getName())
-	{
-		if (!ENABLE_Noise)
-		{
-			//// workflow
-			//ENABLE_Modulator = false;
-			stop();
 		}
 	}
 }

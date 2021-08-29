@@ -130,8 +130,8 @@ public:
 	void drawImGuiWidgetsEnd();
 	
 private:
-
-	bool bParams = true;
+	bool bOpened = false;
+	//bool bParams = true;
 
 private:
 
@@ -215,7 +215,7 @@ public:
 	//--------------------------------------------------------------
 	void setVisible(bool b)
 	{
-		SHOW_Gui = b;
+		bGui = b;
 	}
 
 	//--------------------------------------------------------------
@@ -576,7 +576,17 @@ private:
 
 public:
 
-	ofParameter<bool> SHOW_Gui{ "SHOW ANIMATOR", true };
+	ofParameter<bool> bGui{ "Show Animator", true };
+
+private:
+
+	// widgets sizes
+	float _w100;
+	float _w99;
+	float _w50;
+	float _w33;
+	float _w25;
+	float _h;
 
 	//--
 
