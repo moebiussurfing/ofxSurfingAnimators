@@ -2,7 +2,7 @@
 //--------------------------------------------------------------
 void NoiseAnimator::drawPlot() {
 
-	//workaround bc polot is not being drawed well..
+	// workaround bc polot is not being drawed well..
 	if (ENABLE_Modulator)
 	{
 		fboPlot2.begin();
@@ -53,7 +53,7 @@ void NoiseAnimator::drawPlot() {
 		int xPos;
 		int yPos;
 
-		//define color state
+		// define color state
 
 		if (!ENABLE_Noise) {//ENABLE_Noise = false
 			stateColor = false;
@@ -89,7 +89,7 @@ void NoiseAnimator::drawPlot() {
 		//--
 
 //#ifdef INCLUDE_PLOTS
-		////1. mod ASR plot
+		//// 1. mod ASR plot
 		//if (ENABLE_Modulator)
 		//{
 		//	//live ASR value plot
@@ -103,8 +103,8 @@ void NoiseAnimator::drawPlot() {
 
 		//--
 
-		//moved bc black
-		//2. boxes noise x/y plots
+		// moved bc black
+		// 2. boxes noise x/y plots
 		{
 			xPos = x + 2 * (size + pad);
 			yPos = y;//upper line
@@ -140,7 +140,7 @@ void NoiseAnimator::drawPlot() {
 
 		//-
 
-		//3. box point circle plot
+		// 3. box point circle plot
 		{
 			ofPushStyle();
 			ofFill();
@@ -152,7 +152,7 @@ void NoiseAnimator::drawPlot() {
 #else
 			yPos = y + pad;
 #endif
-			//3.1. bg box
+			// 3.1. bg box
 			ofDrawRectangle(ofRectangle(xPos, yPos, size, size));
 
 			//string strDebug;
@@ -164,25 +164,25 @@ void NoiseAnimator::drawPlot() {
 			float halfSize = size * 0.5f;
 			float ratio_PlotSize_noisePosX, ratio_PlotSize_noisePosY;
 
-			//3.2. axis
+			// 3.2. axis
 			ofSetColor(ofColor(255, 32));
 			ofDrawLine(xPos + halfSize, yPos, xPos + halfSize, yPos + size);//vertical
 			ofDrawLine(xPos, yPos + halfSize, xPos + size, yPos + halfSize);//horizontal
 
-			//A. scaling to final movement
+			// A. scaling to final movement
 			//ratio_PlotSize_noisePosX = halfSize / (noiseSizeMax * 5);
 			//ratio_PlotSize_noisePosY = halfSize / (noiseSizeMax * 5);
 
-			//B. scaling from raw modifier not with power aplied
+			// B. scaling from raw modifier not with power aplied
 			ratio_PlotSize_noisePosX = halfSize / (noisePowerX * 5);
 			ratio_PlotSize_noisePosY = halfSize / (noisePowerY * 5);
 			float nx, ny;
 
 			//nx = noisePos.x * ratio_PlotSize_noisePosX;
-			//hflip
+			// hflip
 			nx = noisePos.x * ratio_PlotSize_noisePosX;
 			//ny = noisePos.y * ratio_PlotSize_noisePosY;
-			//vflip
+			// vflip
 			ny = -noisePos.y * ratio_PlotSize_noisePosY;
 
 			//cout << "nx:" << ofToString(nx);
@@ -193,8 +193,8 @@ void NoiseAnimator::drawPlot() {
 			//ofSetColor(255);
 			//ofDrawBitmapString(strDebug, glm::vec2(xPos, yPos - 70));
 
-			//3.3 plot circle point
-			//clamp plot into box
+			// 3.3 plot circle point
+			// clamp plot into box
 			float pxx, pyy;
 			pxx = ofClamp(nx + xPos + halfSize, nx + xPos - halfSize, nx + xPos + halfSize);
 			pyy = ofClamp(ny + yPos + halfSize, ny + yPos - halfSize, ny + yPos + halfSize);
@@ -204,9 +204,9 @@ void NoiseAnimator::drawPlot() {
 			else c = ofColor(255, 64);
 			ofSetColor(c);
 
-
+#define MAX_RADIUS 15
 			float nz = abs(noisePos.z);
-			float r = ofMap(nz, 0, 100, 1, 7, true);
+			float r = ofMap(nz, 0, 100, 1, MAX_RADIUS, true);
 			ofDrawCircle(pxx, pyy, r);
 			//ofDrawCircle(pxx, pyy, 3);
 			//ofDrawCircle(nx + xPos + halfSize, ny + yPos + halfSize, 3);
@@ -220,7 +220,7 @@ void NoiseAnimator::drawPlot() {
 
 			//-
 
-			//4. progress bar
+			// 4. progress bar
 			if (ENABLE_Modulator && isAnimating())
 			{
 				int rx, ry, rw, rh;
@@ -243,8 +243,8 @@ void NoiseAnimator::drawPlot() {
 
 		//--
 
-		//4. curve type
-		//hide curve plot when attack/release are 0
+		// 4. curve type
+		// hide curve plot when attack/release are 0
 		if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator)
 		{
 			if (curveShow)
@@ -284,7 +284,7 @@ void NoiseAnimator::drawPlot() {
 			}
 		}
 
-		//1. modulator envelope plot
+		// 1. modulator envelope plot
 		xPos = x + size + pad;
 		if (stateColor && ENABLE_Modulator) c = ofColor(255, 255);
 		else c = ofColor(255, 64);
@@ -506,6 +506,9 @@ void NoiseAnimator::setup()
 	params_Modulator.add(animProgress);
 	params.add(params_Modulator);
 	params.add(Reset_Noise);
+
+	guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
+	params.add(guiManager.bMinimize);
 
 	ofAddListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -1038,14 +1041,20 @@ void NoiseAnimator::drawImGuiWidgets() {
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-				static ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_None;
-				//flags |= ImGuiTreeNodeFlags_DefaultOpen;
-				flags |= ImGuiTreeNodeFlags_Framed;
+				static ImGuiTreeNodeFlags flagst = ImGuiTreeNodeFlags_None;
+				if (!guiManager.bMinimize) {
+					flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				}
+				flagst |= ImGuiTreeNodeFlags_Framed;
 
 				if (ENABLE_Modulator)
 					if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
 						start();
 					}
+
+				AddToggleRoundedButton(guiManager.bMinimize);
+
+				//-
 
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
@@ -1079,7 +1088,6 @@ void NoiseAnimator::drawImGuiWidgets() {
 					ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
 					ImGui::Image(textureID, plotShape);
 				}
-
 
 				//--
 
@@ -1175,9 +1183,9 @@ void NoiseAnimator::previousCurve()
 void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 {
 	string name = e.getName();
-	if (name != "%"
-		&& name != "VALUE")
-		ofLogVerbose(__FUNCTION__) << name << " : " << e;
+	if (name != "%" && name != "VALUE")
+		ofLogNotice(__FUNCTION__) << name << " : " << e;
+		//ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
 	//-
 
@@ -1318,6 +1326,21 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		{
 			//ENABLE_Modulator = false;
 			stop();
+		}
+	}
+
+	//TODO:
+	else if (name == guiManager.bMinimize.getName())
+	{
+		if (guiManager.bMinimize) {
+			guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_HIDDEN);
+			guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_HIDDEN);
+			guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_HIDDEN);
+		}
+		else {
+			guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_BIG);
+			guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_BIG);
+			guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_BIG);
 		}
 	}
 
