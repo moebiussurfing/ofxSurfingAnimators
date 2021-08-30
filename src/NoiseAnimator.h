@@ -61,6 +61,9 @@ public:
 	~NoiseAnimator();
 
 public:
+	void refreshStyles();
+
+public:
 	void setup();
 	void startup();
 

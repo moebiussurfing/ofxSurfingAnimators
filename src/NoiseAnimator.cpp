@@ -366,9 +366,84 @@ void NoiseAnimator::startup()
 }
 
 //--------------------------------------------------------------
+void NoiseAnimator::refreshStyles()
+{
+	guiManager.clearStyles();
+
+	//guiManager.AddGroupStyle(params, OFX_IM_GROUP_HIDDEN_HEADER);
+
+#ifdef INCLUDE_FILTER
+	guiManager.AddGroupStyle(params_filters, OFX_IM_GROUP_COLLAPSED);
+#endif
+	guiManager.AddGroupStyle(params_Modulator, OFX_IM_GROUP_COLLAPSED);
+	guiManager.AddGroupStyle(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
+
+	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
+	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
+
+	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_BIG);
+
+#ifdef INCLUDE_FILTER
+	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+#endif
+
+	guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
+
+	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_BIG);
+	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
+
+	if (guiManager.bMinimize) {
+		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
+
+		if (bpmMode) {
+			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
+			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
+		}
+		else {
+			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
+			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_DEFAULT);
+		}
+
+		guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
+	}
+	else {
+		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_DEFAULT);
+
+		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
+		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
+
+		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+	}
+
+	//-
+
+	if (guiManager.bMinimize) {
+		guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
+		guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
+		guiManager.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
+
+		guiManager.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
+		guiManager.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
+		guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
+	}
+	else {
+		guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
+		guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
+		guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
+
+		guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
+		guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
+		guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
+	}
+}
+
+//--------------------------------------------------------------
 void NoiseAnimator::setup()
 {
-
 	//ofxSurfingHelpers::setThemeDark_ofxGui();
 
 	//fc = 0.05;
@@ -590,27 +665,7 @@ void NoiseAnimator::setup()
 
 	// styles
 
-	//guiManager.AddGroupStyle(params, OFX_IM_GROUP_HIDDEN_HEADER);
-
-#ifdef INCLUDE_FILTER
-	guiManager.AddGroupStyle(params_filters, OFX_IM_GROUP_COLLAPSED);
-#endif
-	guiManager.AddGroupStyle(params_Modulator, OFX_IM_GROUP_COLLAPSED);
-	guiManager.AddGroupStyle(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
-
-	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
-	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
-
-	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_BIG);
-
-#ifdef INCLUDE_FILTER
-	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-#endif
-
-	guiManager.AddStyle(ENABLE_NoiseX, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-	guiManager.AddStyle(ENABLE_NoiseY, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-	guiManager.AddStyle(ENABLE_NoiseZ, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	refreshStyles();
 
 	//-
 
@@ -837,7 +892,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 		plot_NoiseX->update(-LPFpoint.value().x);
 		plot_NoiseY->update(LPFpoint.value().y);
 #endif
-	}
+}
 	else
 #endif
 	{
@@ -1063,13 +1118,17 @@ void NoiseAnimator::drawImGuiWidgets() {
 				guiManager.AddGroup(params);
 				//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, SurfingImGuiTypesGroups::OFX_IM_GROUP_HIDDEN_HEADER);
 
-				ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
 
-				//-
+				if (!guiManager.bMinimize) {
+
+					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
+
+					//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-				guiManager.drawAdvancedSubPanel();
+					guiManager.drawAdvancedSubPanel();
 #endif
+				}
 
 				////get window position for advanced layout paired position
 				//auto posx = ImGui::GetWindowPos().x;
@@ -1082,11 +1141,12 @@ void NoiseAnimator::drawImGuiWidgets() {
 				//--
 
 				// plot fbo
-
-				if (SHOW_Plot)
-				{
-					ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
-					ImGui::Image(textureID, plotShape);
+				if (!guiManager.bMinimize) {
+					if (SHOW_Plot)
+					{
+						ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+						ImGui::Image(textureID, plotShape);
+					}
 				}
 
 				//--
@@ -1185,9 +1245,9 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 	string name = e.getName();
 	if (name != "%" && name != "VALUE")
 		ofLogNotice(__FUNCTION__) << name << " : " << e;
-		//ofLogVerbose(__FUNCTION__) << name << " : " << e;
+	//ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
-	//-
+//-
 
 	if (false) {}
 
@@ -1329,19 +1389,14 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	//TODO:
 	else if (name == guiManager.bMinimize.getName())
 	{
-		if (guiManager.bMinimize) {
-			guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_HIDDEN);
-			guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_HIDDEN);
-			guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_HIDDEN);
-		}
-		else {
-			guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_BIG);
-			guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_BIG);
-			guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_BIG);
-		}
+		refreshStyles();
+	}
+
+	else if (name == bpmMode.getName())
+	{
+		refreshStyles();
 	}
 
 	else if (name == ENABLE_Modulator.getName())

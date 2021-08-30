@@ -494,7 +494,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 			if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
 				start();
 			}
-			
+
 			if (repeatMode == 2 || repeatMode == 3 || repeatMode == 5)//with a back mode. force to start
 				if (ImGui::Button("STOP", ImVec2(_w100, _h))) {
 					stop();
@@ -551,6 +551,9 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		{
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
+			guiManager.Add(bpmMode, OFX_IM_TOGGLE_BIG);
+			//ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
+
 			if (!bpmMode)
 			{
 				guiManager.Add(duration);
@@ -563,8 +566,6 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 					guiManager.Add(animDelay, OFX_IM_DRAG);
 				}
 			}
-
-			ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
 
 			if (bpmMode) {
 
@@ -673,17 +674,19 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		//--
 
 		// plot fbo
-
-		if (SHOW_Plot)
+		if (!guiManager.bMinimize) 
 		{
-			//widthGuiLayout = ImGui::GetWindowWidth();
-			//float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
-			//ImGui::Indent(_spacing);
+			if (SHOW_Plot)
 			{
-				ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
-				ImGui::Image(textureID, plotShape);
+				//widthGuiLayout = ImGui::GetWindowWidth();
+				//float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
+				//ImGui::Indent(_spacing);
+				{
+					ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
+					ImGui::Image(textureID, plotShape);
+				}
+				//ImGui::Unindent;
 			}
-			//ImGui::Unindent;
 		}
 
 		//-
@@ -715,7 +718,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 					guiManager.Add(guiManager.bAdvanced, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 					//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
 
-				if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+					if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
 				}
 				ImGui::Unindent();
 			}
@@ -1043,6 +1046,6 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	else if (name == bGui.getName() && !bGui)
 	{
 		presets.bGui = false;
-	}
+}
 #endif
 }

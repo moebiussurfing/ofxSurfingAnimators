@@ -10,6 +10,8 @@ void ofApp::setup() {
 	posAnim.setNameLabel("posAnim"); // -> optional name customization. Useful when using multiple instances
 	posAnim.setup();
 
+	posAnim.setVisible(true);
+
 	startTween();
 }
 
@@ -69,6 +71,8 @@ void ofApp::stopTween() {
 void ofApp::keyPressed(int key) {
 
 	ofLogNotice() << "key: " << key;
+
+	if (key == 'g') posAnim.setToggleVisible();
 
 	if (key == ' ') startTween();
 
