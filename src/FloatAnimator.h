@@ -371,6 +371,9 @@ public:
 		//TODO: allow more than one instance.
 		// must use different name and paths
 		//params.setName(label + "_ANIM");
+
+		//TODO:
+		bGui.setName(s);
 	}
 
 public:

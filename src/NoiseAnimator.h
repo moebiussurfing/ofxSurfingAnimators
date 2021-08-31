@@ -97,7 +97,7 @@ public:
 	ofParameter<bool> ENABLE_NoisePointFilter;
 
 private:
-	
+
 	ofxBiquadFilter1f LPFmodulator;//we filter the modulator envelope to avoid abrupt jumps
 	ofxBiquadFilter3f LPFpoint;//we filter the modulator point to avoid abrupt jumps
 	//ofxBiquadFilter2f LPFpoint;//we filter the modulator point to avoid abrupt jumps
@@ -302,6 +302,9 @@ public:
 	void setNameLabel(string s)
 	{
 		label = s;
+
+		//TODO:
+		bGui.setName(s);
 	}
 
 	//--------------------------------------------------------------
@@ -487,7 +490,6 @@ private:
 	uint64_t lastStart;
 
 	float dt;
-	ofParameter<bool> bGui{ "Show Animator", true };
 	string path;
 
 	AnimCurve faderAnim;
@@ -504,5 +506,8 @@ private:
 
 	int lastFrame;
 	//int totalFrames;
+
+public:
+	ofParameter<bool> bGui{ "Show Animator", true };
 
 };

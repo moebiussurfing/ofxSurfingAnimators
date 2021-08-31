@@ -161,7 +161,7 @@ void FloatAnimator::setup()
 	params_Helpers.setName("Animator Helpers");
 	params_Helpers.add(bGui);
 	params_Helpers.add(ModeBrowse.set("Mode Browser", true));
-	params_Helpers.add(SHOW_Plot);
+	//params_Helpers.add(SHOW_Plot);
 
 	//--
 

@@ -604,7 +604,7 @@ void NoiseAnimator::setup()
 	//params_Helpers.setName(label + " CONTROLS");
 	//params_Helpers.add(ENABLE_Noise);
 	//params_Helpers.add(ENABLE_Modulator);
-	params_Helpers.add(SHOW_Plot);
+	//params_Helpers.add(SHOW_Plot);
 
 	//-
 
