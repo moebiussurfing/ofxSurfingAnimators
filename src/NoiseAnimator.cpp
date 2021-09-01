@@ -359,9 +359,11 @@ void NoiseAnimator::startup()
 	setupPlot_Noise();
 
 	//-
+	
+	if (ENABLE_Noise) bRestoreTrue = true;
 
 	//seed engine
-	rSeed = (int)ofRandom(0, fps * 4);
+	rSeed = (int)ofRandom(0, fps / 4);
 	ENABLE_Noise = false;
 }
 
@@ -487,8 +489,8 @@ void NoiseAnimator::setup()
 
 	ENABLE_Modulator.set("Modulator", false);
 
-#ifdef INCLUDE_FILTER
 	//filters
+#ifdef INCLUDE_FILTER
 	ENABLE_NoiseModulatorFilter.set("FILTER MODULATOR", true);
 	fc.set("LPF Modulator", 0.5f, 0.f, 1.f);
 	ENABLE_NoisePointFilter.set("FILTER POINT", true);
@@ -528,7 +530,6 @@ void NoiseAnimator::setup()
 
 #ifdef INCLUDE_FILTER
 	//filters
-	ofParameterGroup params_filters{ "LOW PASS FILTERS" };
 	params_filters.add(ENABLE_NoisePointFilter);
 	params_filters.add(fcPoint);
 	params_filters.add(ENABLE_NoiseModulatorFilter);
@@ -582,8 +583,8 @@ void NoiseAnimator::setup()
 	params.add(params_Modulator);
 	params.add(Reset_Noise);
 
-	guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
-	params.add(guiManager.bMinimize);
+	//guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
+	//params.add(guiManager.bMinimize);
 
 	ofAddListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -761,10 +762,13 @@ void NoiseAnimator::setupPlot_Noise()
 void NoiseAnimator::update(ofEventArgs & args)
 {
 	//workaround: to variate a the random seed
-	if (ofGetFrameNum() == rSeed)
-	{
-		ENABLE_Noise = true;
-	}
+	//TODO:
+	//if (0)
+	if(bRestoreTrue)
+		if (ofGetFrameNum() == rSeed)
+		{
+			ENABLE_Noise = true;
+		}
 
 	//--
 
@@ -892,7 +896,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 		plot_NoiseX->update(-LPFpoint.value().x);
 		plot_NoiseY->update(LPFpoint.value().y);
 #endif
-}
+	}
 	else
 #endif
 	{
@@ -935,7 +939,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	{
 		LPFmodulator.setFc(ofMap(fc, 0.f, 1.f, 0.005f, 0.15f, true));
 		LPFmodulator.update(faderValue);
-	}
+}
 #endif
 
 	//--
@@ -1033,7 +1037,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 //void NoiseAnimator::draw()
 void NoiseAnimator::draw(ofEventArgs & args)
 {
-	if (!bGui) return;
+	if (!bGui.get()) return;
 
 	//--
 
@@ -1060,12 +1064,9 @@ void NoiseAnimator::draw(ofEventArgs & args)
 
 //--------------------------------------------------------------
 void NoiseAnimator::drawImGuiWidgets() {
+	if (!bGui.get()) return;
 	{
-		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
 		string name;
-
-		//bool bOpen;
-		//ImGuiColorEditFlags _flagc;
 
 		// widgets sizes
 		float _spcx;
@@ -1078,49 +1079,45 @@ void NoiseAnimator::drawImGuiWidgets() {
 		float _w25;
 		float _h;
 
-		//TODO: not styled widgets
-
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
 		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
-		// 1. window parameters
-		static bool bParams = true;
-		static bool bOpen = false;
-
-		if (bParams)
 		{
 			name = "PANEL " + label;
 
-			//guiManager.beginWindow(name, &bOpen, _flagsw);
-			if (guiManager.beginWindow(name, (bool*)&bGui.get(), _flagsw))
+			bOpened = guiManager.beginWindow(name, (bool*)&bGui.get(), _flagsw);
+
+			if (bOpened)
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-				static ImGuiTreeNodeFlags flagst = ImGuiTreeNodeFlags_None;
-				if (!guiManager.bMinimize) {
-					flagst |= ImGuiTreeNodeFlags_DefaultOpen;
-				}
-				flagst |= ImGuiTreeNodeFlags_Framed;
+				//static ImGuiTreeNodeFlags flagst = ImGuiTreeNodeFlags_None;
+				//if (!guiManager.bMinimize) {
+				//	flagst |= ImGuiTreeNodeFlags_DefaultOpen;
+				//}
+				//flagst |= ImGuiTreeNodeFlags_Framed;
 
 				if (ENABLE_Modulator)
 					if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
 						start();
 					}
 
-				AddToggleRoundedButton(guiManager.bMinimize);
+				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bMinimize);
+				//guiManager.Add(guiManager.bMinimize);
 
 				//-
 
 				ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 				//ofxImGuiSurfing::AddGroup(params, flags);
-
 				guiManager.AddGroup(params);
 				//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, SurfingImGuiTypesGroups::OFX_IM_GROUP_HIDDEN_HEADER);
 
 
 				if (!guiManager.bMinimize) {
 
+					//guiManager.Add(SHOW_Plot);
 					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
 
 					//-
@@ -1129,14 +1126,6 @@ void NoiseAnimator::drawImGuiWidgets() {
 					guiManager.drawAdvancedSubPanel();
 #endif
 				}
-
-				////get window position for advanced layout paired position
-				//auto posx = ImGui::GetWindowPos().x;
-				//auto posy = ImGui::GetWindowPos().y;
-				//widthGuiLayout = ImGui::GetWindowWidth();
-				//heightGuiLayout = ImGui::GetWindowHeight();
-				//positionGuiLayout = glm::vec2(posx, posy);
-				////positionGuiLayout = glm::vec2(posx + w, posy);
 
 				//--
 
@@ -1148,9 +1137,12 @@ void NoiseAnimator::drawImGuiWidgets() {
 						ImGui::Image(textureID, plotShape);
 					}
 				}
+			}
 
-				//--
+			//--
 
+			//if (bOpened)
+			{
 				guiManager.endWindow();
 			}
 		}

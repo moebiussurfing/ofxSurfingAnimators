@@ -2,12 +2,14 @@
 
 #include "ofMain.h"
 
-///-
-///
+//-
+
+#define INCLUDE_FILTER	// Filter the point to avoid abrupt changes
+
 #define INCLUDE_PLOTS		// Plotting can be disabled without affecting the functionality
-//#define INCLUDE_FILTER	// Filter the point to avoid abrupt changes
-///
-///-
+
+//-
+
 
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
@@ -29,6 +31,7 @@
 
 #define PLOT_BOXES_SIZES 80
 
+
 class NoiseAnimator : public ofBaseApp
 {
 
@@ -36,6 +39,10 @@ class NoiseAnimator : public ofBaseApp
 public:
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
+
+private:
+	bool bOpened = false;
+	//bool bParams = true;
 
 public:
 	void drawImGuiWidgets();
@@ -53,6 +60,8 @@ private:
 	ofFbo fboPlot2;
 	ImVec2 plotShape;
 	void drawPlot();
+
+	bool bRestoreTrue = false;
 
 	//-
 
@@ -95,6 +104,8 @@ public:
 public:
 	ofParameter<bool> ENABLE_NoiseModulatorFilter;
 	ofParameter<bool> ENABLE_NoisePointFilter;
+
+	ofParameterGroup params_filters{ "LOW PASS FILTERS" };
 
 private:
 

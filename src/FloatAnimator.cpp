@@ -93,7 +93,7 @@ void FloatAnimator::setup()
 {
 	ofLogNotice(__FUNCTION__);
 
-	ENABLE_valueAnim.set("Enable Animator", true);
+	bEnableAnimator.set("Enable Animator", true);
 
 	value.set("Value", 0.f, 0.f, 1.f);
 	valueStart.set("Value Start", 0.f, 0.f, 1.f);
@@ -152,7 +152,7 @@ void FloatAnimator::setup()
 	//params_Control.setName(label);
 	//params_Control.add(_params_Bpm);
 	////params_Control.setName(label + " CONTROLS");
-	params_Control.add(ENABLE_valueAnim);
+	params_Control.add(bEnableAnimator);
 	//params_Control.add(bpmMode);
 	//params_Control.add(bpmSpeed);
 	////params_Control.add(_params_Bpm);
@@ -172,7 +172,7 @@ void FloatAnimator::setup()
 	//params.setName("Float Animator");
 	//params.setName(label);
 
-	params.add(ENABLE_valueAnim);
+	params.add(bEnableAnimator);
 	params.add(value);
 	params.add(valueStart);
 	params.add(valueEnd);
@@ -285,7 +285,7 @@ void FloatAnimator::start()
 {
 	ofLogVerbose(__FUNCTION__);
 
-	if (ENABLE_valueAnim)
+	if (bEnableAnimator)
 	{
 		floatAnimator.reset(valueStart);
 		if (animDelay != 0.f) floatAnimator.animateToAfterDelay(valueEnd, animDelay);
@@ -298,7 +298,7 @@ void FloatAnimator::stop()
 {
 	ofLogVerbose(__FUNCTION__);
 
-	if (ENABLE_valueAnim)
+	if (bEnableAnimator)
 	{
 		floatAnimator.reset(valueStart);
 		animProgress = 0;
@@ -311,7 +311,7 @@ void FloatAnimator::update(ofEventArgs & args)
 
 	//if (valueBack != nullptr)
 	//{
-	//    if (ENABLE_valueAnim)
+	//    if (bEnableAnimator)
 	//        valueBack->set(floatAnimator.getCurrentColor());
 	//    else
 	//        valueBack->set(valueStart);
@@ -466,7 +466,6 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		string name;
-		//name = "PARAMETERS";
 		//name = "ANIMATOR";
 		name = "PANEL " + label;
 		panelName = name;
@@ -476,7 +475,6 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		ImGui::SetNextWindowSize(ImVec2(200, 600), flagCond);
 
 		bOpened = guiManager.beginWindow(name.c_str(), (bool*)&bGui.get(), _flagsw);
-		//bOpened = guiManager.beginWindow(name.c_str(), NULL, _flagsw);
 
 		//--
 
@@ -489,7 +487,10 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 			////flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 			//flagst |= ImGuiTreeNodeFlags_Framed;
 
-			AddToggleRoundedButton(guiManager.bMinimize);
+			//AddToggleRoundedButton(guiManager.bMinimize);
+			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+
+			guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 			if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
 				start();
@@ -500,7 +501,8 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 					stop();
 				}
 		}
-		else {
+		else
+		{
 			guiManager.endWindow();
 		}
 	}
@@ -586,7 +588,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			}
 
 			if (!guiManager.bMinimize) {
-				if (ImGui::Button("Reset Time", ImVec2(_w100, _h)))
+				if (ImGui::Button("Reset Time", ImVec2(_w100, 2*_h)))
 				{
 					bpmSpeed = 120;
 					animDelay = 0.f;
@@ -661,7 +663,8 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-		guiManager.Add(reset, OFX_IM_TOGGLE_SMALL);
+		guiManager.Add(reset, OFX_IM_TOGGLE_BIG);
+		//guiManager.Add(reset, OFX_IM_TOGGLE_SMALL);
 		//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
 
 		////bundle
@@ -869,11 +872,11 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 
 	if (false) {}
 
-	else if (name == ENABLE_valueAnim.getName())
+	else if (name == bEnableAnimator.getName())
 	{
-		if (!ENABLE_valueAnim && floatAnimator.isAnimating())
+		if (!bEnableAnimator && floatAnimator.isAnimating())
 			floatAnimator.pause();
-		else if (ENABLE_valueAnim && !floatAnimator.isAnimating())
+		else if (bEnableAnimator && !floatAnimator.isAnimating())
 			floatAnimator.resume();
 	}
 
@@ -1015,7 +1018,7 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	else if (name == valueStart.getName())
 	{
 		//floatAnimator.setColor(valueStart);
-		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
+		//if (bEnableAnimator && floatAnimator.isAnimating())
 		//{
 		if (ModeBrowse) start();
 		//}
@@ -1023,7 +1026,7 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	else if (name == valueEnd.getName())
 	{
 		//floatAnimator.setColor(valueEnd);
-		//if (ENABLE_valueAnim && floatAnimator.isAnimating())
+		//if (bEnableAnimator && floatAnimator.isAnimating())
 		//{
 		if (ModeBrowse) start();
 		//}

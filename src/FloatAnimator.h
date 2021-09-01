@@ -134,6 +134,7 @@ public:
 	void drawImGuiWidgetsBegin();
 	void drawImGuiWidgetsEnd();
 	
+//protected:
 private:
 	bool bOpened = false;
 	//bool bParams = true;
@@ -238,7 +239,7 @@ public:
 	//--------------------------------------------------------------
 	void setEnabled(bool b)
 	{
-		ENABLE_valueAnim = b;
+		bEnableAnimator = b;
 	}
 
 	// settings
@@ -268,7 +269,7 @@ public:
 	//--------------------------------------------------------------
 	bool isEnabled()
 	{
-		return ENABLE_valueAnim;
+		return bEnableAnimator;
 	}
 
 	//--------------------------------------------------------------
@@ -417,7 +418,7 @@ public:
 	}
 
 	ofParameterGroup params;
-	ofParameter<bool> ENABLE_valueAnim;
+	ofParameter<bool> bEnableAnimator;
 
 private:
 
