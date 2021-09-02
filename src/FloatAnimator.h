@@ -1,6 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
+/*
+TODO
++ fix curve type selector crash
+*/
 
 /*
 
