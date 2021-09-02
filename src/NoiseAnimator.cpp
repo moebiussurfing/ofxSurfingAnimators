@@ -390,6 +390,10 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 #endif
 
+	guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
+	guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
+	guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
+
 	guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
@@ -459,7 +463,7 @@ void NoiseAnimator::setup()
 
 	noiseSizeMax = 100;//max noise displacement. plot box sizes are 100
 	params_NoiseX.setName("X");
-	noisePowerX.set("Power", 20, 0, noiseSizeMax);
+	noisePowerX.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
 	noiseSpeedX.set("Speed", 0.5, 0.1, 1);
 	noiseDeepX.set("Deep", 1, 1, 3);
 	params_NoiseX.add(ENABLE_NoiseX);
@@ -468,7 +472,7 @@ void NoiseAnimator::setup()
 	params_NoiseX.add(noiseDeepX);
 
 	params_NoiseY.setName("Y");
-	noisePowerY.set("Power", 20, 0, noiseSizeMax);
+	noisePowerY.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
 	noiseSpeedY.set("Speed", 0.5, 0.1, 1);
 	noiseDeepY.set("Deep", 1, 1, 3);
 	params_NoiseY.add(ENABLE_NoiseY);
@@ -477,7 +481,7 @@ void NoiseAnimator::setup()
 	params_NoiseY.add(noiseDeepY);
 
 	params_NoiseZ.setName("Z");
-	noisePowerZ.set("Power", 20, 0, noiseSizeMax);
+	noisePowerZ.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
 	noiseSpeedZ.set("Speed", 0.5, 0.1, 1);
 	noiseDeepZ.set("Deep", 1, 1, 3);
 	params_NoiseZ.add(ENABLE_NoiseZ);
@@ -583,8 +587,8 @@ void NoiseAnimator::setup()
 	params.add(params_Modulator);
 	params.add(Reset_Noise);
 
-	//guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
-	//params.add(guiManager.bMinimize);
+	guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
+	params.add(guiManager.bMinimize);//to use the callback
 
 	ofAddListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -1307,9 +1311,9 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			ENABLE_NoiseX = true;
 			ENABLE_NoiseY = true;
 			ENABLE_NoiseZ = false;
-			noisePowerX = 20;
-			noisePowerY = 20;
-			noisePowerZ = 20;
+			noisePowerX = DEFAUL_POWER;
+			noisePowerY = DEFAUL_POWER;
+			noisePowerZ = DEFAUL_POWER;
 			noiseDeepX = 1.0f;
 			noiseDeepY = 1.0f;
 			noiseDeepZ = 1.0f;

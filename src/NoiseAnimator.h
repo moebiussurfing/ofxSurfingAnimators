@@ -31,6 +31,8 @@
 
 #define PLOT_BOXES_SIZES 80
 
+#define DEFAUL_POWER 2
+
 
 class NoiseAnimator : public ofBaseApp
 {

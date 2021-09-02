@@ -127,8 +127,8 @@ void FloatAnimator::setup()
 	bpmMode.set("BPM Mode", true);
 	bpmSlow.set("Slow", false);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
-	bpmBeatDuration.set("Beat Duration", 4, 1, 8);
-	bpmBeatDelay.set("Beat Delay", 0, 0, 8);
+	bpmBeatDuration.set("B Duration", 4, 1, 8);
+	bpmBeatDelay.set("B Delay", 0, 0, 8);
 	params_Bpm.setName("BPM Engine");
 	params_Bpm.add(bpmSpeed);
 	params_Bpm.add(bpmMode);
