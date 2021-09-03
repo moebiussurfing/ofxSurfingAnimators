@@ -467,7 +467,8 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 
 		string name;
 		//name = "ANIMATOR";
-		name = "PANEL " + label;
+		name = label;
+		//name = "PANEL " + label;
 		panelName = name;
 
 		ImGuiCond flagCond = ImGuiCond_FirstUseEver;
@@ -492,7 +493,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 
 			guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
-			if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
+			if (ImGui::Button("START", ImVec2(_w100, 3 * _h))) {
 				start();
 			}
 
@@ -563,10 +564,10 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			}
 			else
 			{
-				if (!guiManager.bMinimize) {
-					guiManager.Add(duration, OFX_IM_DRAG);
-					guiManager.Add(animDelay, OFX_IM_DRAG);
-				}
+				//if (!guiManager.bMinimize) {
+				//	guiManager.Add(duration, OFX_IM_DRAG);
+				//	guiManager.Add(animDelay, OFX_IM_DRAG);
+				//}
 			}
 
 			if (bpmMode) {

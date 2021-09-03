@@ -385,6 +385,7 @@ public:
 
 public:
 	ofParameterGroup params;
+	ofParameter<bool> bEnableAnimator;
 
 	ofParameter<bool> ENABLE_Noise;
 	ofParameter<bool> ENABLE_Modulator;

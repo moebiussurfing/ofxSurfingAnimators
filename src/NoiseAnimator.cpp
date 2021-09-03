@@ -492,6 +492,9 @@ void NoiseAnimator::setup()
 	//-
 
 	ENABLE_Modulator.set("Modulator", false);
+	
+	bEnableAnimator.set("Enable Animator", true);
+	bEnableAnimator.setSerializable(false);
 
 	//filters
 #ifdef INCLUDE_FILTER
@@ -530,7 +533,6 @@ void NoiseAnimator::setup()
 	//params.setName("Noise Animator");
 	params.add(ENABLE_Noise);
 	params.add(ENABLE_Modulator);
-
 
 #ifdef INCLUDE_FILTER
 	//filters
@@ -602,6 +604,8 @@ void NoiseAnimator::setup()
 	params_Control.add(ENABLE_Modulator);
 	//params_Control.add(SHOW_Plot);
 
+	params_Control.add(bEnableAnimator);
+
 	//helpers
 	params_Helpers.setName("Noise Helpers");
 	params_Helpers.add(bGui);
@@ -658,6 +662,8 @@ void NoiseAnimator::setup()
 
 	// gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	guiManager.setSettingsPathLabel("NoiseAnimator");
+	guiManager.setAutoSaveSettings(true);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//guiManager.setup();//initiate ImGui
@@ -765,6 +771,8 @@ void NoiseAnimator::setupPlot_Noise()
 //void NoiseAnimator::update()
 void NoiseAnimator::update(ofEventArgs & args)
 {
+	if (!bEnableAnimator) return;
+
 	//workaround: to variate a the random seed
 	//TODO:
 	//if (0)
@@ -1101,9 +1109,11 @@ void NoiseAnimator::drawImGuiWidgets() {
 				//	flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 				//}
 				//flagst |= ImGuiTreeNodeFlags_Framed;
+				
+				guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 				if (ENABLE_Modulator)
-					if (ImGui::Button("START", ImVec2(_w100, 4 * _h))) {
+					if (ImGui::Button("START", ImVec2(_w100, 3 * _h))) {
 						start();
 					}
 
@@ -1164,6 +1174,8 @@ void NoiseAnimator::restart()
 //--------------------------------------------------------------
 void NoiseAnimator::start()
 {
+	if (!bEnableAnimator) return;
+
 	//cout << "start()" << endl;
 	if (ENABLE_Modulator)
 	{
