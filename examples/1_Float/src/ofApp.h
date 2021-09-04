@@ -8,14 +8,14 @@
 /*
 	OVERVIEW
 
-	This example shows how to use two animators float variables 
-	that will be applied to the y coord and the radius of a circle.
+	This example shows how to use two animators for float variables.
+	That will be applied to the y coord for the center and the radius of a circle.
 	One of the animators is linked to an ofParameter.
 
 	USAGE
 	
-	+ press space key to trig start both animators
-	+ press start button of each panel to trig start each animator
+	+ Press space key to trig start both animators.
+	+ Press start button of each panel to trig start each animator.
 
 */
 

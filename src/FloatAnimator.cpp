@@ -80,7 +80,6 @@ void FloatAnimator::setupGui()
 	ofLogNotice(__FUNCTION__);
 
 	guiManager.setSettingsPathLabel(label);
-	guiManager.setAutoSaveSettings(true);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//guiManager.setImGuiAutodraw(true);//TODO: required when only one instance ?
@@ -582,10 +581,10 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 					if (ImGui::Button("DOUBLE", ImVec2(_w50, _h))) {
 						bpmSpeed = bpmSpeed * 2.0f;
 					}
-					guiManager.Add(bpmSlow);
 				}
 				guiManager.Add(bpmBeatDuration);
 				guiManager.Add(bpmBeatDelay);
+				if (!guiManager.bMinimize) guiManager.Add(bpmSlow);
 			}
 
 			if (!guiManager.bMinimize) {

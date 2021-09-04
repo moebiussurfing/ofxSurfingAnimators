@@ -5,7 +5,7 @@ void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofSetCircleResolution(200);
 
-	animatorFloat1.setNameLabel("radius"); // optional: set a name
+	animatorFloat1.setNameLabel("Radius"); // optional: set a name
 	animatorFloat1.setup(); // Default limits are 0 to 1
 	//animatorFloat1.setup(1, 2); // But you can be customized too
 
@@ -18,19 +18,19 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	// get animators values
-	float myFloat1 = animatorFloat1.getValue(); // to radius aka scale
+	// Get animators values
+	float myFloat1 = animatorFloat1.getValue(); // to radius / scale
 	myParamFloat2 = animatorFloat2.getValue(); // update param too. not required if initiated with autoUpdate true!
 
 	//-
 
-	// draw scene
+	// Draw scene
 	{
 		ofSetBackgroundColor(16);
 		ofPushMatrix();
 		ofPushStyle();
 		int xx = ofGetWidth() * 0.5;
-		int yy = (ofGetHeight() * 0.5) - (150 * myParamFloat2.get());//get the param value
+		int yy = (ofGetHeight() * 0.5) - (150 * myParamFloat2.get()); // use the param value
 		ofTranslate(xx, yy);
 		ofScale(0.5 + 2 * myFloat1);
 		ofSetColor(0);
@@ -46,7 +46,7 @@ void ofApp::draw() {
 		ofPopMatrix();
 	}
 
-	// help
+	// Help
 	string s = "PRESS SPACE TO TRIG BOTH ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 10, 25);
 }
