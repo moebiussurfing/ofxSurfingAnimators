@@ -80,7 +80,7 @@ void EnvelopeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
 //--------------------------------------------------------------
 EnvelopeAnimator::EnvelopeAnimator()
 {
-	ofSetLogLevel(OF_LOG_SILENT);
+	//ofSetLogLevel(OF_LOG_SILENT);
 
 	doneInstantiated = true;
 	setFps(60);

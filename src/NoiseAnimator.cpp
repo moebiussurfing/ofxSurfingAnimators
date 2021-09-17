@@ -327,7 +327,7 @@ NoiseAnimator::NoiseAnimator()
 	float_BACK = NULL;
 	point_BACK = NULL;
 
-	ofSetLogLevel(OF_LOG_SILENT);
+	//ofSetLogLevel(OF_LOG_SILENT);
 
 	path_GLOBAL_Folder = "NoiseAnimator";
 	path_Settings = "settings_NoiseAnimator.xml";
@@ -589,8 +589,8 @@ void NoiseAnimator::setup()
 	params.add(params_Modulator);
 	params.add(Reset_Noise);
 
-	guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
-	params.add(guiManager.bMinimize);//to use the callback
+	//guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
+	//params.add(guiManager.bMinimize);//to use the callback
 
 	ofAddListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -671,6 +671,13 @@ void NoiseAnimator::setup()
 	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
 	//guiManager.setUseAdvancedSubPanel(true);
 #endif
+
+	//-
+
+	//--------------------------------------------------------------
+	listenerMinimize = guiManager.bMinimize.newListener([this](bool &b) {
+		refreshStyles();
+	});
 
 	//-
 
@@ -1385,7 +1392,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 
 	//-
 
-	// main enablers
+	// Main enablers
 
 	else if (name == ENABLE_Noise.getName())
 	{
@@ -1397,10 +1404,10 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == guiManager.bMinimize.getName())
-	{
-		refreshStyles();
-	}
+	//else if (name == guiManager.bMinimize.getName())
+	//{
+	//	refreshStyles();
+	//}
 
 	else if (name == bpmMode.getName())
 	{

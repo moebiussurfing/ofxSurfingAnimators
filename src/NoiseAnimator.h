@@ -452,6 +452,8 @@ private:
 private:
 	ofxAnimatableQueue queue;
 	void Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &);
+	
+	ofEventListener listenerMinimize;
 
 	//ofxPanel gui;
 	//glm::vec2 guiPos;
