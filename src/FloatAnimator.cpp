@@ -710,7 +710,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			{
 				ImGui::Indent();
 				{
-					guiManager.refresh();
+					guiManager.refreshLayout();
 					//ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
 					guiManager.Add(SHOW_Plot, OFX_IM_TOGGLE_SMALL);

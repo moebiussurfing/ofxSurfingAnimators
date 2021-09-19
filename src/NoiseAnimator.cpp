@@ -61,11 +61,11 @@ void NoiseAnimator::drawPlot() {
 		else {//ENABLE_Noise = true
 			if (ENABLE_Modulator)
 			{
-				//cout << ofToString(noisePos) << endl;
+				//ofLogNotice(_FUNCTION__) <<ofToString(noisePos);
 				if (abs(noisePos.x) > 0.001 || abs(noisePos.y) > 0.001) stateColor = true;
 				else stateColor = false;
 
-				//cout << ofToString(LPFpoint.value()) << endl;
+				//ofLogNotice(_FUNCTION__) <<ofToString(LPFpoint.value());
 				//if ((LPFpoint.value() != ofVec2f(0, 0)))
 
 				//if ((faderValue > 0)) {
@@ -185,8 +185,8 @@ void NoiseAnimator::drawPlot() {
 			// vflip
 			ny = -noisePos.y * ratio_PlotSize_noisePosY;
 
-			//cout << "nx:" << ofToString(nx);
-			//cout << " ny:" << ofToString(ny) << endl;
+			//ofLogNotice(_FUNCTION__) <<"nx:" << ofToString(nx);
+			//ofLogNotice(_FUNCTION__) <<" ny:" << ofToString(ny);
 			//strDebug += "nx:" + ofToString(nx);
 			//strDebug += "\";
 			//strDebug += "ny:" + ofToString(ny);
@@ -269,7 +269,7 @@ void NoiseAnimator::drawPlot() {
 				//
 				//    float tt = (ofGetElapsedTimeMillis() - lastStart) / 1000.f;
 				//    float ttPrc = ofMap(tt, 0, totalTime, 0, 100);
-				//    cout << "ttPrc:" << ttPrc << " dt:"<<dt<<endl;
+				//    ofLogNotice(_FUNCTION__) <<"ttPrc:" << ttPrc << " dt:"<<dt<<endl;
 				//}
 				//totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 				//queue.
@@ -359,7 +359,7 @@ void NoiseAnimator::startup()
 	setupPlot_Noise();
 
 	//-
-	
+
 	if (ENABLE_Noise) bRestoreTrue = true;
 
 	//seed engine
@@ -372,13 +372,17 @@ void NoiseAnimator::refreshStyles()
 {
 	guiManager.clearStyles();
 
-	//guiManager.AddGroupStyle(params, OFX_IM_GROUP_HIDDEN_HEADER);
+	//-
 
+	// A. Hardcoded Styles
+
+	//guiManager.AddStyleGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
+	
 #ifdef INCLUDE_FILTER
-	guiManager.AddGroupStyle(params_filters, OFX_IM_GROUP_COLLAPSED);
+	guiManager.AddStyleGroup(params_filters, OFX_IM_GROUP_COLLAPSED);
 #endif
-	guiManager.AddGroupStyle(params_Modulator, OFX_IM_GROUP_COLLAPSED);
-	guiManager.AddGroupStyle(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
+
+	guiManager.AddStyleGroup(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
 
 	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
@@ -402,6 +406,21 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
 
+	//-
+	
+	// B. Mode dependant Styles
+
+	// modulator
+	if (!ENABLE_Modulator)
+		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
+	else
+		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
+
+	// workaround 
+	//to fix recursive groups / api
+	guiManager.AddStyleGroup(params_Point, OFX_IM_GROUP_DEFAULT);
+
+	// minimize
 	if (guiManager.bMinimize) {
 		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
 
@@ -415,19 +434,7 @@ void NoiseAnimator::refreshStyles()
 		}
 
 		guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
-	}
-	else {
-		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_DEFAULT);
 
-		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
-		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
-
-		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
-	}
-
-	//-
-
-	if (guiManager.bMinimize) {
 		guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
 		guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
 		guiManager.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
@@ -437,6 +444,13 @@ void NoiseAnimator::refreshStyles()
 		guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
 	}
 	else {
+		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_DEFAULT);
+
+		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
+		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
+
+		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+
 		guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
 		guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
 		guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
@@ -492,7 +506,7 @@ void NoiseAnimator::setup()
 	//-
 
 	ENABLE_Modulator.set("Modulator", false);
-	
+
 	bEnableAnimator.set("Enable Animator", true);
 	bEnableAnimator.setSerializable(false);
 
@@ -543,13 +557,6 @@ void NoiseAnimator::setup()
 	params.add(params_filters);
 #endif
 
-	//params.add(SHOW_Plot);
-	params_Point.setName("Point");
-	params_Point.add(params_NoiseX);
-	params_Point.add(params_NoiseY);
-	params_Point.add(params_NoiseZ);
-	params.add(params_Point);
-
 	params_Modulator.setName("MODULATOR");
 	//params_Modulator.add(faderLoop);
 	params_Modulator.add(faderValue);
@@ -589,10 +596,14 @@ void NoiseAnimator::setup()
 	params_Modulator.add(animProgress);
 	params_Modulator.add(Reset_Modulator);
 	params.add(params_Modulator);
-	params.add(Reset_Noise);
 
-	//guiManager.AddStyle(guiManager.bMinimize, OFX_IM_HIDDEN);
-	//params.add(guiManager.bMinimize);//to use the callback
+	params_Point.setName("POINT");
+	params_Point.add(params_NoiseX);
+	params_Point.add(params_NoiseY);
+	params_Point.add(params_NoiseZ);
+	params.add(params_Point);
+
+	params.add(Reset_Noise);
 
 	ofAddListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -616,23 +627,6 @@ void NoiseAnimator::setup()
 	//params_Helpers.add(ENABLE_Noise);
 	//params_Helpers.add(ENABLE_Modulator);
 	//params_Helpers.add(SHOW_Plot);
-
-	//-
-
-	////gui
-	//gui.setup(label);
-	////gui.setup("6 NOISE");
-	//gui.setPosition(guiPos.x, guiPos.y);
-	//gui.add(params);
-	//gui.add(SHOW_Plot);
-
-	////collapse groups
-	////gui.getGroup("MODULATOR").minimizeAll();
-	//auto &g1 = gui.getGroup(label);//1st level
-	////g1.minimizeAll();
-	//auto &g2 = g1.getGroup("MODULATOR");//2nd level
-	//g2.minimize();
-	//g1.getGroup(params_filters.getName()).minimize();
 
 	//--
 
@@ -667,11 +661,6 @@ void NoiseAnimator::setup()
 	guiManager.setSettingsPathLabel("NoiseAnimator");
 	guiManager.setAutoSaveSettings(true);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
-
-	//guiManager.setup();//initiate ImGui
-	//guiManager.setImGuiAutodraw(true);
-	//guiManager.setImGuiAutodraw(false);//? TODO: improve multicontext mode..
-	//guiManager.setUseAdvancedSubPanel(true);
 #endif
 
 	//-
@@ -705,17 +694,17 @@ void NoiseAnimator::setupFader()
 	queue.addTransition(faderMin.get(), faderRelease.get(), faderAnim);
 
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
-	//cout << "totalTime: " << totalTime << endl;
+	//ofLogNotice(_FUNCTION__) <<"totalTime: " << totalTime;
 
 	//TODO
 	//totalFrames = totalTime * dt;
 
-	//cout << "setupFader()" << endl;
-	//cout << "totalTime   : " << totalTime << endl;
-	//cout << "faderDelay  : " << faderDelay << endl;
-	//cout << "faderAttack : " << faderAttack << endl;
-	//cout << "faderSustain: " << faderSustain << endl;
-	//cout << "faderRelease: " << faderRelease << endl;
+	//ofLogNotice(_FUNCTION__) <<"setupFader()";
+	//ofLogNotice(_FUNCTION__) <<"totalTime   : " << totalTime;
+	//ofLogNotice(_FUNCTION__) <<"faderDelay  : " << faderDelay;
+	//ofLogNotice(_FUNCTION__) <<"faderAttack : " << faderAttack;
+	//ofLogNotice(_FUNCTION__) <<"faderSustain: " << faderSustain;
+	//ofLogNotice(_FUNCTION__) <<"faderRelease: " << faderRelease;
 }
 
 //--------------------------------------------------------------
@@ -785,7 +774,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	//workaround: to variate a the random seed
 	//TODO:
 	//if (0)
-	if(bRestoreTrue)
+	if (bRestoreTrue)
 		if (ofGetFrameNum() == rSeed)
 		{
 			ENABLE_Noise = true;
@@ -796,8 +785,8 @@ void NoiseAnimator::update(ofEventArgs & args)
 	//TODO
 	//could improve noise system dimensions...
 	//maybe can we use msaPerlinNoise classes...
-	//cout << "noiseCountX:"<<noiseCountX<<endl;
-	//cout << "noiseCountY:"<<noiseCountY<<endl;
+	//ofLogNotice(_FUNCTION__) <<"noiseCountX:"<<noiseCountX<<endl;
+	//ofLogNotice(_FUNCTION__) <<"noiseCountY:"<<noiseCountY<<endl;
 
 	//-
 
@@ -941,7 +930,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 			totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
 			//animProgress = ofMap(time / 1000.f, 0, totalTime / globalTimeScale, 0, 100, true);
-			//cout << "faderValue:" << faderValue << endl;
+			//ofLogNotice(_FUNCTION__) <<"faderValue:" << faderValue;
 		}
 	}
 	if (!ENABLE_Modulator)
@@ -960,7 +949,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	{
 		LPFmodulator.setFc(ofMap(fc, 0.f, 1.f, 0.005f, 0.15f, true));
 		LPFmodulator.update(faderValue);
-}
+	}
 #endif
 
 	//--
@@ -1038,7 +1027,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	//cout << "noisePos:" << ofToString(noisePos) << endl;
+	//ofLogNotice(_FUNCTION__) <<"noisePos:" << ofToString(noisePos);
 
 	//TODO:
 	// pointer back
@@ -1113,12 +1102,6 @@ void NoiseAnimator::drawImGuiWidgets() {
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 
-				//static ImGuiTreeNodeFlags flagst = ImGuiTreeNodeFlags_None;
-				//if (!guiManager.bMinimize) {
-				//	flagst |= ImGuiTreeNodeFlags_DefaultOpen;
-				//}
-				//flagst |= ImGuiTreeNodeFlags_Framed;
-				
 				guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 				if (ENABLE_Modulator)
@@ -1131,12 +1114,10 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 				//-
 
-				ImGui::Dummy(ImVec2(0.0f, 2.0f));
+				ImGui::Spacing();
 
-				//ofxImGuiSurfing::AddGroup(params, flags);
+				// All the parameters
 				guiManager.AddGroup(params);
-				//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, SurfingImGuiTypesGroups::OFX_IM_GROUP_HIDDEN_HEADER);
-
 
 				if (!guiManager.bMinimize) {
 
@@ -1152,7 +1133,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 				//--
 
-				// plot fbo
+				// Plot fbo
 				if (!guiManager.bMinimize) {
 					if (SHOW_Plot)
 					{
@@ -1185,10 +1166,10 @@ void NoiseAnimator::start()
 {
 	if (!bEnableAnimator) return;
 
-	//cout << "start()" << endl;
+	//ofLogNotice(_FUNCTION__) <<"start()";
 	if (ENABLE_Modulator)
 	{
-		//cout << "NoiseAnimator START" << endl;
+		//ofLogNotice(_FUNCTION__) <<"NoiseAnimator START";
 
 		//mark
 		//plot->update(1);
@@ -1211,7 +1192,7 @@ void NoiseAnimator::start()
 //--------------------------------------------------------------
 void NoiseAnimator::stop()
 {
-	//cout << "stop()" << endl;
+	//ofLogNotice(_FUNCTION__) <<"stop()";
 	if (ENABLE_Modulator)
 	{
 		faderValue = faderMin.get();
@@ -1418,21 +1399,18 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 
 	else if (name == ENABLE_Modulator.getName())
 	{
+		refreshStyles();
+
 		// workflow
 		if (!ENABLE_Modulator)
 		{
 			faderValue = faderMax.get();
-			//gui.getGroup("Noise Animator").getGroup("MODULATOR").minimize();
 		}
 		else
 		{
 			if (!ENABLE_Noise) ENABLE_Noise = true;
 			stop();
 			//faderValue = faderMin;
-
-			//// workflow
-			//gui.getGroup("Noise Animator").getGroup("MODULATOR").minimize();//avoid add-empty-space bug
-			//gui.getGroup("Noise Animator").getGroup("MODULATOR").maximize();
 		}
 	}
 }
