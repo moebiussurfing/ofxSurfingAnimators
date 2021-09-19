@@ -384,7 +384,7 @@ public:
 	//--
 
 public:
-	ofParameterGroup params;
+	ofParameterGroup params;//Notice that all contained params will be added to the gui.
 	ofParameterGroup params_Point;
 	ofParameter<bool> bEnableAnimator;
 

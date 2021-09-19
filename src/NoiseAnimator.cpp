@@ -377,41 +377,27 @@ void NoiseAnimator::refreshStyles()
 	// A. Hardcoded Styles
 
 	//guiManager.AddStyleGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
-	
 #ifdef INCLUDE_FILTER
 	guiManager.AddStyleGroup(params_filters, OFX_IM_GROUP_COLLAPSED);
 #endif
-
 	guiManager.AddStyleGroup(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
-
 	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
-
 	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
-
 #ifdef INCLUDE_FILTER
 	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 #endif
-
-	guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
-	guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
-	guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
-
-	guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
-
 	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
 
 	//-
-	
+
 	// B. Mode dependant Styles
 
-	// modulator
-	if (!ENABLE_Modulator)
+	// Modulator
+	if (!ENABLE_Modulator || (guiManager.bMinimize))
 		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
 	else
 		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
@@ -420,10 +406,10 @@ void NoiseAnimator::refreshStyles()
 	//to fix recursive groups / api
 	guiManager.AddStyleGroup(params_Point, OFX_IM_GROUP_DEFAULT);
 
-	// minimize
+	// Minimize
 	if (guiManager.bMinimize) {
-		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
-
+		guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
+		
 		if (bpmMode) {
 			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
 			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
@@ -432,8 +418,6 @@ void NoiseAnimator::refreshStyles()
 			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
 			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_DEFAULT);
 		}
-
-		guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
 
 		guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
 		guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
@@ -444,60 +428,101 @@ void NoiseAnimator::refreshStyles()
 		guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
 	}
 	else {
-		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_DEFAULT);
-
+		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+		
 		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
 		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
 
-		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
 
-		guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
-		guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
-		guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
 
-		guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
-		guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
-		guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
+		// force
+
+		if (ENABLE_NoiseX) {
+			guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
+			guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
+			guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
+		}
+		else
+		{
+			guiManager.AddStyle(noisePowerX, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
+		}
+
+		if (ENABLE_NoiseY) {
+			guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
+			guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
+			guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
+		}
+		else
+		{
+			guiManager.AddStyle(noisePowerY, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
+		}
+
+		if (ENABLE_NoiseZ) {
+			guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
+			guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
+			guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
+		}
+		else
+		{
+			guiManager.AddStyle(noisePowerZ, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
+			guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
+		}
 	}
+
+	//guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
+	//guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
+	//guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
+
+	guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
 }
 
 //--------------------------------------------------------------
 void NoiseAnimator::setup()
 {
-	//ofxSurfingHelpers::setThemeDark_ofxGui();
-
-	//fc = 0.05;
-
 	ENABLE_Noise.set("Enable Noise", true);
 
-	ENABLE_NoiseX.set("ENABLE", true);
-	ENABLE_NoiseY.set("ENABLE", true);
-	ENABLE_NoiseZ.set("ENABLE", true);
+	ENABLE_NoiseX.set("ENABLE X", true);
+	ENABLE_NoiseY.set("ENABLE Y", true);
+	ENABLE_NoiseZ.set("ENABLE Z", true);
+
 	Reset_Noise.set("Reset Noise", false);
 
 	noiseSizeMax = 100;//max noise displacement. plot box sizes are 100
 	params_NoiseX.setName("X");
-	noisePowerX.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
-	noiseSpeedX.set("Speed", 0.5, 0.1, 1);
-	noiseDeepX.set("Deep", 1, 1, 3);
+	noisePowerX.set("PowerX", DEFAUL_POWER, 0, noiseSizeMax);
+	noiseSpeedX.set("SpeedX", 0.5, 0.1, 1);
+	noiseDeepX.set("DeepX", 1, 1, 3);
 	params_NoiseX.add(ENABLE_NoiseX);
 	params_NoiseX.add(noisePowerX);
 	params_NoiseX.add(noiseSpeedX);
 	params_NoiseX.add(noiseDeepX);
 
 	params_NoiseY.setName("Y");
-	noisePowerY.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
-	noiseSpeedY.set("Speed", 0.5, 0.1, 1);
-	noiseDeepY.set("Deep", 1, 1, 3);
+	noisePowerY.set("PowerY", DEFAUL_POWER, 0, noiseSizeMax);
+	noiseSpeedY.set("SpeedY", 0.5, 0.1, 1);
+	noiseDeepY.set("DeepY", 1, 1, 3);
 	params_NoiseY.add(ENABLE_NoiseY);
 	params_NoiseY.add(noisePowerY);
 	params_NoiseY.add(noiseSpeedY);
 	params_NoiseY.add(noiseDeepY);
 
 	params_NoiseZ.setName("Z");
-	noisePowerZ.set("Power", DEFAUL_POWER, 0, noiseSizeMax);
-	noiseSpeedZ.set("Speed", 0.5, 0.1, 1);
-	noiseDeepZ.set("Deep", 1, 1, 3);
+	noisePowerZ.set("PowerZ", DEFAUL_POWER, 0, noiseSizeMax);
+	noiseSpeedZ.set("SpeedZ", 0.5, 0.1, 1);
+	noiseDeepZ.set("DeepZ", 1, 1, 3);
 	params_NoiseZ.add(ENABLE_NoiseZ);
 	params_NoiseZ.add(noisePowerZ);
 	params_NoiseZ.add(noiseSpeedZ);
@@ -510,7 +535,7 @@ void NoiseAnimator::setup()
 	bEnableAnimator.set("Enable Animator", true);
 	bEnableAnimator.setSerializable(false);
 
-	//filters
+	// filters
 #ifdef INCLUDE_FILTER
 	ENABLE_NoiseModulatorFilter.set("FILTER MODULATOR", true);
 	fc.set("LPF Modulator", 0.5f, 0.f, 1.f);
@@ -534,7 +559,7 @@ void NoiseAnimator::setup()
 	curveShow.set("Show Curve", false);
 	animProgress.set("%", 0, 0, 100);
 
-	//disable for xml serialize (not required)
+	// disable for xml serialize (not required)
 	faderLoop.setSerializable(false);
 	curveName.setSerializable(false);
 	animProgress.setSerializable(false);
@@ -549,7 +574,7 @@ void NoiseAnimator::setup()
 	params.add(ENABLE_Modulator);
 
 #ifdef INCLUDE_FILTER
-	//filters
+	// filters
 	params_filters.add(ENABLE_NoisePointFilter);
 	params_filters.add(fcPoint);
 	params_filters.add(ENABLE_NoiseModulatorFilter);
@@ -558,7 +583,6 @@ void NoiseAnimator::setup()
 #endif
 
 	params_Modulator.setName("MODULATOR");
-	//params_Modulator.add(faderLoop);
 	params_Modulator.add(faderValue);
 	params_Modulator.add(faderMax);
 	params_Modulator.add(faderMin);
@@ -570,7 +594,7 @@ void NoiseAnimator::setup()
 	params_Timers.add(faderRelease);
 	params_Modulator.add(params_Timers);
 
-	//bpm engine
+	// bpm engine
 	bpmMode.set("BPM Mode", true);
 	bpmSpeed.set("BPM", 120.f, 10.f, 400.f);
 	bpmBeatDelay.set("PreDelay Beat", 1, 0, 8);
@@ -585,11 +609,9 @@ void NoiseAnimator::setup()
 	params_Bpm.add(bpmBeatAttack);
 	params_Bpm.add(bpmBeatSustain);
 	params_Bpm.add(bpmBeatRelease);
-
-	params_Modulator.add(params_Bpm);
-
 	//ofAddListener(params_Bpm.parameterChangedE(), this, &NoiseAnimator::Changed_params_Bpm);
 
+	params_Modulator.add(params_Bpm);
 	params_Modulator.add(curveType);
 	params_Modulator.add(curveName);
 	params_Modulator.add(curveShow);
@@ -609,17 +631,18 @@ void NoiseAnimator::setup()
 
 	//-
 
-	//controls
+	// Controls
 	params_Control.setName("Noise Controls");
-	//params_Control.setName(label);
-	//params_Control.setName(label + " CONTROLS");
+	params_Control.add(bEnableAnimator);
 	params_Control.add(ENABLE_Noise);
 	params_Control.add(ENABLE_Modulator);
-	//params_Control.add(SHOW_Plot);
 
-	params_Control.add(bEnableAnimator);
+	//params_Control.add(ENABLE_NoiseX);
+	//params_Control.add(ENABLE_NoiseY);
+	//params_Control.add(ENABLE_NoiseZ);
+	//ofAddListener(params_Control.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
-	//helpers
+	// Helpers
 	params_Helpers.setName("Noise Helpers");
 	params_Helpers.add(bGui);
 	//params_Helpers.setName(label);
@@ -630,7 +653,7 @@ void NoiseAnimator::setup()
 
 	//--
 
-	// plot
+	// Plot
 	//plotShape = ImVec2(210, 315);
 	plotShape = ImVec2(210, 200);
 	ofFbo::Settings fboSettings;
@@ -656,7 +679,7 @@ void NoiseAnimator::setup()
 
 	//-
 
-	// gui
+	// Gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	guiManager.setSettingsPathLabel("NoiseAnimator");
 	guiManager.setAutoSaveSettings(true);
@@ -672,7 +695,7 @@ void NoiseAnimator::setup()
 
 	//-
 
-	// styles
+	// Styles
 
 	refreshStyles();
 
@@ -802,7 +825,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	//1. pre calcultate point x,y noise
+	//1. Pre calcultate point x,y noise
 
 	if (ENABLE_Noise)
 	{
@@ -898,7 +921,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 #ifdef INCLUDE_FILTER
 	if (ENABLE_NoisePointFilter)
 	{
-		LPFpoint.setFc(ofMap(fcPoint, 0.f, 1.f, 0.001f, 0.05f, true));
+		LPFpoint.setFc(ofMap(fcPoint, 1.f, 0.f, 0.01f, 0.05f, true));
 		LPFpoint.update(ofVec3f(noiseX, noiseY, noiseZ));
 		//LPFpoint.update(ofVec2f(noiseX, noiseY));
 
@@ -940,21 +963,22 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	// 4. filter
+	// 4. Filter
 
-	// modulator
+	// Modulator
 
 #ifdef INCLUDE_FILTER
 	if (ENABLE_NoiseModulatorFilter)
 	{
-		LPFmodulator.setFc(ofMap(fc, 0.f, 1.f, 0.005f, 0.15f, true));
+		LPFmodulator.setFc(ofMap(fc, 1.f, 0.f, 0.01f, 0.5f, true));
+		//LPFmodulator.setFc(ofMap(fc, 1.f, 0.f, 0.005f, 0.15f, true));
 		LPFmodulator.update(faderValue);
 	}
 #endif
 
 	//--
 
-	// modulator envelope plot
+	// Modulator envelope plot
 
 #ifdef INCLUDE_PLOTS
 #ifdef INCLUDE_FILTER
@@ -968,7 +992,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	// 5. final apply
+	// 5. Final apply
 
 #ifdef INCLUDE_FILTER
 	if (ENABLE_NoiseModulatorFilter)
@@ -1213,6 +1237,9 @@ NoiseAnimator::~NoiseAnimator()
 
 	ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
 	ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
+	
+	ofRemoveListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
+	//ofRemoveListener(params_Control.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
 	exit();
 }
@@ -1387,11 +1414,6 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	//else if (name == guiManager.bMinimize.getName())
-	//{
-	//	refreshStyles();
-	//}
-
 	else if (name == bpmMode.getName())
 	{
 		refreshStyles();
@@ -1412,5 +1434,18 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			stop();
 			//faderValue = faderMin;
 		}
+	}
+
+	else if (name == ENABLE_NoiseX.getName())
+	{
+		refreshStyles();
+	}
+	else if (name == ENABLE_NoiseY.getName())
+	{
+		refreshStyles();
+	}
+	else if (name == ENABLE_NoiseZ.getName())
+	{
+		refreshStyles();
 	}
 }
