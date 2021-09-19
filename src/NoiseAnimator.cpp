@@ -383,7 +383,7 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
 
-	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_BIG);
+	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
 
 #ifdef INCLUDE_FILTER
 	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
@@ -399,7 +399,7 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
 
 	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_BIG);
+	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
 
 	if (guiManager.bMinimize) {
@@ -544,9 +544,11 @@ void NoiseAnimator::setup()
 #endif
 
 	//params.add(SHOW_Plot);
-	params.add(params_NoiseX);
-	params.add(params_NoiseY);
-	params.add(params_NoiseZ);
+	params_Point.setName("Point");
+	params_Point.add(params_NoiseX);
+	params_Point.add(params_NoiseY);
+	params_Point.add(params_NoiseZ);
+	params.add(params_Point);
 
 	params_Modulator.setName("MODULATOR");
 	//params_Modulator.add(faderLoop);
@@ -584,8 +586,8 @@ void NoiseAnimator::setup()
 	params_Modulator.add(curveType);
 	params_Modulator.add(curveName);
 	params_Modulator.add(curveShow);
-	params_Modulator.add(Reset_Modulator);
 	params_Modulator.add(animProgress);
+	params_Modulator.add(Reset_Modulator);
 	params.add(params_Modulator);
 	params.add(Reset_Noise);
 
