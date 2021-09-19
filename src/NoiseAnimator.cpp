@@ -245,6 +245,7 @@ void NoiseAnimator::drawPlot() {
 
 		// 4. curve type
 		// hide curve plot when attack/release are 0
+		if(0)//broken
 		if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator)
 		{
 			if (curveShow)
@@ -376,11 +377,14 @@ void NoiseAnimator::refreshStyles()
 
 	// A. Hardcoded Styles
 
+	// groups
 	//guiManager.AddStyleGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
 #ifdef INCLUDE_FILTER
 	guiManager.AddStyleGroup(params_filters, OFX_IM_GROUP_COLLAPSED);
 #endif
 	guiManager.AddStyleGroup(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
+
+	// params
 	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
@@ -389,7 +393,7 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
 #endif
 	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(Reset_Modulator, OFX_IM_TOGGLE_SMALL);
+	guiManager.AddStyle(Reset_Modulator, OFX_IM_BUTTON_SMALL);
 	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
 
 	//-
@@ -397,10 +401,14 @@ void NoiseAnimator::refreshStyles()
 	// B. Mode dependant Styles
 
 	// Modulator
-	if (!ENABLE_Modulator || (guiManager.bMinimize))
+	if (!ENABLE_Modulator || (guiManager.bMinimize)) {
 		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
-	else
+		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);//-> affected bc recursive
+	}
+	else {
 		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
+		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_COLLAPSED);
+	}
 
 	// workaround 
 	//to fix recursive groups / api
@@ -408,7 +416,7 @@ void NoiseAnimator::refreshStyles()
 
 	// Minimize
 	if (guiManager.bMinimize) {
-		guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
+		//guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
 		
 		if (bpmMode) {
 			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
@@ -428,7 +436,7 @@ void NoiseAnimator::refreshStyles()
 		guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
 	}
 	else {
-		guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
 		
 		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
 		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
@@ -614,7 +622,7 @@ void NoiseAnimator::setup()
 	params_Modulator.add(params_Bpm);
 	params_Modulator.add(curveType);
 	params_Modulator.add(curveName);
-	params_Modulator.add(curveShow);
+	//params_Modulator.add(curveShow);
 	params_Modulator.add(animProgress);
 	params_Modulator.add(Reset_Modulator);
 	params.add(params_Modulator);
@@ -1361,7 +1369,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		if (Reset_Modulator)
 		{
 			Reset_Modulator = false;
-			ENABLE_Modulator = false;
+
+			//ENABLE_Modulator = false;
 
 			faderValue = faderMin;
 

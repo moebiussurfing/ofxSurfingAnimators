@@ -355,6 +355,7 @@ void EnvelopeAnimator::drawPlot()
 	if (faderRelease != 0 || faderAttack != 0)
 	{
 		//curve type
+		if(0)//broken
 		if (curveShow)
 		{
 			curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);

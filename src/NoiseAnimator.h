@@ -2,6 +2,9 @@
 
 #include "ofMain.h"
 
+//TODO:
+// fix show curve plot
+
 //-
 
 #define INCLUDE_FILTER	// Filter the point to avoid abrupt changes
