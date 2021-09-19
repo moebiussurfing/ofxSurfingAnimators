@@ -39,35 +39,6 @@
 
 class NoiseAnimator : public ofBaseApp
 {
-
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-public:
-	ofxSurfing_ImGui_Manager guiManager;
-#endif
-
-private:
-	bool bOpened = false;
-	//bool bParams = true;
-
-public:
-	void drawImGuiWidgets();
-
-	float widthGuiLayout;
-	float heightGuiLayout;
-	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
-	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
-		glm::vec2(0,0),
-		glm::vec2(ofGetWidth(), ofGetHeight())
-	};
-
-private:
-	ofFbo fboPlot;
-	ofFbo fboPlot2;
-	ImVec2 plotShape;
-	void drawPlot();
-
-	bool bRestoreTrue = false;
-
 	//-
 
 public:
@@ -75,20 +46,35 @@ public:
 	~NoiseAnimator();
 
 public:
+	void setup();
+	void update(ofEventArgs & args);
+	void draw(ofEventArgs & args);
+	void exit();
+	void startup();
+	
+	//--
+
+public:
+	//void update(float _dt)
+	//{
+	//	dt = _dt;
+	//	update();
+	//}
+
+	//void draw();
+	//void draw(bool disabled);
+
+public:
+	void restart();
+	void start();
+	void stop();
+
+private:
 	void refreshStyles();
 
 public:
-	void setup();
-	void startup();
-
-	void update(ofEventArgs & args);
-	void draw(ofEventArgs & args);
-	//void update();
-	//void draw();
-
-//private:
-	//void update(ofEventArgs & args);
-	//void draw(ofEventArgs & args);
+	void nextCurve();
+	void previousCurve();
 
 private:
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
@@ -128,26 +114,37 @@ private:
 
 	//bool bDisabled = false;//TODO: whats is doing this?
 
+	//--
+
+#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 public:
-	//void update(float _dt)
-	//{
-	//	dt = _dt;
-	//	update();
-	//}
+	ofxSurfing_ImGui_Manager guiManager;
+#endif
 
-	//void draw();
-	//void draw(bool disabled);
+private:
+	bool bOpened = false;
+	//bool bParams = true;
 
 public:
-	void exit();
+	void drawImGuiWidgets();
 
-	void restart();
-	void start();
-	void stop();
+	float widthGuiLayout;
+	float heightGuiLayout;
+	ofParameter<glm::vec2> positionGuiLayout{ "Gui PLot Position",
+	glm::vec2(ofGetWidth() / 2,ofGetHeight() / 2),//center
+		glm::vec2(0,0),
+		glm::vec2(ofGetWidth(), ofGetHeight())
+	};
 
-	void nextCurve();
-	void previousCurve();
+private:
+	ofFbo fboPlot;
+	ofFbo fboPlot2;
+	ImVec2 plotShape;
+	void drawPlot();
 
+	bool bRestoreTrue = false;
+
+public:
 	//--------------------------------------------------------------
 	void float_TARGET(float &f)
 	{
@@ -318,6 +315,7 @@ public:
 	void setNameLabel(string s)
 	{
 		label = s;
+		path_Settings = label + ".xml";
 
 		//TODO:
 		bGui.setName(s);
