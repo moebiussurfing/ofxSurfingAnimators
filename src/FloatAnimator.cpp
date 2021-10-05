@@ -603,7 +603,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		//-
 
-		// animator group
+		// Animator group
 
 		flagst = ImGuiTreeNodeFlags_None;
 		flagst |= ImGuiTreeNodeFlags_Framed;
@@ -718,10 +718,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 					//-
 
-					guiManager.Add(guiManager.bAdvanced, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-					//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bAdvanced);
-
-					if (guiManager.bExtra) guiManager.drawAdvancedSubPanel();
+					if (guiManager.bExtra) guiManager.drawAdvanced();
 				}
 				ImGui::Unindent();
 			}
@@ -825,8 +822,8 @@ void FloatAnimator::drawCurve(glm::vec2 &p)
 
 		ofPopStyle();
 	}
-
 }
+
 //--------------------------------------------------------------
 FloatAnimator::~FloatAnimator()
 {

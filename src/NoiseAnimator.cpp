@@ -1159,7 +1159,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 					//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-					guiManager.drawAdvancedSubPanel();
+					guiManager.drawAdvanced();
 #endif
 				}
 
