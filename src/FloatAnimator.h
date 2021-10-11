@@ -63,11 +63,15 @@ public:
 
 	//-
 
+	ofParameter<float> paramLinked{ "-1", 0, 0, 0 };
+
 	//TODO://use &
 	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) { // only use to set min/max range but not auto update the param value!
 	
 	//--------------------------------------------------------------
 	void setup(ofParameter<float> &paramFloat) { // only use to set min/max range but not auto update the param value!
+		paramLinked.makeReferenceTo(paramFloat);
+
 		//bAutoUpdate = autoUpdate;
 		setNameLabel(paramFloat.getName());
 		setup(paramFloat.getMin(), paramFloat.getMax());

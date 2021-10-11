@@ -334,6 +334,8 @@ void FloatAnimator::update(ofEventArgs & args)
 		//	if (paramFloat.getName() != "-1")
 		//		paramFloat = value;
 		//}
+
+		paramLinked.set(value);
 	}
 
 	//-

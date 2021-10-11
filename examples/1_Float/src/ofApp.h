@@ -9,8 +9,10 @@
 	OVERVIEW
 
 	This example shows how to use two animators for float variables.
-	That will be applied to the y coord for the center and the radius of a circle.
 	One of the animators is linked to an ofParameter.
+	
+	SCENE
+	We will control the y coord for the center and the radius of a circle.
 
 	USAGE
 	
@@ -23,6 +25,7 @@
 class ofApp : public ofBaseApp 
 {
 public:
+
 	void setup();
 	void draw();
 	void keyPressed(int key);
@@ -30,8 +33,8 @@ public:
 	void startTween();
 	void stopTween();
 
-	FloatAnimator animatorFloat1;
+	FloatAnimator animator1_Float;
+	FloatAnimator animator2_FloatParam;
 
-	FloatAnimator animatorFloat2;
-	ofParameter<float>myParamFloat2 {"myParamFloat2", 0.5f, 0, 1};
+	ofParameter<float>value_2 {"value_2", 0.5f, 0, 1};
 };

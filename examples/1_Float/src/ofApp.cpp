@@ -5,12 +5,12 @@ void ofApp::setup() {
 	ofSetFrameRate(60);
 	ofSetCircleResolution(200);
 
-	animatorFloat1.setNameLabel("Radius"); // optional: set a name
-	animatorFloat1.setup(); // Default limits are 0 to 1
-	//animatorFloat1.setup(1, 2); // But you can be customized too
+	animator1_Float.setNameLabel("Radius"); // Optional: set a name
+	animator1_Float.setup(); // Default limits are 0 to 1
+	//animator1_Float.setup(1, 2); // But you can be customized too
 
-	myParamFloat2.setName("yPos");
-	animatorFloat2.setup(myParamFloat2); // ofParam, autoUpdate
+	value_2.setName("yPos");
+	animator2_FloatParam.setup(value_2); // ofParam, autoUpdate
 
 	startTween();
 }
@@ -19,8 +19,7 @@ void ofApp::setup() {
 void ofApp::draw() {
 
 	// Get animators values
-	float myFloat1 = animatorFloat1.getValue(); // to radius / scale
-	myParamFloat2 = animatorFloat2.getValue(); // update param too. not required if initiated with autoUpdate true!
+	float value_1 = animator1_Float.getValue(); // To radius / scale
 
 	//-
 
@@ -30,9 +29,9 @@ void ofApp::draw() {
 		ofPushMatrix();
 		ofPushStyle();
 		int xx = ofGetWidth() * 0.5;
-		int yy = (ofGetHeight() * 0.5) - (150 * myParamFloat2.get()); // use the param value
+		int yy = (ofGetHeight() * 0.5) - (150 * value_2.get()); // Use the param value
 		ofTranslate(xx, yy);
-		ofScale(0.5 + 2 * myFloat1);
+		ofScale(0.5 + 2 * value_1);
 		ofSetColor(0);
 		int r = 100;
 		int x = 0;
@@ -62,13 +61,13 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::startTween() {
-	animatorFloat1.start();
-	animatorFloat2.start();
+	animator1_Float.start();
+	animator2_FloatParam.start();
 }
 
 //--------------------------------------------------------------
 void ofApp::stopTween() {
-	animatorFloat1.stop();
-	animatorFloat2.stop();
+	animator1_Float.stop();
+	animator2_FloatParam.stop();
 }
 
