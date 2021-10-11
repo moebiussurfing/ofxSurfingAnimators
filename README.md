@@ -42,16 +42,17 @@ Some classes to faster integration into your _OF Apps / Add-ons_:
 * **Setters** for _Start/End_, time mode, duration and pre pause, curve tween types, loop modes, repeats ...etc. 
 
 ## Dependencies
-* [ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
-* [ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [Fork]
-* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets) [Optional]  
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/)  [ _Fork_ ]  
+* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  [ _Optional_ ]  
+* [ofxSurfingPlayer](https://github.com/moebiussurfing/ofxSurfingPlayer)  [ _Optional_ ]  
 
-Bundled into ```OF_ADDON/libs```.  
-No need to add manually to the **PROJECT GENERATOR**!    
-[ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)[Optional] Used to Filter the Noise Point  
+Already bundled into ```OF_ADDON/libs```.  
+No need to add manually to the **PROJECT GENERATOR**!  
+[ofxAnimatable](https://github.com/armadillu/ofxAnimatable)  
+[ofxHistoryPlot](https://github.com/moebiussurfing/ofxHistoryPlot)  
+[ofxBiquadFilter](https://github.com/dzlonline/ofxBiquadFilter)  [ _Optional_. Used to Filter the Noise Point ]  
 
 ## Usage
 - Look the Examples.
@@ -81,8 +82,8 @@ void keyPressed(int key){
 - **Windows10** / **VS2017** / **OF ~0.11**
 
 ## Author
-Addon by **@moebiusSurfing**  
-*(ManuMolina). 2020.*
+Add-on by **@moebiusSurfing**  
+*( ManuMolina ). 2020. 2021*
 
 ## License
 MIT License
