@@ -12,6 +12,7 @@
 	One of the animators is linked to an ofParameter.
 	
 	SCENE
+
 	We will control the y coord for the center and the radius of a circle.
 
 	USAGE

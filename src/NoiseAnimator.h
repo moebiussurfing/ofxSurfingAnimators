@@ -7,12 +7,12 @@
 
 //-
 
-#define INCLUDE_FILTER	// Filter the point to avoid abrupt changes
-
-#define INCLUDE_PLOTS		// Plotting can be disabled without affecting the functionality
+#define INCLUDE_FILTER // Filter the point to avoid abrupt changes
+#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
 
 //-
 
+//#define SURFING_ANIMATOR_ENABLE_AUTO_DRAW // -> disabled to fix some problems...
 
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
@@ -42,47 +42,62 @@ class NoiseAnimator : public ofBaseApp
 	//-
 
 public:
+
 	NoiseAnimator();
 	~NoiseAnimator();
 
 public:
+
 	void setup();
 	void update(ofEventArgs & args);
+
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	void draw(ofEventArgs & args);
+#endif
+
 	void exit();
 	void startup();
 	
 	//--
 
 public:
+
 	//void update(float _dt)
 	//{
 	//	dt = _dt;
 	//	update();
 	//}
 
-	//void draw();
+#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+	void draw();
+#endif
+	
 	//void draw(bool disabled);
 
 public:
+
 	void restart();
 	void start();
 	void stop();
 
 private:
+
 	void refreshStyles();
 
 public:
+
 	void nextCurve();
 	void previousCurve();
 
 private:
+
 	std::string path_GLOBAL_Folder;//top parent folder for all other subfolders
 	std::string path_Settings;
 
 	int rSeed;
 
 public:
+
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(string folder)
 	{
@@ -93,6 +108,7 @@ public:
 
 #ifdef INCLUDE_FILTER
 public:
+
 	ofParameter<bool> ENABLE_NoiseModulatorFilter;
 	ofParameter<bool> ENABLE_NoisePointFilter;
 
@@ -109,6 +125,7 @@ private:
 #endif
 
 private:
+
 	bool bCustomPositionPlot = false;
 	glm::vec2 positionPlot{ 200, 50 };
 
@@ -118,14 +135,17 @@ private:
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 public:
+
 	ofxSurfing_ImGui_Manager guiManager;
 #endif
 
 private:
+
 	bool bOpened = false;
 	//bool bParams = true;
 
 public:
+
 	void drawImGuiWidgets();
 
 	float widthGuiLayout;
@@ -137,6 +157,7 @@ public:
 	};
 
 private:
+
 	ofFbo fboPlot;
 	ofFbo fboPlot2;
 	ImVec2 plotShape;
@@ -145,6 +166,7 @@ private:
 	bool bRestoreTrue = false;
 
 public:
+
 	//--------------------------------------------------------------
 	void float_TARGET(float &f)
 	{
@@ -169,9 +191,11 @@ public:
 	}
 
 private:
+
 	float fps;
 
 public:
+
 	//--------------------------------------------------------------
 	void setFps(float _fps)
 	{

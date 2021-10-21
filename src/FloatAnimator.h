@@ -21,6 +21,7 @@ This is a base class to other derivated like: position, color...etc.
 
 //----
 
+//#define SURFING_ANIMATOR_ENABLE_AUTO_DRAW // -> disabled to fix some problems...
 
 //#define USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 
@@ -33,6 +34,7 @@ This is a base class to other derivated like: position, color...etc.
 #ifdef USE_SURFING_PRESETS
 #include "ofxSurfingPresets.h"
 #endif
+
 
 class FloatAnimator
 {
@@ -97,14 +99,18 @@ public:
 //private:
 
 	//void update();
-	//void draw();
 	//void update(float _dt)
 	//{
 	//	dt = _dt;
 	//	update();
 	//}
 
+#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+	void draw();
+#endif
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	void draw(ofEventArgs & args);
+#endif
 
 public:
 	

@@ -18,7 +18,11 @@ FloatAnimator::FloatAnimator()
 	//guiPos = glm::vec2(500, 500);
 
 	ofAddListener(ofEvents().update, this, &FloatAnimator::update);
+
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+	//ofAddListener(ofEvents().draw, this, &FloatAnimator::draw, OF_EVENT_ORDER_AFTER_APP);
 	ofAddListener(ofEvents().draw, this, &FloatAnimator::draw, OF_EVENT_ORDER_AFTER_APP);
+#endif
 }
 
 //--------------------------------------------------------------
@@ -354,7 +358,13 @@ void FloatAnimator::update(ofEventArgs & args)
 }
 
 //--------------------------------------------------------------
+
+#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+void FloatAnimator::draw()
+#endif
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 void FloatAnimator::draw(ofEventArgs & args)
+#endif
 {
 	if (!bGui) return;
 
@@ -539,7 +549,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		{
 			presets.draw_ImGui_Minimal();
 			//ImGui::TreePop();
-		}
+	}
 #endif
 
 
@@ -590,7 +600,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			}
 
 			if (!guiManager.bMinimize) {
-				if (ImGui::Button("Reset Time", ImVec2(_w100, 2*_h)))
+				if (ImGui::Button("Reset Time", ImVec2(_w100, 2 * _h)))
 				{
 					bpmSpeed = 120;
 					animDelay = 0.f;
@@ -679,7 +689,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		//--
 
 		// plot fbo
-		if (!guiManager.bMinimize) 
+		if (!guiManager.bMinimize)
 		{
 			if (SHOW_Plot)
 			{
@@ -729,7 +739,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		//--
 
 		guiManager.endWindow();
-	}
+}
 }
 
 //--------------------------------------------------------------
@@ -835,7 +845,10 @@ FloatAnimator::~FloatAnimator()
 	ofRemoveListener(floatAnimator.animFinished, this, &FloatAnimator::Changed_AnimatorDone);
 
 	ofRemoveListener(ofEvents().update, this, &FloatAnimator::update);
+
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	ofRemoveListener(ofEvents().draw, this, &FloatAnimator::draw, OF_EVENT_ORDER_AFTER_APP);
+#endif
 
 	exit();
 }
@@ -1048,6 +1061,6 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	else if (name == bGui.getName() && !bGui)
 	{
 		presets.bGui = false;
-}
+	}
 #endif
 }

@@ -341,7 +341,10 @@ NoiseAnimator::NoiseAnimator()
 	//guiPos = glm::vec2(700, 500);
 
 	ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
+	
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
+#endif
 }
 
 //--------------------------------------------------------------
@@ -949,7 +952,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	// 3. process modulator envelope 
+	// 3. Process modulator envelope 
 
 	if (ENABLE_Modulator)
 	{
@@ -1076,8 +1079,12 @@ void NoiseAnimator::update(ofEventArgs & args)
 //}
 
 //--------------------------------------------------------------
-//void NoiseAnimator::draw()
+#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+void NoiseAnimator::draw()
+#endif
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 void NoiseAnimator::draw(ofEventArgs & args)
+#endif
 {
 	if (!bGui.get()) return;
 
@@ -1244,7 +1251,10 @@ NoiseAnimator::~NoiseAnimator()
 	ofRemoveListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
 
 	ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
+
+	#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
+#endif
 	
 	ofRemoveListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 	//ofRemoveListener(params_Control.parameterChangedE(), this, &NoiseAnimator::Changed_params);
