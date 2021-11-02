@@ -1,0 +1,18 @@
+{
+    "yPos": {
+        "BPM_Engine": {
+            "BPM": "120",
+            "BPM_Mode": "1",
+            "B_Delay": "0",
+            "B_Duration": "8",
+            "Slow": "0"
+        },
+        "Curve_Type": "3",
+        "Enable_Animator": "1",
+        "Repeat_Mode": "0",
+        "Times": "1",
+        "Value_End": "1",
+        "Value_Start": "0",
+        "yPos": "1"
+    }
+}

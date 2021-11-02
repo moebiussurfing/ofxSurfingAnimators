@@ -1,0 +1,22 @@
+{
+    "animColor": {
+        "BPM_Engine": {
+            "BPM": "60",
+            "BPM_Mode": "1",
+            "Beat_Delay": "0",
+            "Beat_Duration": "8",
+            "Slow": "0"
+        },
+        "Colors": {
+            "End": "8, 241, 8, 255",
+            "Start": "11, 25, 227, 255"
+        },
+        "Curve_Type": "50",
+        "Enable_Animator": "1",
+        "Repeat_Mode": "2",
+        "Show_Animator": "1",
+        "Times": "1",
+        "Value_End": "1",
+        "Value_Start": "0"
+    }
+}

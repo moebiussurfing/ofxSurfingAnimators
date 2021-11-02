@@ -1,0 +1,44 @@
+{
+    "NoisePosition": {
+        "Enable_Noise": "1",
+        "MODULATOR": {
+            "BPM_ENGINE": {
+                "Attack_Beat": "2",
+                "BPM": "120",
+                "BPM_Mode": "1",
+                "PreDelay_Beat": "1",
+                "Release_Beat": "2",
+                "Sustain_Beat": "4"
+            },
+            "Curve_Type": "3",
+            "Max": "1",
+            "Min": "0",
+            "TIMERS": {
+                "Attack": "0.5",
+                "PreDelay": "0.25",
+                "Release": "0.5",
+                "Sustain": "1"
+            }
+        },
+        "Minimize": "1",
+        "Modulator": "0",
+        "X": {
+            "Deep": "1",
+            "ENABLE": "1",
+            "Power": "20",
+            "Speed": "0.5"
+        },
+        "Y": {
+            "Deep": "1",
+            "ENABLE": "1",
+            "Power": "20",
+            "Speed": "0.5"
+        },
+        "Z": {
+            "Deep": "1",
+            "ENABLE": "0",
+            "Power": "20",
+            "Speed": "0.5"
+        }
+    }
+}
