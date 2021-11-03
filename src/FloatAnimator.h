@@ -8,7 +8,7 @@ TODO
 
 /*
 
-This is a base class to other derivated like: position, color...etc. 
+This is a base class to other derivated like: position, color...etc.
 
 */
 
@@ -69,7 +69,7 @@ public:
 
 	//TODO://use &
 	//void setup(ofParameter<float>paramFloat, bool autoUpdate = false) { // only use to set min/max range but not auto update the param value!
-	
+
 	//--------------------------------------------------------------
 	void setup(ofParameter<float> &paramFloat) { // only use to set min/max range but not auto update the param value!
 		paramLinked.makeReferenceTo(paramFloat);
@@ -81,7 +81,7 @@ public:
 
 	virtual void setup();
 	virtual void setupExtra();
-	
+
 	void startup();
 
 	void setupGui();
@@ -96,14 +96,14 @@ public:
 
 	virtual void update(ofEventArgs & args);
 
-//private:
+	//private:
 
-	//void update();
-	//void update(float _dt)
-	//{
-	//	dt = _dt;
-	//	update();
-	//}
+		//void update();
+		//void update(float _dt)
+		//{
+		//	dt = _dt;
+		//	update();
+		//}
 
 #ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
 	void draw();
@@ -113,7 +113,7 @@ public:
 #endif
 
 public:
-	
+
 	void exit(); // not virtual. each class will have his own exit() function.
 
 	//--
@@ -131,9 +131,9 @@ private:
 //public:
 private:
 
-//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfing_ImGui_Manager guiManager;
-//#endif
+	//#endif
 
 	string panelName;
 
@@ -147,8 +147,8 @@ public:
 	virtual void drawImGuiWidgetsExtra();
 	void drawImGuiWidgetsBegin();
 	void drawImGuiWidgetsEnd();
-	
-//protected:
+
+	//protected:
 private:
 	bool bOpened = false;
 	//bool bParams = true;
@@ -493,7 +493,7 @@ private:
 	void Changed_Params(ofAbstractParameter &e);
 
 	//public:
-	//	ofxPanel gui;
+	//ofxPanel gui;
 
 	//-
 
@@ -557,6 +557,21 @@ private:
 
 	void Changed_AnimatorDone(ofxAnimatable::AnimationEvent &);
 
+	//TODO:
+	bool bDone = false;
+public:
+	//--------------------------------------------------------------
+	bool isDone() {
+		if (bDone) {
+			bDone = false;
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+private:
 	//--------------------------------------------------------------
 	std::string AnimRepeat_ToStr(int n)
 	{
@@ -619,13 +634,15 @@ private:
 
 	//--
 
+	//TODO:
 	// deprecated
-	////--------------------------------------------------------------
-	//void setGuiPosition(glm::vec2 _p)
-	//{
-	//	guiPos = _p;
-	//	gui.setPosition(guiPos.x, guiPos.y);
-	//}
+	public:
+	//--------------------------------------------------------------
+	void setGuiPosition(glm::vec2 _p)
+	{
+		//guiPos = _p;
+		//gui.setPosition(guiPos.x, guiPos.y);
+	}
 
 	////--------------------------------------------------------------
 	//glm::vec2 getGuiPosition()

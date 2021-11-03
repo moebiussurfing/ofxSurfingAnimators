@@ -40,6 +40,8 @@ void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent &)
 		if (value != valueEnd) value = valueEnd;
 		animProgress = 100;
 	}
+
+	bDone = true;
 }
 
 //--------------------------------------------------------------
