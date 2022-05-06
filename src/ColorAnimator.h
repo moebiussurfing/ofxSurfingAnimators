@@ -31,13 +31,14 @@ public:
 		return colorCurrent;
 	}
 
-private:
 	
+public:
 	ofParameter<ofColor> colorCurrent;
 
 	ofParameter<ofColor> colorStart;
 	ofParameter<ofColor> colorEnd;
 	
+private:
 	ofColor *color_BACK;
 
 public:
