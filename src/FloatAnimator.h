@@ -132,7 +132,7 @@ private:
 private:
 
 	//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui guiManager;
 	//#endif
 
 	string panelName;

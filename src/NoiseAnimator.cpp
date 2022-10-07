@@ -392,8 +392,8 @@ void NoiseAnimator::refreshStyles()
 	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
 	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
 #ifdef INCLUDE_FILTER
-	guiManager.AddStyle(ENABLE_NoisePointFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
-	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, SurfingImGuiTypes::OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoisePointFilter, OFX_IM_TOGGLE_SMALL, false, 1);
+	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, OFX_IM_TOGGLE_SMALL, false, 1);
 #endif
 	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
 	guiManager.AddStyle(Reset_Modulator, OFX_IM_BUTTON_SMALL);
@@ -692,8 +692,9 @@ void NoiseAnimator::setup()
 
 	// Gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-	guiManager.setSettingsPathLabel("NoiseAnimator");
-	guiManager.setAutoSaveSettings(true);
+	guiManager.setName("NoiseAnimator");
+	//guiManager.setSettingsPathLabel("NoiseAnimator");
+	//guiManager.setAutoSaveSettings(true);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 #endif
 
@@ -1096,11 +1097,11 @@ void NoiseAnimator::draw(ofEventArgs & args)
 		//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		guiManager.begin();
+		guiManager.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.end();
+		guiManager.End();
 #endif
 
 	}
@@ -1135,7 +1136,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 		{
 			name = "PANEL " + label;
 
-			bOpened = guiManager.beginWindow(name, (bool*)&bGui.get(), _flagsw);
+			bOpened = guiManager.BeginWindow(name, (bool*)&bGui.get(), _flagsw);
 
 			if (bOpened)
 			{
@@ -1166,7 +1167,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 					//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-					guiManager.drawAdvanced();
+					guiManager.DrawAdvancedBundle();
 #endif
 				}
 
@@ -1186,7 +1187,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 			//if (bOpened)
 			{
-				guiManager.endWindow();
+				guiManager.EndWindow();
 			}
 		}
 #endif

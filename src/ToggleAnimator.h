@@ -286,7 +286,7 @@ private:
 	void onAnimQueueDone(ofxAnimatableQueue::EventArg &);
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui guiManager;
 	void drawImGuiWidgets();
 #endif
 

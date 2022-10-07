@@ -24,7 +24,7 @@ public:
 	~EnvelopeAnimator();
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui guiManager;
 #endif
 
 private:

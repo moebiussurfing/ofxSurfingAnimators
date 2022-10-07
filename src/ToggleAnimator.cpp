@@ -352,11 +352,11 @@ void ToggleAnimator::draw()
 		//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
-		guiManager.begin();
+		guiManager.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.end();
+		guiManager.End();
 #endif
 	}
 }
@@ -609,7 +609,7 @@ void ToggleAnimator::drawImGuiWidgets()
 	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 	name = "PANEL " + label;
-	if (guiManager.beginWindow(name.c_str(), NULL, _flagsw))
+	if (guiManager.BeginWindow(name.c_str(), NULL, _flagsw))
 	{
 		ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
@@ -650,7 +650,7 @@ void ToggleAnimator::drawImGuiWidgets()
 
 		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 
-		guiManager.endWindow();
+		guiManager.EndWindow();
 	}
 }
 #endif

@@ -19,7 +19,7 @@ void EnvelopeAnimator::drawImGuiWidgets()
 	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 	name = "PANEL " + label;
-	guiManager.beginWindow(name.c_str(), NULL, _flagsw);
+	guiManager.BeginWindow(name.c_str(), NULL, _flagsw);
 	{
 		ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
@@ -53,7 +53,7 @@ void EnvelopeAnimator::drawImGuiWidgets()
 
 		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 	}
-	guiManager.endWindow();
+	guiManager.EndWindow();
 
 #endif
 }
@@ -501,11 +501,11 @@ void EnvelopeAnimator::draw()
 		//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
-		guiManager.begin();
+		guiManager.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.end();
+		guiManager.End();
 #endif
 
 		//gui.draw();

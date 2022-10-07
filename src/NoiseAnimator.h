@@ -136,7 +136,7 @@ private:
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 public:
 
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui guiManager;
 #endif
 
 private:

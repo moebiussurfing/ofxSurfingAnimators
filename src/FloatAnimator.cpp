@@ -85,7 +85,8 @@ void FloatAnimator::setupGui()
 {
 	ofLogNotice(__FUNCTION__);
 
-	guiManager.setSettingsPathLabel(label);
+	guiManager.setName(label);
+	//guiManager.setSettingsPathLabel(label);
 	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
 
 	//guiManager.setImGuiAutodraw(true);//TODO: required when only one instance ?
@@ -372,11 +373,11 @@ void FloatAnimator::draw(ofEventArgs & args)
 
 	{
 		//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		guiManager.begin();
+		guiManager.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.end();
+		guiManager.End();
 		//#endif
 	}
 }
@@ -488,7 +489,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		ImGui::SetNextWindowPos(ImVec2(100, 100), flagCond);
 		ImGui::SetNextWindowSize(ImVec2(200, 600), flagCond);
 
-		bOpened = guiManager.beginWindow(name.c_str(), (bool*)&bGui.get(), _flagsw);
+		bOpened = guiManager.BeginWindow(name.c_str(), (bool*)&bGui.get(), _flagsw);
 
 		//--
 
@@ -517,7 +518,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		}
 		else
 		{
-			guiManager.endWindow();
+			guiManager.EndWindow();
 		}
 	}
 }
@@ -732,7 +733,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 					//-
 
-					if (guiManager.bExtra) guiManager.drawAdvanced();
+					if (guiManager.bExtra) guiManager.DrawAdvancedBundle();
 				}
 				ImGui::Unindent();
 			}
@@ -740,7 +741,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		//--
 
-		guiManager.endWindow();
+		guiManager.EndWindow();
 }
 }
 
