@@ -65,6 +65,7 @@ void ColorAnimator::update(ofEventArgs & args) {
 
 //--------------------------------------------------------------
 void ColorAnimator::drawImGuiWidgetsExtra() {
+	//return;
 
 	float _w100 = ofxImGuiSurfing::getWidgetsWidth(1);
 	float _h = ofxImGuiSurfing::getWidgetsHeightUnit();
@@ -75,7 +76,8 @@ void ColorAnimator::drawImGuiWidgetsExtra() {
 	flags |= ImGuiColorEditFlags_NoLabel;
 	flags |= ImGuiColorEditFlags_NoTooltip;
 	//ImGui::PushItemWidth(_w100);
-	ImGui::ColorButton("", colorCurrent.get(), flags, ImVec2(_w100, _h));
+	auto c = colorCurrent.get();
+	ImGui::ColorButton(" ", c, flags, ImVec2(_w100, _h));
 	//ImGui::PopItemWidth();
 
 	ImGui::Spacing();

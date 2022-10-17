@@ -61,6 +61,8 @@ void ofApp::draw() {
 	s += "BACK SPACE  :  STOP ANIMATOR \n";
 	s += "F1          :  RANDOMIZE COLORS";
 	ofDrawBitmapStringHighlight(s, 10, 20);
+
+	colorAnim.draw();
 }
 
 //--------------------------------------------------------------

@@ -374,130 +374,130 @@ void NoiseAnimator::startup()
 //--------------------------------------------------------------
 void NoiseAnimator::refreshStyles()
 {
-	guiManager.clearStyles();
+	ui.clearStyles();
 
 	//-
 
 	// A. Hardcoded Styles
 
 	// groups
-	//guiManager.AddStyleGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
+	//ui.AddStyleGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
 #ifdef INCLUDE_FILTER
-	guiManager.AddStyleGroup(params_filters, OFX_IM_GROUP_COLLAPSED);
+	ui.AddStyleGroup(params_filters, OFX_IM_GROUP_COLLAPSED);
 #endif
-	guiManager.AddStyleGroup(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
+	ui.AddStyleGroup(params_NoiseZ, OFX_IM_GROUP_COLLAPSED);
 
 	// params
-	guiManager.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
-	guiManager.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
-	guiManager.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
+	ui.AddStyle(ENABLE_Noise, OFX_IM_TOGGLE_BIG);
+	ui.AddStyle(ENABLE_Modulator, OFX_IM_TOGGLE_BIG);
+	ui.AddStyle(Reset_Noise, OFX_IM_BUTTON_SMALL);
 #ifdef INCLUDE_FILTER
-	guiManager.AddStyle(ENABLE_NoisePointFilter, OFX_IM_TOGGLE_SMALL, false, 1);
-	guiManager.AddStyle(ENABLE_NoiseModulatorFilter, OFX_IM_TOGGLE_SMALL, false, 1);
+	ui.AddStyle(ENABLE_NoisePointFilter, OFX_IM_TOGGLE_SMALL, false, 1);
+	ui.AddStyle(ENABLE_NoiseModulatorFilter, OFX_IM_TOGGLE_SMALL, false, 1);
 #endif
-	guiManager.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(Reset_Modulator, OFX_IM_BUTTON_SMALL);
-	guiManager.AddStyle(animProgress, OFX_IM_INACTIVE);
+	ui.AddStyle(bpmMode, OFX_IM_TOGGLE_SMALL);
+	ui.AddStyle(Reset_Modulator, OFX_IM_BUTTON_SMALL);
+	ui.AddStyle(animProgress, OFX_IM_INACTIVE);
 
 	//-
 
 	// B. Mode dependant Styles
 
 	// Modulator
-	if (!ENABLE_Modulator || (guiManager.bMinimize)) {
-		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
-		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);//-> affected bc recursive
+	if (!ENABLE_Modulator || (ui.bMinimize)) {
+		ui.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
+		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);//-> affected bc recursive
 	}
 	else {
-		guiManager.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
-		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_COLLAPSED);
+		ui.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
+		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_COLLAPSED);
 	}
 
 	// workaround 
 	//to fix recursive groups / api
-	guiManager.AddStyleGroup(params_Point, OFX_IM_GROUP_DEFAULT);
+	ui.AddStyleGroup(params_Point, OFX_IM_GROUP_DEFAULT);
 
 	// Minimize
-	if (guiManager.bMinimize) {
-		//guiManager.AddStyle(curveShow, OFX_IM_HIDDEN);
+	if (ui.bMinimize) {
+		//ui.AddStyle(curveShow, OFX_IM_HIDDEN);
 		
 		if (bpmMode) {
-			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
-			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
+			ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
+			ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
 		}
 		else {
-			guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
-			guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_DEFAULT);
+			ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
+			ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_DEFAULT);
 		}
 
-		guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
-		guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
-		guiManager.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
 
-		guiManager.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
-		guiManager.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
-		guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
+		ui.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
 	}
 	else {
-		//guiManager.AddStyle(curveShow, OFX_IM_DEFAULT);
+		//ui.AddStyle(curveShow, OFX_IM_DEFAULT);
 		
-		guiManager.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
-		guiManager.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
+		ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
+		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
 
-		//guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
-		//guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
-		//guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
 
-		//guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
-		//guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
-		//guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
+		//ui.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
 
 		// force
 
 		if (ENABLE_NoiseX) {
-			guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
-			guiManager.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
-			guiManager.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
+			ui.AddStyle(noisePowerX, OFX_IM_STEPPER);
+			ui.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
+			ui.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
 		}
 		else
 		{
-			guiManager.AddStyle(noisePowerX, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
+			ui.AddStyle(noisePowerX, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
 		}
 
 		if (ENABLE_NoiseY) {
-			guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
-			guiManager.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
-			guiManager.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
+			ui.AddStyle(noisePowerY, OFX_IM_STEPPER);
+			ui.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
+			ui.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
 		}
 		else
 		{
-			guiManager.AddStyle(noisePowerY, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
+			ui.AddStyle(noisePowerY, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
 		}
 
 		if (ENABLE_NoiseZ) {
-			guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
-			guiManager.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
-			guiManager.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
+			ui.AddStyle(noisePowerZ, OFX_IM_STEPPER);
+			ui.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
+			ui.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
 		}
 		else
 		{
-			guiManager.AddStyle(noisePowerZ, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
-			guiManager.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
+			ui.AddStyle(noisePowerZ, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
+			ui.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
 		}
 	}
 
-	//guiManager.AddStyle(noisePowerX, OFX_IM_STEPPER);
-	//guiManager.AddStyle(noisePowerY, OFX_IM_STEPPER);
-	//guiManager.AddStyle(noisePowerZ, OFX_IM_STEPPER);
+	//ui.AddStyle(noisePowerX, OFX_IM_STEPPER);
+	//ui.AddStyle(noisePowerY, OFX_IM_STEPPER);
+	//ui.AddStyle(noisePowerZ, OFX_IM_STEPPER);
 
-	guiManager.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
-	guiManager.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
+	ui.AddStyle(ENABLE_NoiseX, OFX_IM_TOGGLE_SMALL);
+	ui.AddStyle(ENABLE_NoiseY, OFX_IM_TOGGLE_SMALL);
+	ui.AddStyle(ENABLE_NoiseZ, OFX_IM_TOGGLE_SMALL);
 }
 
 //--------------------------------------------------------------
@@ -692,16 +692,16 @@ void NoiseAnimator::setup()
 
 	// Gui
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-	guiManager.setName("NoiseAnimator");
-	//guiManager.setSettingsPathLabel("NoiseAnimator");
-	//guiManager.setAutoSaveSettings(true);
-	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
+	ui.setName("NoiseAnimator");
+	//ui.setSettingsPathLabel("NoiseAnimator");
+	//ui.setAutoSaveSettings(true);
+	ui.setup(IM_GUI_MODE_INSTANTIATED);
 #endif
 
 	//-
 
 	//--------------------------------------------------------------
-	listenerMinimize = guiManager.bMinimize.newListener([this](bool &b) {
+	listenerMinimize = ui.bMinimize.newListener([this](bool &b) {
 		refreshStyles();
 	});
 
@@ -1097,11 +1097,11 @@ void NoiseAnimator::draw(ofEventArgs & args)
 		//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		guiManager.Begin();
+		ui.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.End();
+		ui.End();
 #endif
 
 	}
@@ -1131,50 +1131,52 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+		if (ui.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		{
 			name = "PANEL " + label;
 
-			bOpened = guiManager.BeginWindow(name, (bool*)&bGui.get(), _flagsw);
+			bOpened = ui.BeginWindow(bGui);
+			//bOpened = ui.BeginWindow(name, (bool*)&bGui.get(), _flagsw);
 
 			if (bOpened)
 			{
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
+				ui.refreshLayout();
 
-				guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
+				ui.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 				if (ENABLE_Modulator)
 					if (ImGui::Button("START", ImVec2(_w100, 3 * _h))) {
 						start();
 					}
 
-				ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bMinimize);
-				//guiManager.Add(guiManager.bMinimize);
+				ofxImGuiSurfing::AddToggleRoundedButton(ui.bMinimize);
+				//ui.Add(ui.bMinimize);
 
 				//-
 
 				ImGui::Spacing();
 
 				// All the parameters
-				guiManager.AddGroup(params);
+				ui.AddGroup(params);
 
-				if (!guiManager.bMinimize) {
+				if (!ui.bMinimize) {
 
-					//guiManager.Add(SHOW_Plot);
+					//ui.Add(SHOW_Plot);
 					ofxImGuiSurfing::AddBigToggle(SHOW_Plot, _w100, _h, false);
 
 					//-
 
 #ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-					guiManager.DrawAdvancedBundle();
+					ui.DrawAdvancedBundle();
 #endif
 				}
 
 				//--
 
 				// Plot fbo
-				if (!guiManager.bMinimize) {
+				if (!ui.bMinimize) {
 					if (SHOW_Plot)
 					{
 						ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
@@ -1185,9 +1187,9 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 			//--
 
-			//if (bOpened)
+			if (bOpened)
 			{
-				guiManager.EndWindow();
+				ui.EndWindow();
 			}
 		}
 #endif

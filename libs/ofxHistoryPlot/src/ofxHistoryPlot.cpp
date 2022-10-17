@@ -11,6 +11,7 @@
 #include <float.h>
 
 using namespace std;
+//using namespace SurfingAnimator;
 
 ofxHistoryPlot::ofxHistoryPlot(float * val, string varName, float maxHistory, bool autoUpdate_){
 	

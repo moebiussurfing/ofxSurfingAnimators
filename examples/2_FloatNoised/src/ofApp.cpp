@@ -40,6 +40,10 @@ void ofApp::draw() {
 	// help
 	string s = "PRESS SPACE TO TRIG ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 10, 25);
+
+	// Gui
+	animatorFloat.draw();
+	animatorNoise.draw();
 }
 
 //--------------------------------------------------------------

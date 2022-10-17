@@ -16,10 +16,10 @@ void EnvelopeAnimator::drawImGuiWidgets()
 	float _h;
 
 	ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+	if (ui.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 	name = "PANEL " + label;
-	guiManager.BeginWindow(name.c_str(), NULL, _flagsw);
+	ui.BeginWindow(name.c_str(), NULL, _flagsw);
 	{
 		ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
@@ -53,7 +53,7 @@ void EnvelopeAnimator::drawImGuiWidgets()
 
 		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 	}
-	guiManager.EndWindow();
+	ui.EndWindow();
 
 #endif
 }
@@ -187,9 +187,9 @@ void EnvelopeAnimator::setup()
 
 	// gui
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
-	guiManager.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
-	guiManager.setup(); // initiate ImGui
-	//guiManager.setUseAdvancedSubPanel(true);
+	ui.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
+	ui.setup(); // initiate ImGui
+	//ui.setUseAdvancedSubPanel(true);
 #endif
 
 	//--
@@ -501,11 +501,11 @@ void EnvelopeAnimator::draw()
 		//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
-		guiManager.Begin();
+		ui.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.End();
+		ui.End();
 #endif
 
 		//gui.draw();

@@ -1,8 +1,11 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup() {
+void ofApp::setup() 
+{
+	ofSetWindowPosition(-1920, 25);
 	ofSetFrameRate(60);
+
 	ofSetCircleResolution(200);
 
 	animator1_Float.setNameLabel("Radius"); // Optional: set a name
@@ -12,6 +15,7 @@ void ofApp::setup() {
 	value_2.setName("yPos");
 	animator2_FloatParam.setup(value_2); // ofParam, autoUpdate
 
+	// trig when app start
 	startTween();
 }
 
@@ -29,8 +33,10 @@ void ofApp::draw() {
 		ofPushMatrix();
 		ofPushStyle();
 		int xx = ofGetWidth() * 0.5;
-		int yy = (ofGetHeight() * 0.5) - (150 * value_2.get()); // Use the param value
+		// Use the param  value_2
+		int yy = (ofGetHeight() * 0.5) - (150 * value_2.get());
 		ofTranslate(xx, yy);
+		// Use the param  value_1
 		ofScale(0.5 + 2 * value_1);
 		ofSetColor(0);
 		int r = 100;
@@ -48,6 +54,10 @@ void ofApp::draw() {
 	// Help
 	string s = "PRESS SPACE TO TRIG BOTH ANIMATORS";
 	ofDrawBitmapStringHighlight(s, 10, 25);
+
+	// Gui
+	animator1_Float.draw();
+	animator2_FloatParam.draw();
 }
 
 //--------------------------------------------------------------

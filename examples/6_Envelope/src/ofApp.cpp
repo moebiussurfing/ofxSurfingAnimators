@@ -22,7 +22,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofSetBackgroundColor(16);
+	ofSetBackgroundColor(32);
 
 	//guis
 	envelope.draw();
@@ -50,6 +50,15 @@ void ofApp::draw() {
 }
 
 //--------------------------------------------------------------
+void ofApp::keyPressed(int key) {
+	cout << "key: " << key << endl;
+
+	if (key == ' ') startTween();
+
+	if (key == OF_KEY_RETURN) stopTween();
+}
+
+//--------------------------------------------------------------
 void ofApp::startTween() {
 	envelope.start();
 }
@@ -57,13 +66,5 @@ void ofApp::startTween() {
 //--------------------------------------------------------------
 void ofApp::stopTween() {
 	envelope.stop();
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
-	cout << "key: " << key << endl;
-
-	if (key == ' ') startTween();
-	if (key == OF_KEY_RETURN) stopTween();
 }
 

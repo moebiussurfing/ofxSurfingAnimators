@@ -26,7 +26,7 @@ FloatAnimator::FloatAnimator()
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent &)
+void FloatAnimator::Changed_AnimatorDone(ofxAnimatable::AnimationEvent&)
 {
 	ofLogVerbose(__FUNCTION__);
 
@@ -85,13 +85,9 @@ void FloatAnimator::setupGui()
 {
 	ofLogNotice(__FUNCTION__);
 
-	guiManager.setName(label);
-	//guiManager.setSettingsPathLabel(label);
-	guiManager.setup(IM_GUI_MODE_INSTANTIATED);
-
-	//guiManager.setImGuiAutodraw(true);//TODO: required when only one instance ?
-	//guiManager.setup(); // initiate ImGui
-	//guiManager.setUseAdvancedSubPanel(true);
+	ui.setName(label);
+	//ui.setSettingsPathLabel(label);
+	ui.setup(); // initiate ImGui
 }
 
 //--------------------------------------------------------------
@@ -99,7 +95,7 @@ void FloatAnimator::setup()
 {
 	ofLogNotice(__FUNCTION__);
 
-	bEnableAnimator.set("Enable Animator", true);
+	bEnableAnimator.set("ENABLE", true);
 
 	value.set("Value", 0.f, 0.f, 1.f);
 	valueStart.set("Value Start", 0.f, 0.f, 1.f);
@@ -108,13 +104,13 @@ void FloatAnimator::setup()
 	//anim_loop.set("Loop", false);
 	duration.set("Duration", 1.f, 0.f, 5.f);
 	animDelay.set("PreDelay", 0.f, 0.f, 5.f);
-	curveType.set("Curve Type", 16, 0, NUM_ANIM_CURVES - 1);
+	curveType.set("Type", 16, 0, NUM_ANIM_CURVES - 1);
 	repeatMode.set("Repeat Mode", 0, 0, 5);
 	curveName.set("", "");
 	repeatName.set("", "");
 	repeatName = AnimRepeat_ToStr(repeatMode.get());
 	repeatTimes.set("Times", 1, 1, 10);
-	reset.set("Reset", false);
+	reset.set("RESET", false);
 	animProgress.set("%", 0, 0, 100);
 
 	//exclude from settings
@@ -311,7 +307,7 @@ void FloatAnimator::stop()
 	}
 }
 //--------------------------------------------------------------
-void FloatAnimator::update(ofEventArgs & args)
+void FloatAnimator::update(ofEventArgs& args)
 {
 	floatAnimator.update(dt);
 
@@ -366,18 +362,18 @@ void FloatAnimator::update(ofEventArgs & args)
 void FloatAnimator::draw()
 #endif
 #ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
-void FloatAnimator::draw(ofEventArgs & args)
+void FloatAnimator::draw(ofEventArgs& args)
 #endif
 {
 	if (!bGui) return;
 
 	{
 		//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
-		guiManager.Begin();
+		ui.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.End();
+		ui.End();
 		//#endif
 	}
 }
@@ -443,7 +439,7 @@ void FloatAnimator::drawPlot() {
 	//bar
 	ofSetColor(ofColor::red, 200);
 	float vb = ofMap(value.get(), valueStart, valueEnd, 0.f, 1.f, true);
-	r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(vb*size, 1));
+	r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(vb * size, 1));
 	//r = ofRectangle(x + pad * 0.5f, y - pad * 0.5f + size, w - pad, pad - MAX(value.get()*size, 1));
 	//r = ofRectangle(x, y + size, w, -MAX(value.get()*size, 1));
 	ofDrawRectangle(r);
@@ -477,7 +473,7 @@ void FloatAnimator::drawImGuiWidgetsExtra() {
 void FloatAnimator::drawImGuiWidgetsBegin() {
 	{
 		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+		if (ui.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		string name;
 		//name = "ANIMATOR";
@@ -485,11 +481,13 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 		//name = "PANEL " + label;
 		panelName = name;
 
+		//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
+
 		ImGuiCond flagCond = ImGuiCond_FirstUseEver;
 		ImGui::SetNextWindowPos(ImVec2(100, 100), flagCond);
 		ImGui::SetNextWindowSize(ImVec2(200, 600), flagCond);
 
-		bOpened = guiManager.BeginWindow(name.c_str(), (bool*)&bGui.get(), _flagsw);
+		bOpened = ui.BeginWindow(name.c_str(), (bool*)&bGui.get(), _flagsw);
 
 		//--
 
@@ -502,23 +500,29 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 			////flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 			//flagst |= ImGuiTreeNodeFlags_Framed;
 
-			//AddToggleRoundedButton(guiManager.bMinimize);
-			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+			//AddToggleRoundedButton(ui.bMinimize);
+			ui.Add(ui.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 
-			guiManager.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
+			ui.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 			if (ImGui::Button("START", ImVec2(_w100, 3 * _h))) {
 				start();
 			}
-
+			/*
 			if (repeatMode == 2 || repeatMode == 3 || repeatMode == 5)//with a back mode. force to start
+			{
 				if (ImGui::Button("STOP", ImVec2(_w100, _h))) {
 					stop();
 				}
+			}
+			else {
+				ImGui::Dummy(ImVec2(_w100,_h));
+			}
+			*/
 		}
 		else
 		{
-			guiManager.EndWindow();
+			ui.EndWindow();
 		}
 	}
 }
@@ -533,7 +537,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		string name;
 
 		ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-		if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+		if (ui.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 		static ImGuiTreeNodeFlags flagst;
 		flagst = ImGuiTreeNodeFlags_None;
@@ -555,11 +559,10 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 	}
 #endif
 
-
 		//-
 
 		flagst = ImGuiTreeNodeFlags_None;
-		if (!guiManager.bMinimize) {
+		if (!ui.bMinimize) {
 			flagst |= ImGuiTreeNodeFlags_DefaultOpen;
 		}
 		flagst |= ImGuiTreeNodeFlags_Framed;
@@ -568,27 +571,27 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 		{
 			ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-			guiManager.Add(bpmMode, OFX_IM_TOGGLE_BIG);
+			ui.Add(bpmMode, OFX_IM_TOGGLE_BIG);
 			//ofxImGuiSurfing::AddBigToggle(bpmMode, _w100, _h);
 
 			if (!bpmMode)
 			{
-				guiManager.Add(duration);
-				guiManager.Add(animDelay);
+				ui.Add(duration);
+				ui.Add(animDelay);
 			}
 			else
 			{
-				//if (!guiManager.bMinimize) {
-				//	guiManager.Add(duration, OFX_IM_DRAG);
-				//	guiManager.Add(animDelay, OFX_IM_DRAG);
+				//if (!ui.bMinimize) {
+				//	ui.Add(duration, OFX_IM_DRAG);
+				//	ui.Add(animDelay, OFX_IM_DRAG);
 				//}
 			}
 
 			if (bpmMode) {
 
-				guiManager.Add(bpmSpeed, OFX_IM_DRAG);
+				ui.Add(bpmSpeed, OFX_IM_DRAG);
 
-				if (!guiManager.bMinimize) {
+				if (!ui.bMinimize) {
 					if (ImGui::Button("HALF", ImVec2(_w50, _h))) {
 						bpmSpeed = bpmSpeed / 2.0f;
 					}
@@ -597,13 +600,13 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 						bpmSpeed = bpmSpeed * 2.0f;
 					}
 				}
-				guiManager.Add(bpmBeatDuration);
-				guiManager.Add(bpmBeatDelay);
-				if (!guiManager.bMinimize) guiManager.Add(bpmSlow);
+				ui.Add(bpmBeatDuration);
+				ui.Add(bpmBeatDelay);
+				if (!ui.bMinimize) ui.Add(bpmSlow);
 			}
 
-			if (!guiManager.bMinimize) {
-				if (ImGui::Button("Reset Time", ImVec2(_w100, 2 * _h)))
+			if (!ui.bMinimize) {
+				if (ImGui::Button("RESET TIME", ImVec2(_w100, 2 * _h)))
 				{
 					bpmSpeed = 120;
 					animDelay = 0.f;
@@ -626,11 +629,11 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		if (ImGui::CollapsingHeader("CURVE", flagst))
 		{
-			ImGui::PushItemWidth(_w100 - 80);
+			//ImGui::PushItemWidth(_w100 - 80);
 			ofxImGuiSurfing::AddCombo(curveType, curveNamesList);
-			ImGui::PopItemWidth();
+			//ImGui::PopItemWidth();
 
-			if (!guiManager.bMinimize) {
+			if (!ui.bMinimize) {
 
 				if (ImGui::Button("<", ImVec2(_w50, _h))) {
 					previousCurve();
@@ -642,20 +645,20 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 				//-
 
-				guiManager.Add(curveType);
-				guiManager.Add(repeatMode);
+				ui.Add(curveType);
+				ui.Add(repeatMode);
 
 				ImGui::Text(repeatName.get().c_str());
 				if (repeatMode == 4 || repeatMode == 5)
 				{
-					guiManager.Add(repeatTimes);
+					ui.Add(repeatTimes);
 				}
 			}
 		}
 
 		//-
 
-		if (!guiManager.bMinimize) {
+		if (!ui.bMinimize) {
 
 			flagst = ImGuiTreeNodeFlags_None;
 			flagst |= ImGuiTreeNodeFlags_Framed;
@@ -663,36 +666,44 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 			if (ImGui::CollapsingHeader("RANGE", flagst))
 			{
-				guiManager.Add(valueStart);
-				guiManager.Add(valueEnd);
+				ui.Add(valueStart);
+				ui.Add(valueEnd);
 			}
 
-			if (ImGui::CollapsingHeader("MONITOR", flagst))
-			{
-				guiManager.Add(animProgress, OFX_IM_INACTIVE);
-				guiManager.Add(value);
-			}
+			//if (ImGui::CollapsingHeader("MONITOR", flagst))
+			//{
+			//	ui.Add(animProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+			//	//ui.Add(value);
+			//}
 		}
+		//else ui.Add(animProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
+		ui.Add(animProgress, OFX_IM_PROGRESS_BAR_NO_TEXT);
 
 		//--
 
 		ImGui::Dummy(ImVec2(0.0f, 2.0f));
+		/*
+		if (repeatMode == 2 || repeatMode == 3 || repeatMode == 5)//with a back mode. force to start
+		{
+			if (ImGui::Button("STOP", ImVec2(_w100, _h))) {
+				stop();
+			}
+		}
+		*/
 
-		guiManager.Add(reset, OFX_IM_TOGGLE_BIG);
-		//guiManager.Add(reset, OFX_IM_TOGGLE_SMALL);
-		//ofxImGuiSurfing::AddBigToggle(reset, _w100, _h, false);
+		ui.Add(reset, OFX_IM_TOGGLE_BIG);
 
 		////bundle
 		//ImGui::PushItemWidth(_w100 - WIDGET_PARAM_PADDING);
 		//ofxImGuiSurfing::AddGroup(params, flagst);
 		//ImGui::PopItemWidth();
 
-		ImGui::Spacing();
+		//ImGui::Spacing();
 
 		//--
 
 		// plot fbo
-		if (!guiManager.bMinimize)
+		if (!ui.bMinimize)
 		{
 			if (SHOW_Plot)
 			{
@@ -709,7 +720,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		//-
 
-		if (!guiManager.bMinimize)
+		if (!ui.bMinimize)
 		{
 			flagst = ImGuiTreeNodeFlags_None;
 			//flagst |= ImGuiTreeNodeFlags_DefaultOpen;
@@ -718,22 +729,22 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 			//ImGui::Spacing();
 			ImGui::Dummy(ImVec2(0.0f, 5.0f));
 
-			guiManager.Add(guiManager.bExtra, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-			//ofxImGuiSurfing::AddToggleRoundedButton(guiManager.bExtra);
+			ui.Add(ui.bExtra, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+			//ofxImGuiSurfing::AddToggleRoundedButton(ui.bExtra);
 
-			if (guiManager.bExtra)
+			if (ui.bExtra)
 			{
 				ImGui::Indent();
 				{
-					guiManager.refreshLayout();
+					ui.refreshLayout();
 					//ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
-					guiManager.Add(SHOW_Plot, OFX_IM_TOGGLE_SMALL);
-					guiManager.Add(ModeBrowse, OFX_IM_TOGGLE_SMALL);
+					ui.Add(SHOW_Plot, OFX_IM_TOGGLE_SMALL);
+					ui.Add(ModeBrowse, OFX_IM_TOGGLE_SMALL);
 
 					//-
 
-					if (guiManager.bExtra) guiManager.DrawAdvancedBundle();
+					if (ui.bExtra) ui.DrawAdvancedBundle();
 				}
 				ImGui::Unindent();
 			}
@@ -741,7 +752,7 @@ void FloatAnimator::drawImGuiWidgetsEnd() {
 
 		//--
 
-		guiManager.EndWindow();
+		ui.EndWindow();
 }
 }
 
@@ -767,7 +778,7 @@ void FloatAnimator::drawImGuiWidgets() {
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::drawCurve(glm::vec2 &p)
+void FloatAnimator::drawCurve(glm::vec2& p)
 {
 	//float size = 100;
 	//animatorPosition.drawCurve(p.x, p.y, size, true, ofColor(255));
@@ -878,7 +889,7 @@ void FloatAnimator::loadSettings()
 }
 
 //--------------------------------------------------------------
-void FloatAnimator::Changed_Params(ofAbstractParameter &e)
+void FloatAnimator::Changed_Params(ofAbstractParameter& e)
 {
 	string name = e.getName();
 	if (name != "%") ofLogVerbose(__FUNCTION__) << name << " : " << e;
@@ -1064,6 +1075,6 @@ void FloatAnimator::Changed_Params(ofAbstractParameter &e)
 	else if (name == bGui.getName() && !bGui)
 	{
 		presets.bGui = false;
-	}
+}
 #endif
 }

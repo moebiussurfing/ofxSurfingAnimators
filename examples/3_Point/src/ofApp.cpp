@@ -55,6 +55,9 @@ void ofApp::draw() {
 	// help
 	string s = "PRESS SPACE TO TRIG ANIMATOR. \nRETURN TO RANDOMIZE POSITIONS";
 	ofDrawBitmapStringHighlight(s, 10, 20);
+
+	// Gui
+	posAnim.draw();
 }
 
 //--------------------------------------------------------------
@@ -86,4 +89,3 @@ void ofApp::keyPressed(int key) {
 		posAnim.start();
 	}
 }
-

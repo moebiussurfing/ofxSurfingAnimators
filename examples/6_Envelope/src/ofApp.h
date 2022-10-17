@@ -1,5 +1,7 @@
 #pragma once
 
+//TODO: WIP
+
 #include "ofMain.h"
 
 #include "EnvelopeAnimator.h"

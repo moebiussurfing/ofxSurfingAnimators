@@ -19,7 +19,7 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	//colorAnim.update();
+
 }
 
 //--------------------------------------------------------------
@@ -57,8 +57,8 @@ void ofApp::draw() {
 
 	//-
 
-	//colorAnim.draw();
-	colorAnim.drawImGui();
+	colorAnim.draw();
+	posAnim.draw();
 
 	//-
 

@@ -135,11 +135,11 @@ void ToggleAnimator::setup()
 	//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
-	guiManager.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
-	guiManager.setup(); // initiate ImGui
+	ui.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
+	ui.setup(); // initiate ImGui
 
-	//guiManager.setUseAdvancedSubPanel(true);
-	//guiManager.bAutoResize = false;
+	//ui.setUseAdvancedSubPanel(true);
+	//ui.bAutoResize = false;
 #endif
 
 
@@ -352,11 +352,11 @@ void ToggleAnimator::draw()
 		//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
-		guiManager.Begin();
+		ui.Begin();
 		{
 			drawImGuiWidgets();
 		}
-		guiManager.End();
+		ui.End();
 #endif
 	}
 }
@@ -594,7 +594,6 @@ void ToggleAnimator::Changed_params(ofAbstractParameter &e)
 //--------------------------------------------------------------
 void ToggleAnimator::drawImGuiWidgets()
 {
-
 	string name;
 
 	// widgets sizes
@@ -606,10 +605,10 @@ void ToggleAnimator::drawImGuiWidgets()
 	float _h;
 
 	ImGuiWindowFlags _flagsw = ImGuiWindowFlags_None;
-	if (guiManager.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
+	if (ui.bAutoResize) _flagsw |= ImGuiWindowFlags_AlwaysAutoResize;
 
 	name = "PANEL " + label;
-	if (guiManager.BeginWindow(name.c_str(), NULL, _flagsw))
+	if (ui.BeginWindow(name.c_str(), NULL, _flagsw))
 	{
 		ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w100, _w50, _w33, _w25, _h);
 
@@ -623,9 +622,9 @@ void ToggleAnimator::drawImGuiWidgets()
 		}
 
 		//TODO: fails
-		//guiManager.AddGroup(params, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_DEFAULT);
-		//guiManager.AddGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
-		//guiManager.Add(SHOW_Plot);
+		//ui.AddGroup(params, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_DEFAULT);
+		//ui.AddGroup(params, OFX_IM_GROUP_HIDDEN_HEADER);
+		//ui.Add(SHOW_Plot);
 
 		ofxImGuiSurfing::AddGroup(params, flagst);
 		ofxImGuiSurfing::AddParameter(SHOW_Plot);
@@ -650,7 +649,7 @@ void ToggleAnimator::drawImGuiWidgets()
 
 		rectPlot = ofRectangle(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
 
-		guiManager.EndWindow();
+		ui.EndWindow();
 	}
 }
 #endif
