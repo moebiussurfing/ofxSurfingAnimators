@@ -187,7 +187,6 @@ void EnvelopeAnimator::setup()
 
 	// gui
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
-	ui.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
 	ui.setup(); // initiate ImGui
 	//ui.setUseAdvancedSubPanel(true);
 #endif

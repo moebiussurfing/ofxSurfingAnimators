@@ -135,7 +135,6 @@ void ToggleAnimator::setup()
 	//-
 
 #ifdef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
-	ui.setImGuiAutodraw(true);//? TODO: improve multicontext mode..
 	ui.setup(); // initiate ImGui
 
 	//ui.setUseAdvancedSubPanel(true);
