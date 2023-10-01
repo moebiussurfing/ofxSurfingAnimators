@@ -13,6 +13,8 @@
 #include "ofxAnimatable.h"
 #include "ofMain.h"
 
+#include <limits>
+
 
 class ofxAnimatableOfColor : public ofxAnimatable {
 	

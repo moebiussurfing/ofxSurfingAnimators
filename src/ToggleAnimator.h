@@ -13,7 +13,10 @@
 
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
+
+#ifdef INCLUDE_PLOTS
 #include "ofxHistoryPlot.h"
+#endif
 
 
 #ifndef USE_IMGUI_LAYOUT_MANAGER__TOGGLER
@@ -280,7 +283,9 @@ private:
 
 	bool autoSettings = false;
 
+#ifdef INCLUDE_PLOTS
 	ofxHistoryPlot *plot;
+#endif
 
 	ofxAnimatableQueue queue;
 	void onAnimQueueDone(ofxAnimatableQueue::EventArg &);
@@ -364,7 +369,10 @@ private:
 	bool *bool_BACK;
 
 	void setupFader();
+	
+#ifdef INCLUDE_PLOTS
 	void setupPlot();
+#endif
 
 	float bitThreshold;
 

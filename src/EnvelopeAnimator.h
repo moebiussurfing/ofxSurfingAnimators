@@ -1,10 +1,16 @@
 #pragma once
-
 #include "ofMain.h"
+
+//#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
+
 
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
+
+#ifdef INCLUDE_PLOTS
 #include "ofxHistoryPlot.h"
+#endif
+
 #include "ofxSurfingHelpers.h"
 
 #define USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
@@ -321,7 +327,9 @@ private:
 
 	bool autoSettings = true;
 
+#ifdef INCLUDE_PLOTS
 	ofxHistoryPlot *plot;
+#endif
 
 	ofxAnimatableQueue queue;
 	void onAnimQueueDone(ofxAnimatableQueue::EventArg &);
@@ -406,7 +414,9 @@ private:
 
 	void setupAnimator();
 
+#ifdef INCLUDE_PLOTS
 	void setupPlot();
+#endif
 
 	ofRectangle rectPlot;
 

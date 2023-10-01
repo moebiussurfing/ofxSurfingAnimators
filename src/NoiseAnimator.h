@@ -8,7 +8,7 @@
 //-
 
 #define INCLUDE_FILTER // Filter the point to avoid abrupt changes
-#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
+//#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
 
 //-
 
@@ -542,9 +542,11 @@ private:
 	//glm::vec2 *point_BACK;
 
 	void setupFader();
-	void setupPlot();
 
+#ifdef INCLUDE_PLOTS
+	void setupPlot();
 	void setupPlot_Noise();
+#endif
 
 	int lastFrame;
 	//int totalFrames;

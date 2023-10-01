@@ -3,14 +3,15 @@
 void NoiseAnimator::drawPlot() {
 
 	// workaround bc polot is not being drawed well..
-	if (ENABLE_Modulator)
-	{
+	if (ENABLE_Modulator) {
+#ifdef INCLUDE_PLOTS
 		fboPlot2.begin();
 		{
 			ofClear(0, 0);
 			plot->draw(0, 0, PLOT_BOXES_SIZES, PLOT_BOXES_SIZES);
 		}
 		fboPlot2.end();
+#endif
 	}
 
 	//--
@@ -22,8 +23,8 @@ void NoiseAnimator::drawPlot() {
 
 		int x, y, size, px, pad;
 
-		size = PLOT_BOXES_SIZES;//boxes sizes
-		pad = 4;//space between plot boxes
+		size = PLOT_BOXES_SIZES; //boxes sizes
+		pad = 4; //space between plot boxes
 
 		bool stateColor;
 		string str;
@@ -55,15 +56,15 @@ void NoiseAnimator::drawPlot() {
 
 		// define color state
 
-		if (!ENABLE_Noise) {//ENABLE_Noise = false
+		if (!ENABLE_Noise) { //ENABLE_Noise = false
 			stateColor = false;
-		}
-		else {//ENABLE_Noise = true
-			if (ENABLE_Modulator)
-			{
+		} else { //ENABLE_Noise = true
+			if (ENABLE_Modulator) {
 				//ofLogNotice(_FUNCTION__) <<ofToString(noisePos);
-				if (abs(noisePos.x) > 0.001 || abs(noisePos.y) > 0.001) stateColor = true;
-				else stateColor = false;
+				if (abs(noisePos.x) > 0.001 || abs(noisePos.y) > 0.001)
+					stateColor = true;
+				else
+					stateColor = false;
 
 				//ofLogNotice(_FUNCTION__) <<ofToString(LPFpoint.value());
 				//if ((LPFpoint.value() != ofVec2f(0, 0)))
@@ -80,15 +81,14 @@ void NoiseAnimator::drawPlot() {
 				//else {
 				//	stateColor = queue.isPlaying() && (faderValue > 0);
 				//}
-			}
-			else { //ENABLE_Noise = true & ENABLE_Modulator = false
+			} else { //ENABLE_Noise = true & ENABLE_Modulator = false
 				stateColor = true;
 			}
 		}
 
 		//--
 
-//#ifdef INCLUDE_PLOTS
+		//#ifdef INCLUDE_PLOTS
 		//// 1. mod ASR plot
 		//if (ENABLE_Modulator)
 		//{
@@ -96,10 +96,12 @@ void NoiseAnimator::drawPlot() {
 		//	plot->draw(x + 1 * (size + pad), y, size, size);
 		//	//plot->draw(x + 3 * (size + pad), y, size, size);
 		//}
-//#endif
+		//#endif
 
-		if (stateColor) c = ofColor(255, 255);
-		else c = ofColor(255, 64);
+		if (stateColor)
+			c = ofColor(255, 255);
+		else
+			c = ofColor(255, 64);
 
 		//--
 
@@ -107,8 +109,7 @@ void NoiseAnimator::drawPlot() {
 		// 2. boxes noise x/y plots
 		{
 			xPos = x + 2 * (size + pad);
-			yPos = y;//upper line
-
+			yPos = y; //upper line
 
 #ifdef INCLUDE_PLOTS
 			plot_NoiseX->setColor(c);
@@ -144,7 +145,7 @@ void NoiseAnimator::drawPlot() {
 		{
 			ofPushStyle();
 			ofFill();
-			ofSetColor(ofColor(0, 255));//black
+			ofSetColor(ofColor(0, 255)); //black
 
 			xPos = x;
 #ifdef INCLUDE_PLOTS
@@ -166,8 +167,8 @@ void NoiseAnimator::drawPlot() {
 
 			// 3.2. axis
 			ofSetColor(ofColor(255, 32));
-			ofDrawLine(xPos + halfSize, yPos, xPos + halfSize, yPos + size);//vertical
-			ofDrawLine(xPos, yPos + halfSize, xPos + size, yPos + halfSize);//horizontal
+			ofDrawLine(xPos + halfSize, yPos, xPos + halfSize, yPos + size); //vertical
+			ofDrawLine(xPos, yPos + halfSize, xPos + size, yPos + halfSize); //horizontal
 
 			// A. scaling to final movement
 			//ratio_PlotSize_noisePosX = halfSize / (noiseSizeMax * 5);
@@ -200,8 +201,10 @@ void NoiseAnimator::drawPlot() {
 			pyy = ofClamp(ny + yPos + halfSize, ny + yPos - halfSize, ny + yPos + halfSize);
 
 			//draw point
-			if (stateColor) c = ofColor(255, 0, 0, 225);
-			else c = ofColor(255, 64);
+			if (stateColor)
+				c = ofColor(255, 0, 0, 225);
+			else
+				c = ofColor(255, 64);
 			ofSetColor(c);
 
 #define MAX_RADIUS 15
@@ -215,14 +218,13 @@ void NoiseAnimator::drawPlot() {
 
 		//-
 
-		//if (ENABLE_Modulator && faderValue == faderMax) 
+		//if (ENABLE_Modulator && faderValue == faderMax)
 		{
 
 			//-
 
 			// 4. progress bar
-			if (ENABLE_Modulator && isAnimating())
-			{
+			if (ENABLE_Modulator && isAnimating()) {
 				int rx, ry, rw, rh;
 				rh = 10;
 #ifdef INCLUDE_PLOTS
@@ -245,22 +247,20 @@ void NoiseAnimator::drawPlot() {
 
 		// 4. curve type
 		// hide curve plot when attack/release are 0
-		if(0)//broken
-		if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator)
-		{
-			if (curveShow)
-			{
-				xPos = x + size + pad;
+		if (0) //broken
+			if ((faderRelease != 0 || faderAttack != 0) && ENABLE_Modulator) {
+				if (curveShow) {
+					xPos = x + size + pad;
 #ifdef INCLUDE_PLOTS
-				yPos += size + pad;
+					yPos += size + pad;
 #endif
-				curvePlotable.drawCurve(xPos, yPos, size, true, ofColor(255));
+					curvePlotable.drawCurve(xPos, yPos, size, true, ofColor(255));
 
-				//curvePlotable.drawCurve(x + 2 * (size + pad), y - (size + pad) - 20, size, true, ofColor(255));
+					//curvePlotable.drawCurve(x + 2 * (size + pad), y - (size + pad) - 20, size, true, ofColor(255));
 
-				//-
+					//-
 
-				/*
+					/*
 				//TODO
 				//add monitor red line in attack/release
 				//SOLUTION: can measure frames nums not times!
@@ -282,19 +282,22 @@ void NoiseAnimator::drawPlot() {
 				//ofSetLineWidth(2.0);
 				//ofDrawLine(px, y, px, y + size);
 				*/
+				}
 			}
-		}
 
+#ifdef INCLUDE_PLOTS
 		// 1. modulator envelope plot
 		xPos = x + size + pad;
-		if (stateColor && ENABLE_Modulator) c = ofColor(255, 255);
-		else c = ofColor(255, 64);
+		if (stateColor && ENABLE_Modulator)
+			c = ofColor(255, 255);
+		else
+			c = ofColor(255, 64);
 		plot->setColor(c);
 
-		if (ENABLE_Modulator)
-		{
+		if (ENABLE_Modulator) {
 			fboPlot2.draw(xPos, yPos, PLOT_BOXES_SIZES, PLOT_BOXES_SIZES);
 		}
+#endif
 
 		ofPopStyle();
 		ofPopMatrix();
@@ -302,29 +305,25 @@ void NoiseAnimator::drawPlot() {
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &)
-{
+void NoiseAnimator::Changed_AnimatorQueueDone(ofxAnimatableQueue::EventArg &) {
 	ofLogNotice(__FUNCTION__);
 
 	faderValue = faderMin.get();
 
-	if (float_BACK != nullptr)
-	{
+	if (float_BACK != nullptr) {
 		(*float_BACK) = faderValue.get();
 	}
 
 	//animProgress = 0;
 
-	if (faderLoop)
-	{
+	if (faderLoop) {
 		stop();
 		start();
 	}
 }
 
 //--------------------------------------------------------------
-NoiseAnimator::NoiseAnimator()
-{
+NoiseAnimator::NoiseAnimator() {
 	float_BACK = NULL;
 	point_BACK = NULL;
 
@@ -341,15 +340,14 @@ NoiseAnimator::NoiseAnimator()
 	//guiPos = glm::vec2(700, 500);
 
 	ofAddListener(ofEvents().update, this, &NoiseAnimator::update);
-	
-#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW
 	ofAddListener(ofEvents().draw, this, &NoiseAnimator::draw);
 #endif
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::startup()
-{
+void NoiseAnimator::startup() {
 	if (autoSettings) ofxSurfingHelpers::loadGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 
 	curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
@@ -359,8 +357,10 @@ void NoiseAnimator::startup()
 	setupFader();
 	ofAddListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
 
+#ifdef INCLUDE_PLOTS
 	setupPlot();
 	setupPlot_Noise();
+#endif
 
 	//-
 
@@ -372,8 +372,7 @@ void NoiseAnimator::startup()
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::refreshStyles()
-{
+void NoiseAnimator::refreshStyles() {
 	ui.clearStyles();
 
 	//-
@@ -406,26 +405,24 @@ void NoiseAnimator::refreshStyles()
 	// Modulator
 	if (!ENABLE_Modulator || (ui.bMinimize)) {
 		ui.AddStyleGroup(params_Modulator, OFX_IM_GROUP_HIDDEN);
-		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);//-> affected bc recursive
-	}
-	else {
+		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN); //-> affected bc recursive
+	} else {
 		ui.AddStyleGroup(params_Modulator, OFX_IM_GROUP_COLLAPSED);
 		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_COLLAPSED);
 	}
 
-	// workaround 
+	// workaround
 	//to fix recursive groups / api
 	ui.AddStyleGroup(params_Point, OFX_IM_GROUP_DEFAULT);
 
 	// Minimize
 	if (ui.bMinimize) {
 		//ui.AddStyle(curveShow, OFX_IM_HIDDEN);
-		
+
 		if (bpmMode) {
 			ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_DEFAULT);
 			ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
-		}
-		else {
+		} else {
 			ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
 			ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_DEFAULT);
 		}
@@ -437,10 +434,9 @@ void NoiseAnimator::refreshStyles()
 		ui.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
 		ui.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
 		ui.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
-	}
-	else {
+	} else {
 		//ui.AddStyle(curveShow, OFX_IM_DEFAULT);
-		
+
 		ui.AddStyleGroup(params_Bpm, OFX_IM_GROUP_HIDDEN);
 		ui.AddStyleGroup(params_Timers, OFX_IM_GROUP_HIDDEN);
 
@@ -458,9 +454,7 @@ void NoiseAnimator::refreshStyles()
 			ui.AddStyle(noisePowerX, OFX_IM_STEPPER);
 			ui.AddStyle(noiseSpeedX, OFX_IM_DEFAULT);
 			ui.AddStyle(noiseDeepX, OFX_IM_DEFAULT);
-		}
-		else
-		{
+		} else {
 			ui.AddStyle(noisePowerX, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseSpeedX, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseDeepX, OFX_IM_HIDDEN);
@@ -470,9 +464,7 @@ void NoiseAnimator::refreshStyles()
 			ui.AddStyle(noisePowerY, OFX_IM_STEPPER);
 			ui.AddStyle(noiseSpeedY, OFX_IM_DEFAULT);
 			ui.AddStyle(noiseDeepY, OFX_IM_DEFAULT);
-		}
-		else
-		{
+		} else {
 			ui.AddStyle(noisePowerY, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseSpeedY, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseDeepY, OFX_IM_HIDDEN);
@@ -482,9 +474,7 @@ void NoiseAnimator::refreshStyles()
 			ui.AddStyle(noisePowerZ, OFX_IM_STEPPER);
 			ui.AddStyle(noiseSpeedZ, OFX_IM_DEFAULT);
 			ui.AddStyle(noiseDeepZ, OFX_IM_DEFAULT);
-		}
-		else
-		{
+		} else {
 			ui.AddStyle(noisePowerZ, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseSpeedZ, OFX_IM_HIDDEN);
 			ui.AddStyle(noiseDeepZ, OFX_IM_HIDDEN);
@@ -501,8 +491,7 @@ void NoiseAnimator::refreshStyles()
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::setup()
-{
+void NoiseAnimator::setup() {
 	ENABLE_Noise.set("Enable Noise", true);
 
 	ENABLE_NoiseX.set("ENABLE X", true);
@@ -511,7 +500,7 @@ void NoiseAnimator::setup()
 
 	Reset_Noise.set("Reset Noise", false);
 
-	noiseSizeMax = 100;//max noise displacement. plot box sizes are 100
+	noiseSizeMax = 100; //max noise displacement. plot box sizes are 100
 	params_NoiseX.setName("X");
 	noisePowerX.set("PowerX", DEFAUL_POWER, 0, noiseSizeMax);
 	noiseSpeedX.set("SpeedX", 0.5, 0.1, 1);
@@ -557,7 +546,7 @@ void NoiseAnimator::setup()
 	faderValue.set("VALUE", 0, 0, 1.f);
 	faderMin.set("Min", 0, 0, 1.f);
 	faderMax.set("Max", 1.f, 0, 1.f);
-	faderLoop.set("LOOP", false);//required false
+	faderLoop.set("LOOP", false); //required false
 
 	faderDelay.set("PreDelay", 0.25f, 0, 2);
 	faderAttack.set("Attack", 0.5f, 0, 2);
@@ -701,7 +690,7 @@ void NoiseAnimator::setup()
 	//-
 
 	//--------------------------------------------------------------
-	listenerMinimize = ui.bMinimize.newListener([this](bool &b) {
+	listenerMinimize = ui.bMinimize.newListener([this](bool & b) {
 		refreshStyles();
 	});
 
@@ -717,8 +706,7 @@ void NoiseAnimator::setup()
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::setupFader()
-{
+void NoiseAnimator::setupFader() {
 	faderAnim = AnimCurve(curveType.get());
 
 	queue.clearQueue();
@@ -742,10 +730,9 @@ void NoiseAnimator::setupFader()
 	//ofLogNotice(_FUNCTION__) <<"faderRelease: " << faderRelease;
 }
 
-//--------------------------------------------------------------
-void NoiseAnimator::setupPlot()
-{
 #ifdef INCLUDE_PLOTS
+//--------------------------------------------------------------
+void NoiseAnimator::setupPlot() {
 	plot = new ofxHistoryPlot(NULL, "fader", 100, false);
 	plot->setBackgroundColor(ofColor(0));
 	plot->setShowNumericalInfo(false);
@@ -760,13 +747,10 @@ void NoiseAnimator::setupPlot()
 	plot->setDrawTitle(false);
 	//plot->setGridUnit(16);
 	//plot->setGridColor(ofColor(22, 255));
-#endif
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::setupPlot_Noise()
-{
-#ifdef INCLUDE_PLOTS
+void NoiseAnimator::setupPlot_Noise() {
 	plot_NoiseX = new ofxHistoryPlot(NULL, "x:", 100, false);
 	plot_NoiseX->setBackgroundColor(ofColor(0));
 	plot_NoiseX->setShowNumericalInfo(false);
@@ -797,21 +781,19 @@ void NoiseAnimator::setupPlot_Noise()
 	plot_NoiseY->setDrawTitle(true);
 	plot_NoiseY->setGridUnit(.50);
 	plot_NoiseY->setGridColor(ofColor(255, 255));
-#endif
 }
+#endif
 
 //--------------------------------------------------------------
 //void NoiseAnimator::update()
-void NoiseAnimator::update(ofEventArgs & args)
-{
+void NoiseAnimator::update(ofEventArgs & args) {
 	if (!bEnableAnimator) return;
 
 	//workaround: to variate a the random seed
 	//TODO:
 	//if (0)
 	if (bRestoreTrue)
-		if (ofGetFrameNum() == rSeed)
-		{
+		if (ofGetFrameNum() == rSeed) {
 			ENABLE_Noise = true;
 		}
 
@@ -825,8 +807,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//-
 
-	if (SHOW_Plot && bGui)
-	{
+	if (SHOW_Plot && bGui) {
 		fboPlot.begin();
 		{
 			ofClear(0, 0);
@@ -839,88 +820,73 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//1. Pre calcultate point x,y noise
 
-	if (ENABLE_Noise)
-	{
+	if (ENABLE_Noise) {
 		//-
 
-		if (ENABLE_NoiseX)
-		{
+		if (ENABLE_NoiseX) {
 			noiseCountX += dt * noiseSpeedX;
-			switch (noiseDeepX)
-			{
+			switch (noiseDeepX) {
 			case 1:
-				noiseX = (ofSignedNoise(noiseCountX));//slower 1dim
+				noiseX = (ofSignedNoise(noiseCountX)); //slower 1dim
 				break;
 			case 2:
-				noiseX = (ofSignedNoise(noiseCountX, noiseCountX));//medium 2dim
+				noiseX = (ofSignedNoise(noiseCountX, noiseCountX)); //medium 2dim
 				break;
 			case 3:
-				noiseX = (ofSignedNoise(2 * noiseCountX, noiseCountX, 2 * noiseCountX));//faster 3dim
+				noiseX = (ofSignedNoise(2 * noiseCountX, noiseCountX, 2 * noiseCountX)); //faster 3dim
 				break;
 			default:
 				break;
 			}
 			noiseX = ofClamp(noiseX, -1, 1);
-		}
-		else
-		{
+		} else {
 			noiseX = 0;
 		}
 
 		//-
 
-		if (ENABLE_NoiseY)
-		{
+		if (ENABLE_NoiseY) {
 			noiseCountY += dt * noiseSpeedY;
-			switch (noiseDeepY)
-			{
+			switch (noiseDeepY) {
 			case 1:
-				noiseY = (ofSignedNoise(noiseCountY));//slower 1dim
+				noiseY = (ofSignedNoise(noiseCountY)); //slower 1dim
 				break;
 			case 2:
-				noiseY = (ofSignedNoise(noiseCountY, noiseCountY));//medium 2dim
+				noiseY = (ofSignedNoise(noiseCountY, noiseCountY)); //medium 2dim
 				break;
 			case 3:
-				noiseY = (ofSignedNoise(2 * noiseCountY, noiseCountY, 2 * noiseCountY));//faster 3dim
+				noiseY = (ofSignedNoise(2 * noiseCountY, noiseCountY, 2 * noiseCountY)); //faster 3dim
 				break;
 			default:
 				break;
 			}
 			noiseY = ofClamp(noiseY, -1, 1);
-		}
-		else
-		{
+		} else {
 			noiseY = 0;
 		}
 
 		//-
 
-		if (ENABLE_NoiseZ)
-		{
+		if (ENABLE_NoiseZ) {
 			noiseCountZ += dt * noiseSpeedZ;
-			switch (noiseDeepZ)
-			{
+			switch (noiseDeepZ) {
 			case 1:
-				noiseZ = (ofSignedNoise(noiseCountZ));//slower 1dim
+				noiseZ = (ofSignedNoise(noiseCountZ)); //slower 1dim
 				break;
 			case 2:
-				noiseZ = (ofSignedNoise(noiseCountZ, noiseCountZ));//medium 2dim
+				noiseZ = (ofSignedNoise(noiseCountZ, noiseCountZ)); //medium 2dim
 				break;
 			case 3:
-				noiseZ = (ofSignedNoise(2 * noiseCountZ, noiseCountZ, 2 * noiseCountZ));//faster 3dim
+				noiseZ = (ofSignedNoise(2 * noiseCountZ, noiseCountZ, 2 * noiseCountZ)); //faster 3dim
 				break;
 			default:
 				break;
 			}
 			noiseZ = ofClamp(noiseZ, -1, 1);
-		}
-		else
-		{
+		} else {
 			noiseZ = 0;
 		}
-	}
-	else
-	{
+	} else {
 		noiseX = 0;
 		noiseY = 0;
 		noiseZ = 0;
@@ -931,18 +897,16 @@ void NoiseAnimator::update(ofEventArgs & args)
 	// 2. filter point
 
 #ifdef INCLUDE_FILTER
-	if (ENABLE_NoisePointFilter)
-	{
+	if (ENABLE_NoisePointFilter) {
 		LPFpoint.setFc(ofMap(fcPoint, 1.f, 0.f, 0.01f, 0.05f, true));
 		LPFpoint.update(ofVec3f(noiseX, noiseY, noiseZ));
 		//LPFpoint.update(ofVec2f(noiseX, noiseY));
 
-#ifdef INCLUDE_PLOTS
+	#ifdef INCLUDE_PLOTS
 		plot_NoiseX->update(-LPFpoint.value().x);
 		plot_NoiseY->update(LPFpoint.value().y);
-#endif
-	}
-	else
+	#endif
+	} else
 #endif
 	{
 #ifdef INCLUDE_PLOTS
@@ -953,13 +917,11 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//--
 
-	// 3. Process modulator envelope 
+	// 3. Process modulator envelope
 
-	if (ENABLE_Modulator)
-	{
+	if (ENABLE_Modulator) {
 		queue.update(dt);
-		if (queue.isPlaying())
-		{
+		if (queue.isPlaying()) {
 			faderValue = queue.getCurrentValue();
 			uint64_t time = ofGetElapsedTimeMillis() - lastStart;
 			totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
@@ -968,8 +930,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 			//ofLogNotice(_FUNCTION__) <<"faderValue:" << faderValue;
 		}
 	}
-	if (!ENABLE_Modulator)
-	{
+	if (!ENABLE_Modulator) {
 		faderValue = faderMax.get();
 	}
 
@@ -980,8 +941,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 	// Modulator
 
 #ifdef INCLUDE_FILTER
-	if (ENABLE_NoiseModulatorFilter)
-	{
+	if (ENABLE_NoiseModulatorFilter) {
 		LPFmodulator.setFc(ofMap(fc, 1.f, 0.f, 0.01f, 0.5f, true));
 		//LPFmodulator.setFc(ofMap(fc, 1.f, 0.f, 0.005f, 0.15f, true));
 		LPFmodulator.update(faderValue);
@@ -993,10 +953,11 @@ void NoiseAnimator::update(ofEventArgs & args)
 	// Modulator envelope plot
 
 #ifdef INCLUDE_PLOTS
-#ifdef INCLUDE_FILTER
-	if (ENABLE_NoiseModulatorFilter) plot->update(LPFmodulator.value());
+	#ifdef INCLUDE_FILTER
+	if (ENABLE_NoiseModulatorFilter)
+		plot->update(LPFmodulator.value());
 	else
-#endif
+	#endif
 	{
 		plot->update(faderValue.get());
 	}
@@ -1007,10 +968,8 @@ void NoiseAnimator::update(ofEventArgs & args)
 	// 5. Final apply
 
 #ifdef INCLUDE_FILTER
-	if (ENABLE_NoiseModulatorFilter)
-	{
-		if (!ENABLE_NoisePointFilter)
-		{
+	if (ENABLE_NoiseModulatorFilter) {
+		if (!ENABLE_NoisePointFilter) {
 			noisePos = glm::vec3(
 				(LPFmodulator.value() * noiseX) * (noisePowerX * 5),
 				(LPFmodulator.value() * noiseY) * (noisePowerY * 5),
@@ -1019,9 +978,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 			//noisePos = glm::vec2(
 			//	(LPFmodulator.value() * noiseX) * (noisePowerX * 5),
 			//	(LPFmodulator.value() * noiseY) * (noisePowerY * 5));
-		}
-		else
-		{
+		} else {
 			noisePos = glm::vec3(
 				(LPFmodulator.value() * LPFpoint.value().x) * (noisePowerX * 5),
 				(LPFmodulator.value() * LPFpoint.value().y) * (noisePowerY * 5),
@@ -1031,13 +988,11 @@ void NoiseAnimator::update(ofEventArgs & args)
 			//	(LPFmodulator.value() * LPFpoint.value().x) * (noisePowerX * 5),
 			//	(LPFmodulator.value() * LPFpoint.value().y) * (noisePowerY * 5));
 		}
-	}
-	else
+	} else
 #endif
 	{
 #ifdef INCLUDE_FILTER
-		if (ENABLE_NoisePointFilter)
-		{
+		if (ENABLE_NoisePointFilter) {
 			noisePos = glm::vec3(
 				(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
 				(faderValue * LPFpoint.value().y) * (noisePowerY * 5),
@@ -1046,8 +1001,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 			//noisePos = glm::vec2(
 			//	(faderValue * LPFpoint.value().x) * (noisePowerX * 5),
 			//	(faderValue * LPFpoint.value().y) * (noisePowerY * 5));
-		}
-		else
+		} else
 #endif
 		{
 			noisePos = glm::vec3(
@@ -1067,8 +1021,7 @@ void NoiseAnimator::update(ofEventArgs & args)
 
 	//TODO:
 	// pointer back
-	if (point_BACK != nullptr)
-	{
+	if (point_BACK != nullptr) {
 		(*point_BACK) = noisePos;
 	}
 }
@@ -1080,11 +1033,11 @@ void NoiseAnimator::update(ofEventArgs & args)
 //}
 
 //--------------------------------------------------------------
-#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+#ifndef SURFING_ANIMATOR_ENABLE_AUTO_DRAW
 void NoiseAnimator::draw()
 #endif
-#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
-void NoiseAnimator::draw(ofEventArgs & args)
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW
+	void NoiseAnimator::draw(ofEventArgs & args)
 #endif
 {
 	if (!bGui.get()) return;
@@ -1103,13 +1056,12 @@ void NoiseAnimator::draw(ofEventArgs & args)
 		}
 		ui.End();
 #endif
-
 	}
 
 	//-
 
 	//if (SHOW_Plot)// && ENABLE_Noise)
-		//drawPlot();
+	//drawPlot();
 }
 
 //--------------------------------------------------------------
@@ -1139,8 +1091,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 			bOpened = ui.BeginWindow(bGui);
 			//bOpened = ui.BeginWindow(name, (bool*)&bGui.get(), _flagsw);
 
-			if (bOpened)
-			{
+			if (bOpened) {
 				ofxImGuiSurfing::refreshImGui_WidgetsSizes(_spcx, _spcy, _w100, _h100, _w99, _w50, _w33, _w25, _h);
 				ui.refreshLayout();
 
@@ -1168,17 +1119,16 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 					//-
 
-#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
+	#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 					ui.DrawAdvancedBundle();
-#endif
+	#endif
 				}
 
 				//--
 
 				// Plot fbo
 				if (!ui.bMinimize) {
-					if (SHOW_Plot)
-					{
+					if (SHOW_Plot) {
 						ImTextureID textureID = (ImTextureID)(uintptr_t)fboPlot.getTexture().getTextureData().textureID;
 						ImGui::Image(textureID, plotShape);
 					}
@@ -1187,8 +1137,7 @@ void NoiseAnimator::drawImGuiWidgets() {
 
 			//--
 
-			if (bOpened)
-			{
+			if (bOpened) {
 				ui.EndWindow();
 			}
 		}
@@ -1197,20 +1146,17 @@ void NoiseAnimator::drawImGuiWidgets() {
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::restart()
-{
+void NoiseAnimator::restart() {
 	stop();
 	start();
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::start()
-{
+void NoiseAnimator::start() {
 	if (!bEnableAnimator) return;
 
 	//ofLogNotice(_FUNCTION__) <<"start()";
-	if (ENABLE_Modulator)
-	{
+	if (ENABLE_Modulator) {
 		//ofLogNotice(_FUNCTION__) <<"NoiseAnimator START";
 
 		//mark
@@ -1224,41 +1170,34 @@ void NoiseAnimator::start()
 
 		queue.setInitialValue(faderMin.get());
 		queue.startPlaying(); //start the animation
-	}
-	else
-	{
+	} else {
 		faderValue = faderMax.get();
 	}
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::stop()
-{
+void NoiseAnimator::stop() {
 	//ofLogNotice(_FUNCTION__) <<"stop()";
-	if (ENABLE_Modulator)
-	{
+	if (ENABLE_Modulator) {
 		faderValue = faderMin.get();
 		queue.setInitialValue(faderMin.get());
 		queue.pausePlayback(); //start the animation
 		animProgress = 0;
-	}
-	else
-	{
+	} else {
 		faderValue = faderMax.get();
 	}
 }
 
 //--------------------------------------------------------------
-NoiseAnimator::~NoiseAnimator()
-{
+NoiseAnimator::~NoiseAnimator() {
 	ofRemoveListener(queue.eventQueueDone, this, &NoiseAnimator::Changed_AnimatorQueueDone);
 
 	ofRemoveListener(ofEvents().update, this, &NoiseAnimator::update);
 
-	#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW 
+#ifdef SURFING_ANIMATOR_ENABLE_AUTO_DRAW
 	ofRemoveListener(ofEvents().draw, this, &NoiseAnimator::draw);
 #endif
-	
+
 	ofRemoveListener(params.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 	//ofRemoveListener(params_Control.parameterChangedE(), this, &NoiseAnimator::Changed_params);
 
@@ -1266,36 +1205,33 @@ NoiseAnimator::~NoiseAnimator()
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::exit()
-{
+void NoiseAnimator::exit() {
 	if (autoSettings) ofxSurfingHelpers::saveGroup(params, path_GLOBAL_Folder + "/" + path_Settings);
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::nextCurve()
-{
+void NoiseAnimator::nextCurve() {
 	curveType++;
 	curveType = curveType % NUM_ANIM_CURVES;
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::previousCurve()
-{
+void NoiseAnimator::previousCurve() {
 	curveType--;
 	if (curveType < 0) curveType = NUM_ANIM_CURVES - 1;
 }
 
 //--------------------------------------------------------------
-void NoiseAnimator::Changed_params(ofAbstractParameter &e)
-{
+void NoiseAnimator::Changed_params(ofAbstractParameter & e) {
 	string name = e.getName();
 	if (name != "%" && name != "VALUE")
 		ofLogNotice(__FUNCTION__) << name << " : " << e;
 	//ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
-//-
+	//-
 
-	if (false) {}
+	if (false) {
+	}
 
 	//if (name == "Min" ||
 	//	name == "Max" ||
@@ -1310,12 +1246,9 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 	//}
 
 	//bpm engine
-	else if (name == bpmMode.getName() || name == bpmSpeed.getName() ||
-		name == bpmBeatDelay.getName() ||
-		name == bpmBeatAttack.getName() || name == bpmBeatSustain.getName() || name == bpmBeatRelease.getName())
-	{
+	else if (name == bpmMode.getName() || name == bpmSpeed.getName() || name == bpmBeatDelay.getName() || name == bpmBeatAttack.getName() || name == bpmBeatSustain.getName() || name == bpmBeatRelease.getName()) {
 		if (bpmMode) {
-			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
+			float _bar = 60.f / bpmSpeed.get(); //one bar duration in seconds to this bpm speed
 			float _ratio = 2.0f;
 			faderDelay = (_bar / _ratio) * (float)bpmBeatDelay;
 			faderAttack = (_bar / _ratio) * (float)bpmBeatAttack;
@@ -1323,8 +1256,7 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 			faderRelease = (_bar / _ratio) * (float)bpmBeatRelease;
 		}
 
-		if (name == bpmMode.getName())
-		{
+		if (name == bpmMode.getName()) {
 			//// workflow
 			//auto &g1 = gui.getGroup(label);//1st level
 			//auto &g2 = g1.getGroup("MODULATOR");//2nd level
@@ -1344,17 +1276,14 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == curveType.getName())
-	{
+	else if (name == curveType.getName()) {
 		curveName = ofxAnimatable::getCurveName(AnimCurve(curveType.get()));
 		AnimCurve curve = (AnimCurve)(curveType.get());
 		curvePlotable.setCurve(curve);
 	}
 
-	else if (name == Reset_Noise.getName())
-	{
-		if (Reset_Noise)
-		{
+	else if (name == Reset_Noise.getName()) {
+		if (Reset_Noise) {
 			Reset_Noise = false;
 
 			ENABLE_Noise = true;
@@ -1377,10 +1306,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == Reset_Modulator.getName())
-	{
-		if (Reset_Modulator)
-		{
+	else if (name == Reset_Modulator.getName()) {
+		if (Reset_Modulator) {
 			Reset_Modulator = false;
 
 			//ENABLE_Modulator = false;
@@ -1414,10 +1341,8 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == "VALUE")
-	{
-		if (float_BACK != nullptr)
-		{
+	else if (name == "VALUE") {
+		if (float_BACK != nullptr) {
 			(*float_BACK) = faderValue.get();
 		}
 	}
@@ -1426,48 +1351,36 @@ void NoiseAnimator::Changed_params(ofAbstractParameter &e)
 
 	// Main enablers
 
-	else if (name == ENABLE_Noise.getName())
-	{
+	else if (name == ENABLE_Noise.getName()) {
 		// workflow
-		if (!ENABLE_Noise)
-		{
+		if (!ENABLE_Noise) {
 			//ENABLE_Modulator = false;
 			stop();
 		}
 	}
 
-	else if (name == bpmMode.getName())
-	{
+	else if (name == bpmMode.getName()) {
 		refreshStyles();
 	}
 
-	else if (name == ENABLE_Modulator.getName())
-	{
+	else if (name == ENABLE_Modulator.getName()) {
 		refreshStyles();
 
 		// workflow
-		if (!ENABLE_Modulator)
-		{
+		if (!ENABLE_Modulator) {
 			faderValue = faderMax.get();
-		}
-		else
-		{
+		} else {
 			if (!ENABLE_Noise) ENABLE_Noise = true;
 			stop();
 			//faderValue = faderMin;
 		}
 	}
 
-	else if (name == ENABLE_NoiseX.getName())
-	{
+	else if (name == ENABLE_NoiseX.getName()) {
 		refreshStyles();
-	}
-	else if (name == ENABLE_NoiseY.getName())
-	{
+	} else if (name == ENABLE_NoiseY.getName()) {
 		refreshStyles();
-	}
-	else if (name == ENABLE_NoiseZ.getName())
-	{
+	} else if (name == ENABLE_NoiseZ.getName()) {
 		refreshStyles();
 	}
 }

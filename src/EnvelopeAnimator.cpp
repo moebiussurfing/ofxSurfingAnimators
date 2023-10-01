@@ -1,8 +1,7 @@
 #include "EnvelopeAnimator.h"
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::drawImGuiWidgets()
-{
+void EnvelopeAnimator::drawImGuiWidgets() {
 #ifdef USE_IMGUI_LAYOUT_MANAGER__ENVELOPE
 
 	string name;
@@ -38,9 +37,8 @@ void EnvelopeAnimator::drawImGuiWidgets()
 		//--
 
 		// plot fbo
-
-		if (SHOW_Plot)
-		{
+	#ifdef INCLUDE_PLOTS
+		if (SHOW_Plot) {
 			widthGuiLayout = ImGui::GetWindowWidth();
 			float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
 			ImGui::Indent(_spacing);
@@ -48,6 +46,7 @@ void EnvelopeAnimator::drawImGuiWidgets()
 			ImGui::Image(textureID, plotShape);
 			ImGui::Unindent;
 		}
+	#endif
 
 		//-
 
@@ -59,27 +58,23 @@ void EnvelopeAnimator::drawImGuiWidgets()
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &)
-{
+void EnvelopeAnimator::onAnimQueueDone(ofxAnimatableQueue::EventArg &) {
 	//cout << "EnvelopeAnimator FINISHED" << endl;
 
 	faderValue = faderMin.get();
-	if (float_BACK != nullptr)
-	{
+	if (float_BACK != nullptr) {
 		(*float_BACK) = faderValue;
 	}
 	//animProgress = 0;
 
-	if (faderLoop)
-	{
+	if (faderLoop) {
 		stop();
 		start();
 	}
 }
 
 //--------------------------------------------------------------
-EnvelopeAnimator::EnvelopeAnimator()
-{
+EnvelopeAnimator::EnvelopeAnimator() {
 	//ofSetLogLevel(OF_LOG_SILENT);
 
 	doneInstantiated = true;
@@ -92,8 +87,7 @@ EnvelopeAnimator::EnvelopeAnimator()
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::setup()
-{
+void EnvelopeAnimator::setup() {
 	ENABLE_Envelope.set("Enable Envelope", true);
 	faderLoop.set("LOOP", false);
 	MODE_NoteOff.set("MODE OFF", false);
@@ -227,7 +221,9 @@ void EnvelopeAnimator::setup()
 
 	ofAddListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
+#ifdef INCLUDE_PLOTS
 	setupPlot();
+#endif
 
 	//-
 
@@ -266,8 +262,7 @@ void EnvelopeAnimator::setupAnimatorOff() {
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::setupAnimator()
-{
+void EnvelopeAnimator::setupAnimator() {
 	faderAnimIn = AnimCurve(curveTypeIn.get());
 	faderAnimOut = AnimCurve(curveTypeOut.get());
 
@@ -289,9 +284,9 @@ void EnvelopeAnimator::setupAnimator()
 	totalTime = faderDelay.get() + faderAttack.get() + faderSustain.get() + faderRelease.get();
 }
 
+#ifdef INCLUDE_PLOTS
 //--------------------------------------------------------------
-void EnvelopeAnimator::setupPlot()
-{
+void EnvelopeAnimator::setupPlot() {
 	plot = new ofxHistoryPlot(NULL, "fader", 100, false);
 	plot->setBackgroundColor(ofColor(0));
 	plot->setShowNumericalInfo(false);
@@ -307,15 +302,14 @@ void EnvelopeAnimator::setupPlot()
 	//plot->setGridUnit(16);
 	//plot->setGridColor(ofColor(22, 255));
 }
+#endif
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::update()
-{
-	//if (!bPaused) 
+void EnvelopeAnimator::update() {
+	//if (!bPaused)
 	{
 		queue.update(dt);
-		if (queue.isPlaying())
-		{
+		if (queue.isPlaying()) {
 			uint64_t time = ofGetElapsedTimeMillis() - lastStart;
 			faderValue = queue.getCurrentValue();
 
@@ -323,13 +317,14 @@ void EnvelopeAnimator::update()
 
 			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
 		}
+#ifdef INCLUDE_PLOTS
 		plot->update(faderValue.get());
+#endif
 	}
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::drawPlot()
-{
+void EnvelopeAnimator::drawPlot() {
 	ofPushStyle();
 	ofPushMatrix();
 	ofFill();
@@ -351,27 +346,25 @@ void EnvelopeAnimator::drawPlot()
 
 	//1. two curves
 	//hide curve plot when attack/release are 0
-	if (faderRelease != 0 || faderAttack != 0)
-	{
+	if (faderRelease != 0 || faderAttack != 0) {
 		//curve type
-		if(0)//broken
-		if (curveShow)
-		{
-			curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);
-			//curvePlotableOut.drawCurve(x + size + 12, y, size, true, ofColor(255), false);
+		if (0) //broken
+			if (curveShow) {
+				curvePlotableIn.drawCurve(x + pad, y, size, true, ofColor(255), false);
+				//curvePlotableOut.drawCurve(x + size + 12, y, size, true, ofColor(255), false);
 
-			float xx = x + size + 12;
-			float yy = y;
-			fboCurve.begin();
-			ofClear(0, 0);
-			curvePlotableOut.setAutoFlipCurve(true);
-			curvePlotableOut.drawCurve(0, 0, size, true, ofColor(255), false);
-			fboCurve.end();
-			ofSetColor(255, 255);
-			fboCurve.draw(xx, yy);
-			//fboCurve.draw(xx + size, yy, -size, size);//flip
-			//fboCurve.draw(xx + size, yy + size, -size, -size);//flip
-		}
+				float xx = x + size + 12;
+				float yy = y;
+				fboCurve.begin();
+				ofClear(0, 0);
+				curvePlotableOut.setAutoFlipCurve(true);
+				curvePlotableOut.drawCurve(0, 0, size, true, ofColor(255), false);
+				fboCurve.end();
+				ofSetColor(255, 255);
+				fboCurve.draw(xx, yy);
+				//fboCurve.draw(xx + size, yy, -size, size);//flip
+				//fboCurve.draw(xx + size, yy + size, -size, -size);//flip
+			}
 	}
 
 	//-
@@ -381,7 +374,7 @@ void EnvelopeAnimator::drawPlot()
 	////plot->draw(x + size + pad, y + size + pad + padPlots, size, size);//right
 
 	int rx, ry, rw, rh;
-	rx = x + pad;//left
+	rx = x + pad; //left
 	//rx = x + size + pad;//right
 
 #ifndef FIX_WORKAROUND_FBO_PLOT
@@ -395,8 +388,7 @@ void EnvelopeAnimator::drawPlot()
 
 	//ry = y + size - rh;
 
-	if (isAnimating())
-	{
+	if (isAnimating()) {
 		// 2.1 progress bar
 		px = ofMap(animProgress, 0, 100, 0, wplot, true);
 		rw = px;
@@ -433,16 +425,16 @@ void EnvelopeAnimator::drawPlot()
 
 	// black bg
 	ofSetColor(0, 255);
-	pad = 2;//make black outspace
+	pad = 2; //make black outspace
 	ofRectangle r2;
 	r2 = ofRectangle(rx, ry, w, -size);
 	ofDrawRectangle(r2);
 
-	//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left 
+	//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
 
 	// red vert bar
 	ofSetColor(ofColor::red, 225);
-	r2 = ofRectangle(rx + 0.5*pad, ry - 0.5*pad, w - pad, pad - MAX(vb*size, 1));
+	r2 = ofRectangle(rx + 0.5 * pad, ry - 0.5 * pad, w - pad, pad - MAX(vb * size, 1));
 	ofDrawRectangle(r2);
 
 	//-
@@ -466,16 +458,19 @@ void EnvelopeAnimator::drawPlot()
 		int padPlots = 5;
 		int wplot = plotShape.x - 16;
 		//int wplot = plotShape.x;
-		//int wplot = 500; 
+		//int wplot = 500;
 		int size = 92;
 		ofNoFill();
 		ofColor c = ofColor(255, 255);
 		//ofSetColor(c);
+
+#ifdef INCLUDE_PLOTS
 		//plot->setBackgroundColor(0);
 		//plot->setDrawBackground(true);
 		plot->setColor(c);
-		plot->draw(x, y + size + pad + padPlots, wplot, size);//left
+		plot->draw(x, y + size + pad + padPlots, wplot, size); //left
 		//plot->draw(x + pad, y + size + pad + padPlots, wplot, size);//left
+#endif
 	}
 
 	ofPopMatrix();
@@ -483,12 +478,9 @@ void EnvelopeAnimator::drawPlot()
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::draw()
-{
-	if (SHOW_gui)
-	{
-		if (SHOW_Plot)
-		{
+void EnvelopeAnimator::draw() {
+	if (SHOW_gui) {
+		if (SHOW_Plot) {
 			fboPlot.begin();
 			{
 				ofClear(0, 0);
@@ -515,8 +507,8 @@ void EnvelopeAnimator::draw()
 	//TDOO:
 	//extra bc fbo fails going black
 #ifdef FIX_WORKAROUND_FBO_PLOT
-	if (SHOW_Plot)
-	{
+	#ifdef INCLUDE_PLOTS
+	if (SHOW_Plot) {
 		int padx = 20;
 		int pady = 5;
 		int x = rectPlot.getBottomLeft().x + padx;
@@ -524,65 +516,54 @@ void EnvelopeAnimator::draw()
 		int padPlots = 5;
 		int wplot = plotShape.x;
 		int size = 92;
-		plot->draw(x, y, wplot, size);//left
+		plot->draw(x, y, wplot, size); //left
 	}
+	#endif
 #endif
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::start()
-{
-	if (ENABLE_Envelope)
-	{
+void EnvelopeAnimator::start() {
+	if (ENABLE_Envelope) {
 		//mark
 		//plot->update(1);
 
-		//TODO: 
+		//TODO:
 		//rebuild every start
 		setupAnimator();
 		//stop();
 
 		lastStart = ofGetElapsedTimeMillis();
 		queue.setInitialValue(faderMin.get());
-		queue.startPlaying();//start the animation
-	}
-	else
-	{
+		queue.startPlaying(); //start the animation
+	} else {
 		faderValue = faderMax;
 	}
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::startOn()
-{
-	if (ENABLE_Envelope)
-	{
+void EnvelopeAnimator::startOn() {
+	if (ENABLE_Envelope) {
 		setupAnimatorOn();
 
 		lastStart = ofGetElapsedTimeMillis();
 		queue.setInitialValue(faderMin.get());
-		queue.startPlaying();//start the animation
-	}
-	else
-	{
+		queue.startPlaying(); //start the animation
+	} else {
 		faderValue = faderMax;
 	}
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::startOff()
-{
-	if (ENABLE_Envelope)
-	{
+void EnvelopeAnimator::startOff() {
+	if (ENABLE_Envelope) {
 		setupAnimatorOff();
 
 		lastStart = ofGetElapsedTimeMillis();
 		//faderValue = faderMax.get();
 		queue.setInitialValue(faderMax.get());
-		queue.startPlaying();//start the animation
-	}
-	else
-	{
+		queue.startPlaying(); //start the animation
+	} else {
 		faderValue = faderMax;
 	}
 }
@@ -594,58 +575,48 @@ void EnvelopeAnimator::startOff()
 //}
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::stop()
-{
+void EnvelopeAnimator::stop() {
 	//cout << "stop()" << endl;
-	if (ENABLE_Envelope)
-	{
+	if (ENABLE_Envelope) {
 		faderValue = faderMin.get();
 		queue.setInitialValue(faderMin.get());
 		queue.pausePlayback(); //start the animation
 		animProgress = 0;
-	}
-	else
-	{
+	} else {
 		faderValue = faderMax;
 	}
 }
 
 //--------------------------------------------------------------
-EnvelopeAnimator::~EnvelopeAnimator()
-{
+EnvelopeAnimator::~EnvelopeAnimator() {
 	ofRemoveListener(queue.eventQueueDone, this, &EnvelopeAnimator::onAnimQueueDone);
 
 	exit();
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::exit()
-{
+void EnvelopeAnimator::exit() {
 	/*if (autoSettings)*/
 	ofxSurfingHelpers::saveGroup(params, path);
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::nextCurve()
-{
+void EnvelopeAnimator::nextCurve() {
 	curveTypeIn++;
 	curveTypeIn = curveTypeIn % NUM_ANIM_CURVES;
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::previousCurve()
-{
+void EnvelopeAnimator::previousCurve() {
 	curveTypeIn--;
 	if (curveTypeIn < 0)
 		curveTypeIn = NUM_ANIM_CURVES - 1;
 }
 
 //--------------------------------------------------------------
-void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
-{
+void EnvelopeAnimator::Changed_params(ofAbstractParameter & e) {
 	string name = e.getName();
-	if (name != "%" &&
-		name != "Value")
+	if (name != "%" && name != "Value")
 		ofLogVerbose(__FUNCTION__) << name << " : " << e;
 
 	//-
@@ -662,20 +633,14 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 	//	//stop();
 	//}
 
-	if (false) {}
+	if (false) {
+	}
 
 	//bpm engine
 	else if (
-		name == bpmMode.getName() ||
-		name == bpmSpeed.getName() ||
-		name == bpmBeatDelay.getName() ||
-		name == bpmBeatAttack.getName() ||
-		name == bpmBeatSustain.getName() ||
-		name == bpmBeatRelease.getName())
-	{
-		if (bpmMode)
-		{
-			float _bar = 60.f / bpmSpeed.get();//one bar duration in seconds to this bpm speed
+		name == bpmMode.getName() || name == bpmSpeed.getName() || name == bpmBeatDelay.getName() || name == bpmBeatAttack.getName() || name == bpmBeatSustain.getName() || name == bpmBeatRelease.getName()) {
+		if (bpmMode) {
+			float _bar = 60.f / bpmSpeed.get(); //one bar duration in seconds to this bpm speed
 			float _ratio = 2.0f;
 			faderDelay = (_bar / _ratio) * (float)bpmBeatDelay;
 			faderAttack = (_bar / _ratio) * (float)bpmBeatAttack;
@@ -683,31 +648,26 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 			faderRelease = (_bar / _ratio) * (float)bpmBeatRelease;
 		}
 
-		if (name == bpmMode.getName())
-		{
+		if (name == bpmMode.getName()) {
 			//workflow
 			refreshGui();
 		}
 	}
 
-	else if (name == curveTypeIn.getName())
-	{
+	else if (name == curveTypeIn.getName()) {
 		curveNameIn = ofxAnimatable::getCurveName(AnimCurve(curveTypeIn.get()));
 		AnimCurve curve = (AnimCurve)(curveTypeIn.get());
 		curvePlotableIn.setCurve(curve);
 	}
 
-	else if (name == curveTypeOut.getName())
-	{
+	else if (name == curveTypeOut.getName()) {
 		curveNameOut = ofxAnimatable::getCurveName(AnimCurve(curveTypeOut.get()));
 		AnimCurve curve = (AnimCurve)(curveTypeOut.get());
 		curvePlotableOut.setCurve(curve);
 	}
 
-	else if (name == "Reset")
-	{
-		if (reset)
-		{
+	else if (name == "Reset") {
+		if (reset) {
 			reset = false;
 
 			faderValue = faderMax;
@@ -733,19 +693,13 @@ void EnvelopeAnimator::Changed_params(ofAbstractParameter &e)
 		}
 	}
 
-	else if (name == "Value")
-	{
-		if (float_BACK != nullptr)
-		{
+	else if (name == "Value") {
+		if (float_BACK != nullptr) {
 			(*float_BACK) = faderValue;
 		}
-	}
-	else if (name == "Enable Envelope")
-	{
-		if (!ENABLE_Envelope)
-		{
+	} else if (name == "Enable Envelope") {
+		if (!ENABLE_Envelope) {
 			faderValue = faderMax;
 		}
 	}
 }
-
