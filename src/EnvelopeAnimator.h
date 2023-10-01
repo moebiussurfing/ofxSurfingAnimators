@@ -37,9 +37,11 @@ private:
 
 	ofFbo fboCurve;
 
-	ofFbo fboPlot;
 	void drawPlot();
+#ifdef INCLUDE_PLOTS
+	ofFbo fboPlot;
 	ImVec2 plotShape;
+#endif
 
 	float widthGuiLayout;
 	float heightGuiLayout;
@@ -262,11 +264,13 @@ public:
 		curvePlotableIn.setCurve(curveO);
 	}
 
+#ifdef INCLUDE_PLOTS
 	//--------------------------------------------------------------
 	void setVisible_Plot(bool b)
 	{
 		SHOW_Plot = b;
 	}
+#endif
 
 	////--------------------------------------------------------------
 	//void setGlobalTimeScale(float timeScale)
@@ -323,11 +327,10 @@ private:
 	//to disable alpha and show full opacity
 	bool debug;
 
-	ofParameter<bool> SHOW_Plot{ "Show Plot", true };
-
 	bool autoSettings = true;
 
 #ifdef INCLUDE_PLOTS
+	ofParameter<bool> SHOW_Plot{ "Show Plot", true };
 	ofxHistoryPlot *plot;
 #endif
 

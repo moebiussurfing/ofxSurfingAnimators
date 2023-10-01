@@ -16,9 +16,11 @@
 
 #include "ofxAnimatableFloat.h"
 #include "ofxAnimatableQueue.h"
+
 #ifdef INCLUDE_PLOTS
 #include "ofxHistoryPlot.h"
 #endif
+
 #include "ofxSurfingHelpers.h"
 #include "ofxSurfingImGui.h"
 

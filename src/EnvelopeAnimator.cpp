@@ -32,12 +32,13 @@ void EnvelopeAnimator::drawImGuiWidgets() {
 		}
 
 		ofxImGuiSurfing::AddGroup(params, flagst);
+
+	#ifdef INCLUDE_PLOTS
 		ofxImGuiSurfing::AddParameter(SHOW_Plot);
 
 		//--
 
-		// plot fbo
-	#ifdef INCLUDE_PLOTS
+		// Plot fbo
 		if (SHOW_Plot) {
 			widthGuiLayout = ImGui::GetWindowWidth();
 			float _spacing = widthGuiLayout / 2 - (plotShape.x / 2);
@@ -188,6 +189,8 @@ void EnvelopeAnimator::setup() {
 	//--
 
 	// plot
+
+#ifdef INCLUDE_PLOTS
 #ifdef FIX_WORKAROUND_FBO_PLOT
 	plotShape = ImVec2(210, 100);
 #endif
@@ -201,6 +204,7 @@ void EnvelopeAnimator::setup() {
 	fboSettings.internalformat = GL_RGBA;
 	fboSettings.textureTarget = GL_TEXTURE_2D;
 	fboPlot.allocate(fboSettings);
+#endif
 
 	int size = 92;
 	ofFbo::Settings fboSettings2;
@@ -309,6 +313,7 @@ void EnvelopeAnimator::update() {
 	//if (!bPaused)
 	{
 		queue.update(dt);
+
 		if (queue.isPlaying()) {
 			uint64_t time = ofGetElapsedTimeMillis() - lastStart;
 			faderValue = queue.getCurrentValue();
@@ -317,6 +322,7 @@ void EnvelopeAnimator::update() {
 
 			animProgress = ofMap(time / 1000.f, 0, totalTime, 0, 100, true);
 		}
+
 #ifdef INCLUDE_PLOTS
 		plot->update(faderValue.get());
 #endif
@@ -452,6 +458,7 @@ void EnvelopeAnimator::drawPlot() {
 	if (0)
 #endif
 	{
+#ifdef INCLUDE_PLOTS
 		int x = 0;
 		int y = 2;
 		int pad = 5;
@@ -464,7 +471,6 @@ void EnvelopeAnimator::drawPlot() {
 		ofColor c = ofColor(255, 255);
 		//ofSetColor(c);
 
-#ifdef INCLUDE_PLOTS
 		//plot->setBackgroundColor(0);
 		//plot->setDrawBackground(true);
 		plot->setColor(c);
@@ -479,7 +485,9 @@ void EnvelopeAnimator::drawPlot() {
 
 //--------------------------------------------------------------
 void EnvelopeAnimator::draw() {
-	if (SHOW_gui) {
+	if (SHOW_gui) 
+	{
+#ifdef INCLUDE_PLOTS
 		if (SHOW_Plot) {
 			fboPlot.begin();
 			{
@@ -488,6 +496,7 @@ void EnvelopeAnimator::draw() {
 			}
 			fboPlot.end();
 		}
+#endif
 
 		//-
 
