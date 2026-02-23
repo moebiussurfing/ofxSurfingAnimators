@@ -11,8 +11,8 @@ void ofApp::setup() {
 
 	posAnim.setNameLabel("animPos");
 	posAnim.setup();
-	posAnim.setPositionStart(glm::vec2(200, 200));
-	posAnim.setPositionEnd(glm::vec2(600, 600));
+	posAnim.setPositionStart(glm::vec2(0.2f, 0.2f));
+	posAnim.setPositionEnd(glm::vec2(0.6f, 0.6f));
 
 	startTween();
 }
@@ -30,8 +30,8 @@ void ofApp::draw() {
 		ofPushStyle();
 
 		// 1. get position animator
-		float x = posAnim.getCurrentPosition().x;
-		float y = posAnim.getCurrentPosition().y;
+		float x = posAnim.getCurrentPosition().x * ofGetWidth();
+		float y = posAnim.getCurrentPosition().y * ofGetHeight();
 
 		// 2. get color animator
 		ofSetColor(colorAnim.getColorCurrent());
@@ -48,9 +48,9 @@ void ofApp::draw() {
 		// start/end points connected
 		ofSetColor(255, 0, 0);
 		ofFill();
-		ofDrawCircle(posAnim.getPositionStart().x, posAnim.getPositionStart().y, 5);
-		ofDrawCircle(posAnim.getPositionEnd().x, posAnim.getPositionEnd().y, 5);
-		ofDrawLine(posAnim.getPositionStart(), posAnim.getPositionEnd());
+		ofDrawCircle(posAnim.getPositionStart().x * ofGetWidth(), posAnim.getPositionStart().y * ofGetHeight(), 5);
+		ofDrawCircle(posAnim.getPositionEnd().x * ofGetWidth(), posAnim.getPositionEnd().y * ofGetHeight(), 5);
+		ofDrawLine(posAnim.getPositionStart() * glm::vec2(ofGetWidth(), ofGetHeight()), posAnim.getPositionEnd() * glm::vec2(ofGetWidth(), ofGetHeight()));
 
 		ofPopStyle();
 	}
@@ -112,8 +112,8 @@ void ofApp::keyPressed(int key) {
 
 //--------------------------------------------------------------
 void ofApp::randomPositions() {
-	posAnim.setPositionStart(glm::vec2(ofRandom(200, 200), ofRandom(200, ofGetHeight() - 200)));
-	posAnim.setPositionEnd(glm::vec2(ofRandom(ofGetWidth() - 200, ofGetWidth() - 400), ofRandom(200, ofGetHeight() - 200)));
+	posAnim.setPositionStart(glm::vec2(ofRandom(1), ofRandom(1)));
+	posAnim.setPositionEnd(glm::vec2(ofRandom(1), ofRandom(1)));
 	posAnim.start();
 }
 

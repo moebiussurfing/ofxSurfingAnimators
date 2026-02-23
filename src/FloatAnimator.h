@@ -128,8 +128,8 @@ private:
 
 	//-
 
-//public:
-private:
+public:
+//private:
 
 	//#ifdef USE_RANDOMIZE_IMGUI_LAYOUT_MANAGER
 	ofxSurfingGui ui;

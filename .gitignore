@@ -552,3 +552,9 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+examples/5_PointColored/5_PointColored.code-workspace
+examples/5_PointColored/config.make
+examples/5_PointColored/Makefile
+examples/6_Envelope/6_Envelope.code-workspace
+examples/6_Envelope/config.make
+examples/6_Envelope/Makefile

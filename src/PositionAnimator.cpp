@@ -10,12 +10,12 @@ void PositionAnimator::setup() {
 
 	ofAddListener(ofEvents().update, this, &PositionAnimator::update);
 
-	pos.set("Position", glm::vec2(0), glm::vec2(0, 0), glm::vec2(1920, 1080));
-	posStart.set("From", glm::vec2(0), glm::vec2(0, 0), glm::vec2(1920, 1080));
-	posEnd.set("To", glm::vec2(0), glm::vec2(0, 0), glm::vec2(1920, 1080));
+	pos.set("Position", glm::vec2(0), glm::vec2(-1.f, -1.f), glm::vec2(1.f, 1.f));
+	posStart.set("From", glm::vec2(0), glm::vec2(-1.f, -1.f), glm::vec2(1.f, 1.f));
+	posEnd.set("To", glm::vec2(0), glm::vec2(-1.f, -1.f), glm::vec2(1.f, 1.f));
 
 	posStart = glm::vec2(0, 0);
-	posEnd = glm::vec2(500, 500);
+	posEnd = glm::vec2(1.f, 1.f);
 
 	//----
 
