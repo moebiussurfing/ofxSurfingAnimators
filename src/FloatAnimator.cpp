@@ -87,7 +87,7 @@ void FloatAnimator::setupGui()
 
 	ui.setName(label);
 	//ui.setSettingsPathLabel(label);
-	ui.setup(IM_GUI_MODE_INSTANTIATED); // initiate ImGui
+	ui.setup(); // initiate ImGui
 }
 
 //--------------------------------------------------------------
