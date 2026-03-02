@@ -81,4 +81,10 @@ void PositionAnimator::drawImGuiWidgetsExtra() {
 	ofxImGuiSurfing::AddParameter(pos);
 	ofxImGuiSurfing::AddParameter(posStart);
 	ofxImGuiSurfing::AddParameter(posEnd);
+
+	if (ui.AddButton("Reset")) {
+		pos.set(glm::vec2(0.f, 0.f));
+		posStart.set(glm::vec2(0.f, 0.f));
+		posEnd.set(glm::vec2(0.f, 0.f));
+	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "ofMain.h"
 
-//#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
+#define INCLUDE_PLOTS // Plotting can be disabled without affecting the functionality
 
 
 #include "ofxAnimatableFloat.h"

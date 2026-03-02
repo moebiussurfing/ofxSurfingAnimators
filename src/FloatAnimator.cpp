@@ -502,7 +502,7 @@ void FloatAnimator::drawImGuiWidgetsBegin() {
 
 			//AddToggleRoundedButton(ui.bMinimize);
 			ui.Add(ui.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
+			ui.DrawWidgetsGlobalScaleMini();
 			ui.Add(bEnableAnimator, OFX_IM_TOGGLE_SMALL);
 
 			if (ImGui::Button("START", ImVec2(_w100, 3 * _h))) {
